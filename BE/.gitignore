@@ -1,20 +1,62 @@
-log
-*.ini
-__pycache__
+# Python Caches
+__pycache__/
 *.pyc
-src/ATLASMultiHopQA/processed_data/
+*.pyo
+*.pyd
+
+# Environment Variables
+.env
+
+# Build & Distribution
+/dist/
+/build/
+
+# Log files
+*.log
+
+# Jupyter Notebook
+*.ipynb
+.ipynb_checkpoints
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Uploaded files
+/uploads/
+
+# Evaluation results
+/evaluate_ko/*_result.json
+/evaluate_ko/gemini_results_*.json
+
+
+# Virtual Environments
+.venv/
+venv/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Experiment data and logs
+/experiment/*.log
+/experiment/*.txt
+
+# Legacy entries (기존 설정 유지)
+*.ini
+
 *.pkl
 *.index
 benchmark_data
 result
 *.npy
 *.graphml
-import/Dulce/kg_graphml/Dulce_graph.graphml
-src/ATLASMultiHopQA/data
-neo4j-server-dulce/
-import.report
+
+
+
+import\*
 *with_emb.csv
-dist
-test.py
+tests\*
+example_data\*
 todo.md
-import/hotpotqa_corpus_kg_input
+

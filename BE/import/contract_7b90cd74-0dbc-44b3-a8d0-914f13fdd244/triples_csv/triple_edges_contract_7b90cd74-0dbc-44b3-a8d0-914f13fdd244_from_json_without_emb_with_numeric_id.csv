@@ -1,0 +1,767 @@
+:START_ID,:END_ID,relation,concepts,synsets,numeric_id,:TYPE
+주식회사 에타캐피탈,계약,매도인이다,"['transact', 'transfer ownership', 'sell', 'provide']",[],0,Relation
+주식회사 쎄타파트너스,계약,매수인이다,"['purchase', 'obtain', 'acquire', 'ownership', 'buy']",[],1,Relation
+주식회사 아이오타솔루션,계약,대상회사이다,"['subject company', 'focus organization', 'target entity', 'selected firm']",[],2,Relation
+주식회사 에타캐피탈,666-66-66666,사업자등록번호를 가진다,"['obtain license', 'register business', 'official status', 'business recognition', 'legal identification']",[],3,Relation
+주식회사 쎄타파트너스,777-77-77777,사업자등록번호를 가진다,"['obtain license', 'register business', 'official status', 'business recognition', 'legal identification']",[],4,Relation
+주식회사 아이오타솔루션,888-88-88888,사업자등록번호를 가진다,"['obtain license', 'register business', 'official status', 'business recognition', 'legal identification']",[],5,Relation
+계약,2025년 1월 1일,계약일자가 있다,"['ownership', 'possess agreement', 'have contract', 'documentation', 'hold record']",[],6,Relation
+2025년 1월 1일에 계약일자가 정해졌다.,"매도인, 매수인, 대상회사가 계약 당사자로 명시되었다.",이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],7,Relation
+"매도인, 매수인, 대상회사가 계약 당사자로 명시되었다.",각 회사의 사업자등록번호가 함께 기재되었다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],8,Relation
+주식회사 에타캐피탈과 주식회사 쎄타파트너스가 2025년 1월 1일에 계약을 체결한다.,주식회사 에타캐피탈,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],9,Relation
+주식회사 에타캐피탈과 주식회사 쎄타파트너스가 2025년 1월 1일에 계약을 체결한다.,주식회사 쎄타파트너스,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],10,Relation
+주식회사 에타캐피탈이 주식회사 아이오타솔루션의 지분을 매도한다.,주식회사 에타캐피탈,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],11,Relation
+주식회사 에타캐피탈이 주식회사 아이오타솔루션의 지분을 매도한다.,주식회사 아이오타솔루션,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],12,Relation
+주식회사 쎄타파트너스가 주식회사 아이오타솔루션의 지분을 매수한다.,주식회사 쎄타파트너스,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],13,Relation
+주식회사 쎄타파트너스가 주식회사 아이오타솔루션의 지분을 매수한다.,주식회사 아이오타솔루션,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],14,Relation
+제1장이 총칙으로 명명된다.,제1장,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],15,Relation
+제1장이 총칙으로 명명된다.,총칙,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],16,Relation
+매도인,"대상회사 발행 보통주식 20,000,000주",보유하다,"['retain', 'have', 'acquire', 'hold', 'own', 'possess']",[],17,Relation
+매도인,매매주식,매도하다,"['divest', 'transfer ownership', 'dispose of', 'relinquish', 'sell']",[],18,Relation
+매수인,매매주식,매수하다,"['purchase', 'obtain', 'acquire', 'buy', 'secure']",[],19,Relation
+본 계약,매매에 필요한 제반 사항,규정하다,"['set terms', 'define', 'prescribe', 'stipulate', 'establish rules']",[],20,Relation
+"매도인이 보유한 대상회사 발행 보통주식 20,000,000주를 매수인에게 매도한다",매수인이 이를 매수한다,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],21,Relation
+"매도인이 보유한 대상회사 발행 보통주식 20,000,000주를 매수인에게 매도한다",필요한 제반 사항을 규정한다,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],22,Relation
+매수인이 이를 매수한다,필요한 제반 사항을 규정한다,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],23,Relation
+"매도인이 대상회사 발행 보통주식 20,000,000주를 매수인에게 매도한다.",매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],24,Relation
+"매도인이 대상회사 발행 보통주식 20,000,000주를 매수인에게 매도한다.",대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],25,Relation
+"매도인이 대상회사 발행 보통주식 20,000,000주를 매수인에게 매도한다.","보통주식 20,000,000주",is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],26,Relation
+"매도인이 대상회사 발행 보통주식 20,000,000주를 매수인에게 매도한다.",매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],27,Relation
+"매수인이 매도인으로부터 대상회사 발행 보통주식 20,000,000주를 매수한다.",매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],28,Relation
+"매수인이 매도인으로부터 대상회사 발행 보통주식 20,000,000주를 매수한다.",매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],29,Relation
+"매수인이 매도인으로부터 대상회사 발행 보통주식 20,000,000주를 매수한다.",대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],30,Relation
+"매수인이 매도인으로부터 대상회사 발행 보통주식 20,000,000주를 매수한다.","보통주식 20,000,000주",is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],31,Relation
+본 계약은 매도인의 매도와 매수인의 매수에 필요한 제반 사항을 규정한다.,본 계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],32,Relation
+본 계약은 매도인의 매도와 매수인의 매수에 필요한 제반 사항을 규정한다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],33,Relation
+본 계약은 매도인의 매도와 매수인의 매수에 필요한 제반 사항을 규정한다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],34,Relation
+거래종결일,제51조에 따라 1차 대금 지급과 주식 양도가 이루어지는 날,의미한다,"['represent', 'signify', 'indicate', 'denote', 'express']",[],35,Relation
+영업일,대한민국의 은행이 정상 영업하는 날,의미한다,"['represent', 'signify', 'indicate', 'denote', 'express']",[],36,Relation
+영업실적,"매출액, 영업이익, EBITDA 등 재무성과",의미한다,"['represent', 'signify', 'indicate', 'denote', 'express']",[],37,Relation
+1차 대금 지급과 주식 양도가 이루어진다.,"""거래종결일""이 된다.",이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],38,Relation
+대한민국의 은행이 정상 영업한다.,"""영업일""이 된다.",동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],39,Relation
+"매출액, 영업이익, EBITDA 등의 재무성과가 있다.","""영업실적""이 발생한다.",결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],40,Relation
+거래종결일은 제51조에 따라 1차 대금 지급과 주식 양도가 이루어지는 날로 정의된다.,거래종결일,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],41,Relation
+거래종결일은 제51조에 따라 1차 대금 지급과 주식 양도가 이루어지는 날로 정의된다.,제51조,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],42,Relation
+거래종결일은 제51조에 따라 1차 대금 지급과 주식 양도가 이루어지는 날로 정의된다.,1차 대금 지급,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],43,Relation
+거래종결일은 제51조에 따라 1차 대금 지급과 주식 양도가 이루어지는 날로 정의된다.,주식 양도,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],44,Relation
+영업일은 대한민국의 은행이 정상 영업하는 날로 정의된다.,영업일,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],45,Relation
+영업일은 대한민국의 은행이 정상 영업하는 날로 정의된다.,대한민국,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],46,Relation
+영업일은 대한민국의 은행이 정상 영업하는 날로 정의된다.,은행,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],47,Relation
+"영업실적은 매출액, 영업이익, EBITDA 등 재무성과를 의미한다.",영업실적,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],48,Relation
+"영업실적은 매출액, 영업이익, EBITDA 등 재무성과를 의미한다.",매출액,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],49,Relation
+"영업실적은 매출액, 영업이익, EBITDA 등 재무성과를 의미한다.",영업이익,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],50,Relation
+"영업실적은 매출액, 영업이익, EBITDA 등 재무성과를 의미한다.",EBITDA,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],51,Relation
+"영업실적은 매출액, 영업이익, EBITDA 등 재무성과를 의미한다.",재무성과,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],52,Relation
+양 당사자,본 계약,본 계약을 체결한다,"['formalize arrangement', 'make agreement', 'finalize deal', 'establish contract', 'enter into accord']",[],53,Relation
+양 당사자,본 계약,본 계약을 이행한다,"['comply with agreement', 'fulfill obligation', 'perform duty', 'execute terms', 'carry out']",[],54,Relation
+양 당사자,양 당사자,상호 선의와 신뢰를 바탕으로 협력한다,"['partnership', 'goodwill', 'collaboration', 'mutual trust', 'work together']",[],55,Relation
+양 당사자가 본 계약을 체결한다.,양 당사자가 본 계약을 이행한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],56,Relation
+양 당사자가 상호 선의와 신뢰를 바탕으로 한다.,양 당사자가 성실히 협력한다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],57,Relation
+양 당사자가 본 계약을 체결한다.,양 당사자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],58,Relation
+양 당사자가 본 계약을 체결한다.,본 계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],59,Relation
+양 당사자가 본 계약을 이행한다.,양 당사자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],60,Relation
+양 당사자가 본 계약을 이행한다.,본 계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],61,Relation
+양 당사자가 상호 선의와 신뢰를 바탕으로 성실히 협력한다.,양 당사자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],62,Relation
+양 당사자가 상호 선의와 신뢰를 바탕으로 성실히 협력한다.,선의,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],63,Relation
+양 당사자가 상호 선의와 신뢰를 바탕으로 성실히 협력한다.,신뢰,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],64,Relation
+본 계약,매매주식의 매매와 관련한 당사자 간의 모든 합의,포함한다,"['encompass', 'hold', 'consist of', 'comprise', 'contain']",[],65,Relation
+본 계약,이전의 모든 구두 또는 서면 합의,대체한다,"['swap', 'substitute', 'exchange', 'switch', 'replace']",[],66,Relation
+본 계약은 매매주식의 매매와 관련한 당사자 간의 모든 합의를 포함한다.,본 계약은 이전의 모든 구두 또는 서면 합의를 대체한다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],67,Relation
+이전의 모든 구두 또는 서면 합의가 있었다.,본 계약이 체결되었다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],68,Relation
+본 계약이 체결되었다.,이전의 모든 구두 또는 서면 합의가 대체되었다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],69,Relation
+본 계약이 매매주식의 매매와 관련한 당사자 간의 모든 합의를 포함한다.,본 계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],70,Relation
+본 계약이 매매주식의 매매와 관련한 당사자 간의 모든 합의를 포함한다.,매매주식,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],71,Relation
+본 계약이 매매주식의 매매와 관련한 당사자 간의 모든 합의를 포함한다.,매매와 관련한 당사자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],72,Relation
+본 계약이 이전의 모든 구두 또는 서면 합의를 대체한다.,본 계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],73,Relation
+본 계약이 이전의 모든 구두 또는 서면 합의를 대체한다.,이전의 모든 구두 또는 서면 합의,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],74,Relation
+매매주식,"일천억원(₩100,000,000,000)",총 매매가격은,"['가격', '합계', '총액', '거래 금액', '가치']",[],75,Relation
+주당 매매가격,"오천원(₩5,000)",금액은,"['amount', 'sum', 'total', 'value']",[],76,Relation
+"매매주식의 총 매매가격은 금 일천억원(₩100,000,000,000)으로 한다.","주당 매매가격은 금 오천원(₩5,000)으로 한다.",동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],77,Relation
+"매매주식의 총 매매가격을 금 일천억원(₩100,000,000,000)으로 정한다.",매매주식,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],78,Relation
+"매매주식의 총 매매가격을 금 일천억원(₩100,000,000,000)으로 정한다.",총 매매가격,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],79,Relation
+"주당 매매가격을 금 오천원(₩5,000)으로 정한다.",주당 매매가격,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],80,Relation
+진술,본 계약 체결일,기준일로 삼는다,"['reference point', 'benchmark', 'standardize', 'set 기준', 'base date']",[],81,Relation
+진술,각 대금 지급일,기준일로 삼는다,"['reference point', 'benchmark', 'standardize', 'set 기준', 'base date']",[],82,Relation
+보증,본 계약 체결일,기준일로 삼는다,"['reference point', 'benchmark', 'standardize', 'set 기준', 'base date']",[],83,Relation
+보증,각 대금 지급일,기준일로 삼는다,"['reference point', 'benchmark', 'standardize', 'set 기준', 'base date']",[],84,Relation
+본 계약 체결일이 도래한다,진술과 보증의 기준일이 된다,이전,"['shift', 'change', 'move', 'transition', 'transfer']",[],85,Relation
+각 대금 지급일이 도래한다,진술과 보증의 기준일이 된다,이전,"['shift', 'change', 'move', 'transition', 'transfer']",[],86,Relation
+달리 명시되지 않는다,모든 진술과 보증은 본 계약 체결일과 각 대금 지급일을 기준으로 한다,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],87,Relation
+모든 진술과 보증은 본 계약 체결일을 기준으로 한다.,모든 진술과 보증,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],88,Relation
+모든 진술과 보증은 본 계약 체결일을 기준으로 한다.,본 계약 체결일,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],89,Relation
+모든 진술과 보증은 각 대금 지급일을 기준으로 한다.,모든 진술과 보증,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],90,Relation
+모든 진술과 보증은 각 대금 지급일을 기준으로 한다.,각 대금 지급일,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],91,Relation
+양 당사자,거래 완료,협력한다,"['join forces', 'cooperate', 'team up', 'work together', 'collaborate']",[],92,Relation
+양 당사자가 거래 완료를 위해 최선을 다해 협력한다.,거래가 완료된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],93,Relation
+양 당사자가 거래 완료를 위해 협력한다.,양 당사자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],94,Relation
+양 당사자가 거래 완료를 위해 협력한다.,거래,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],95,Relation
+각 당사자,제3자,비밀정보를 공개하지 않는다,"['safeguard data', 'keep secret', 'withhold information', 'protect privacy', 'maintain confidentiality']",[],96,Relation
+각 당사자,상대방,비밀정보를 취득한다,"['obtain information', 'access secrets', 'collect confidential data', 'gather intelligence', 'acquire data']",[],97,Relation
+각 당사자,제3자,비밀정보를 공개할 수 있다,"['disclose', 'expose', 'share', 'reveal', 'communicate']",[],98,Relation
+비밀정보 공개,법령상 요구 또는 상대방의 서면 동의,예외가 된다,"['be omitted', 'exclude', 'not apply', 'be left out', 'be exempt']",[],99,Relation
+각 당사자는 본 계약과 관련하여 취득한 상대방의 비밀정보를 제3자에게 공개하지 않는다.,각 당사자는 본 계약과 관련하여 비밀정보를 취득한다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],100,Relation
+법령상 요구되거나 상대방의 서면 동의가 있는 경우,제3자에게 비밀정보를 공개할 수 있다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],101,Relation
+각 당사자는 본 계약과 관련하여 취득한 상대방의 비밀정보를 제3자에게 공개하지 않는다.,각 당사자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],102,Relation
+각 당사자는 본 계약과 관련하여 취득한 상대방의 비밀정보를 제3자에게 공개하지 않는다.,상대방,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],103,Relation
+각 당사자는 본 계약과 관련하여 취득한 상대방의 비밀정보를 제3자에게 공개하지 않는다.,제3자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],104,Relation
+법령상 요구되거나 상대방의 서면 동의가 있는 경우는 비밀정보 공개의 예외로 한다.,법령,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],105,Relation
+법령상 요구되거나 상대방의 서면 동의가 있는 경우는 비밀정보 공개의 예외로 한다.,상대방,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],106,Relation
+매매대금,3회,분할 지급된다,"['periodic payout', 'partial disbursement', 'staged payment', 'phased allocation', 'installment']",[],107,Relation
+1차 지급,거래종결일,이루어진다,"['생성된다', '만들어진다', '구성된다', '형성된다']",[],108,Relation
+1차 지급,400억원,금액이다,"['be worth', 'value', 'sum up', 'total', 'amount to']",[],109,Relation
+1차 지급,40%,비율이다,"['relative size', 'proportionality', 'ratio', 'quantitative relation', 'comparative measure']",[],110,Relation
+2차 지급,거래종결일로부터 90일 후,이루어진다,"['생성된다', '만들어진다', '구성된다', '형성된다']",[],111,Relation
+2차 지급,400억원,금액이다,"['be worth', 'value', 'sum up', 'total', 'amount to']",[],112,Relation
+2차 지급,40%,비율이다,"['relative size', 'proportionality', 'ratio', 'quantitative relation', 'comparative measure']",[],113,Relation
+3차 지급,거래종결일로부터 180일 후,이루어진다,"['생성된다', '만들어진다', '구성된다', '형성된다']",[],114,Relation
+3차 지급,200억원,금액이다,"['be worth', 'value', 'sum up', 'total', 'amount to']",[],115,Relation
+3차 지급,20%,비율이다,"['relative size', 'proportionality', 'ratio', 'quantitative relation', 'comparative measure']",[],116,Relation
+거래종결일에 400억원(40%)을 지급한다.,거래종결일로부터 90일 후 400억원(40%)을 지급한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],117,Relation
+거래종결일로부터 90일 후 400억원(40%)을 지급한다.,거래종결일로부터 180일 후 200억원(20%)을 지급한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],118,Relation
+매매대금은 3회에 걸쳐 분할 지급한다.,거래종결일에 400억원(40%)을 지급한다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],119,Relation
+매매대금은 3회에 걸쳐 분할 지급한다.,거래종결일로부터 90일 후 400억원(40%)을 지급한다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],120,Relation
+매매대금은 3회에 걸쳐 분할 지급한다.,거래종결일로부터 180일 후 200억원(20%)을 지급한다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],121,Relation
+매매대금을 3회에 걸쳐 분할 지급한다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],122,Relation
+매매대금을 3회에 걸쳐 분할 지급한다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],123,Relation
+매매대금을 3회에 걸쳐 분할 지급한다.,매매대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],124,Relation
+거래종결일에 400억원(40%)을 1차로 지급한다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],125,Relation
+거래종결일에 400억원(40%)을 1차로 지급한다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],126,Relation
+거래종결일에 400억원(40%)을 1차로 지급한다.,매매대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],127,Relation
+거래종결일에 400억원(40%)을 1차로 지급한다.,거래종결일,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],128,Relation
+거래종결일로부터 90일 후 400억원(40%)을 2차로 지급한다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],129,Relation
+거래종결일로부터 90일 후 400억원(40%)을 2차로 지급한다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],130,Relation
+거래종결일로부터 90일 후 400억원(40%)을 2차로 지급한다.,매매대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],131,Relation
+거래종결일로부터 90일 후 400억원(40%)을 2차로 지급한다.,거래종결일,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],132,Relation
+거래종결일로부터 180일 후 200억원(20%)을 3차로 지급한다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],133,Relation
+거래종결일로부터 180일 후 200억원(20%)을 3차로 지급한다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],134,Relation
+거래종결일로부터 180일 후 200억원(20%)을 3차로 지급한다.,매매대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],135,Relation
+거래종결일로부터 180일 후 200억원(20%)을 3차로 지급한다.,거래종결일,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],136,Relation
+본 계약,대한민국 법률,해석된다,"['be seen as', 'be regarded as', 'be interpreted as', 'be taken as', 'be understood as']",[],137,Relation
+계약의 해석에 대한 분쟁,대한민국 법률에 따라 해석,발생할 경우,"['in case of', 'upon event', 'if occurs', 'contingency', 'on happening']",[],138,Relation
+본 계약의 해석에 대한 분쟁이 있을 경우,대한민국 법률에 따라 해석한다,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],139,Relation
+본 계약의 해석에 대한 분쟁이 발생한다.,본 계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],140,Relation
+본 계약의 해석에 대한 분쟁이 발생한다.,분쟁 당사자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],141,Relation
+분쟁이 발생할 경우 대한민국 법률에 따라 본 계약을 해석한다.,분쟁 당사자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],142,Relation
+분쟁이 발생할 경우 대한민국 법률에 따라 본 계약을 해석한다.,대한민국 법률,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],143,Relation
+분쟁이 발생할 경우 대한민국 법률에 따라 본 계약을 해석한다.,본 계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],144,Relation
+제2장 매매조건이 시작된다.,구체적인 매매에 관한 조건들이 서술된다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],145,Relation
+제2장 매매조건이 언급된다.,제2장,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],146,Relation
+제2장 매매조건이 언급된다.,매매조건,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],147,Relation
+1차 대금 지급,매매주식 전체의 소유권 이전,과 동시에,"['co-occurrence', 'simultaneity', 'synchronization', 'at the same time', 'concurrence']",[],148,Relation
+매매주식 전체의 소유권,매수인,이전된다,"['shift', 'move', 'relocate', 'transition', 'transfer']",[],149,Relation
+2차 및 3차 대금 지급 조건,완전한 거래 완료,충족되어야,"['satisfy conditions', 'meet requirements', 'fulfill criteria', 'achieve standards']",[],150,Relation
+1차 대금이 지급된다.,매매주식 전체의 소유권이 매수인에게 이전된다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],151,Relation
+2차 및 3차 대금 지급 조건이 충족된다.,완전한 거래가 완료된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],152,Relation
+1차 대금 지급과 동시에 매매주식 전체의 소유권이 매수인에게 이전된다.,1차 대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],153,Relation
+1차 대금 지급과 동시에 매매주식 전체의 소유권이 매수인에게 이전된다.,매매주식 전체,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],154,Relation
+1차 대금 지급과 동시에 매매주식 전체의 소유권이 매수인에게 이전된다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],155,Relation
+2차 및 3차 대금 지급 조건이 충족되어야 완전한 거래가 완료된다.,2차 대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],156,Relation
+2차 및 3차 대금 지급 조건이 충족되어야 완전한 거래가 완료된다.,3차 대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],157,Relation
+2차 및 3차 대금 지급 조건이 충족되어야 완전한 거래가 완료된다.,완전한 거래,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],158,Relation
+매수인,추가 실사,수행할 수 있다,"['실행', '잠재력', '실현', '능력', '가능성']",[],159,Relation
+매수인,대금,지급한다,"['grant', 'allocate', 'provide', 'offer', 'distribute']",[],160,Relation
+추가 실사,각 대금 지급 전,이루어진다,"['생성된다', '만들어진다', '구성된다', '형성된다']",[],161,Relation
+매수인은 각 대금 지급을 한다.,매수인은 추가 실사를 수행할 수 있다.,이전,"['shift', 'change', 'move', 'transition', 'transfer']",[],162,Relation
+매수인은 각 대금 지급 전에 추가 실사를 수행할 수 있다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],163,Relation
+운전자본,매매대금 조정,변동에 따라,"['fluctuate with', 'depend on', 'change according to', 'be influenced by', 'vary by']",[],164,Relation
+순부채,매매대금 조정,변동에 따라,"['fluctuate with', 'depend on', 'change according to', 'be influenced by', 'vary by']",[],165,Relation
+매매대금 조정,반영,최종 대금 지급 시,"['fulfillment', 'completion', 'payment', 'settlement']",[],166,Relation
+"운전자본, 순부채 등의 변동이 발생한다.",매매대금 조정이 이루어진다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],167,Relation
+매매대금 조정이 이루어진다.,최종 대금 지급이 이루어진다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],168,Relation
+"운전자본, 순부채 등의 변동에 따라 매매대금을 조정한다.",운전자본,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],169,Relation
+"운전자본, 순부채 등의 변동에 따라 매매대금을 조정한다.",순부채,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],170,Relation
+"운전자본, 순부채 등의 변동에 따라 매매대금을 조정한다.",매매대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],171,Relation
+최종 대금 지급 시 매매대금 조정을 반영한다.,최종 대금 지급,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],172,Relation
+최종 대금 지급 시 매매대금 조정을 반영한다.,매매대금 조정,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],173,Relation
+매매주식,"담보권, 제한, 부담도 없는 상태",양도되어야 한다,"['reassigned', 'passed on', 'handed over', 'conveyed', 'transferred']",[],174,Relation
+"매매주식은 어떠한 담보권, 제한, 부담도 없는 상태로 양도되어야 한다.","주식에 담보권, 제한, 부담이 존재하지 않는다.",결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],175,Relation
+매매주식은 양도되어야 한다.,매매주식,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],176,Relation
+"매매주식은 담보권, 제한, 부담도 없는 상태여야 한다.",매매주식,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],177,Relation
+"매매주식은 담보권, 제한, 부담도 없는 상태여야 한다.",담보권,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],178,Relation
+"매매주식은 담보권, 제한, 부담도 없는 상태여야 한다.",제한,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],179,Relation
+"매매주식은 담보권, 제한, 부담도 없는 상태여야 한다.",부담,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],180,Relation
+매수인,매매주식,제3자에게 처분할 수 없다,"['assignment ban', 'transfer restriction', 'third-party limitation', 'alienation prohibition']",[],181,Relation
+매수인,매매주식 처분,제한된다,"['confined', 'constrained', 'restricted', 'limited', 'bound']",[],182,Relation
+3차 대금 지급 완료,매매주식 처분 제한,이전까지,"['up to this point', 'preceding', 'until now', 'before', 'prior to']",[],183,Relation
+매수인은 3차 대금 지급을 완료한다.,매수인은 매매주식을 제3자에게 처분할 수 있다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],184,Relation
+3차 대금 지급이 완료되지 않는다.,매수인은 매매주식을 제3자에게 처분할 수 없다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],185,Relation
+매수인은 3차 대금 지급 완료 전까지 매매주식을 제3자에게 처분할 수 없다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],186,Relation
+매수인은 3차 대금 지급 완료 전까지 매매주식을 제3자에게 처분할 수 없다.,매매주식,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],187,Relation
+매수인은 3차 대금 지급 완료 전까지 매매주식을 제3자에게 처분할 수 없다.,제3자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],188,Relation
+매도인,대상회사,경쟁하는 사업을 영위하지 않는다,"['noncompetition', 'exclusivity', 'prohibition', 'restriction', 'limitation']",[],189,Relation
+경업금지,매도인,적용된다,"['be enforced', 'be valid', 'be relevant', 'be in effect', 'be utilized', 'pertain']",[],190,Relation
+경업금지,거래종결일로부터 3년간,효력이 있다,"['effective', 'enforceable', 'operative', 'valid', 'in force']",[],191,Relation
+거래종결일이 발생한다.,매도인은 3년간 대상회사와 경쟁하는 사업을 영위하지 않는다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],192,Relation
+거래종결일이 발생한다.,매도인은 3년간 대상회사와 경쟁하는 사업을 영위하지 않는다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],193,Relation
+매도인은 거래종결일로부터 3년간 대상회사와 경쟁하는 사업을 영위하지 않는다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],194,Relation
+매도인은 거래종결일로부터 3년간 대상회사와 경쟁하는 사업을 영위하지 않는다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],195,Relation
+대상회사,핵심 임직원,보유한다,"['retain', 'have', 'hold', 'own', 'possess']",[],196,Relation
+핵심 임직원,거래종결 후 최소 1년간,근무를 유지한다,"['continue working', 'remain employed', 'sustain employment', 'retain position']",[],197,Relation
+거래가 종결된다.,대상회사의 핵심 임직원이 최소 1년간 근무를 유지한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],198,Relation
+거래가 종결된다.,대상회사의 핵심 임직원이 최소 1년간 근무를 유지해야 한다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],199,Relation
+대상회사의 핵심 임직원이 거래종결 후 최소 1년간 근무를 유지한다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],200,Relation
+대상회사의 핵심 임직원이 거래종결 후 최소 1년간 근무를 유지한다.,핵심 임직원,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],201,Relation
+주요 고객,회사,계약을 체결한다,"['finalize terms', 'form agreement', 'establish deal', 'enter arrangement', 'make contract']",[],202,Relation
+주요 고객과의 계약,회사,동일 조건으로 유지된다,"['remain constant', 'persist', 'maintain status', 'stay unchanged', 'retain state']",[],203,Relation
+주요 고객과의 계약이 체결된다.,계약이 동일 조건으로 유지된다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],204,Relation
+주요 고객과의 계약이 동일 조건으로 유지된다.,주요 고객,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],205,Relation
+대상회사,모든 라이선스와 허가,보유하다,"['retain', 'have', 'acquire', 'hold', 'own', 'possess']",[],206,Relation
+대상회사가 보유한 모든 라이선스와 허가는 유효하게 유지되어야 한다.,대상회사가 라이선스와 허가를 상실하지 않는다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],207,Relation
+대상회사가 보유한 모든 라이선스와 허가는 유효하게 유지되어야 한다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],208,Relation
+대상회사가 보유한 모든 라이선스와 허가는 유효하게 유지되어야 한다.,라이선스,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],209,Relation
+대상회사가 보유한 모든 라이선스와 허가는 유효하게 유지되어야 한다.,허가,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],210,Relation
+대상회사,모든 보험계약,유지하고 있다,"['retain', 'remain', 'persist', 'sustain', 'continue']",[],211,Relation
+모든 보험계약,적절한 보상한도,가지고 있다,"['contain', 'have', 'hold', 'own', 'possess']",[],212,Relation
+대상회사가 모든 보험계약을 유지한다.,보험계약이 적절한 보상한도를 유지하고 있다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],213,Relation
+대상회사의 모든 보험계약이 적절한 보상한도를 유지하고 있다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],214,Relation
+대상회사의 모든 보험계약이 적절한 보상한도를 유지하고 있다.,보험계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],215,Relation
+대상회사,부동산,사용하다,"['utilize', 'apply', 'employ', 'exploit', 'make use of']",[],216,Relation
+부동산의 임대차계약,부동산,정상적이고 유효하다,"['proper', 'legitimate', 'valid', 'acceptable', 'authorized']",[],217,Relation
+대상회사가 사용하는 부동산의 임대차계약은 정상적이다.,대상회사가 사용하는 부동산의 임대차계약은 유효하다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],218,Relation
+대상회사가 사용하는 부동산의 임대차계약은 정상적이다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],219,Relation
+대상회사가 사용하는 부동산의 임대차계약은 정상적이다.,부동산,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],220,Relation
+대상회사가 사용하는 부동산의 임대차계약은 유효하다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],221,Relation
+대상회사가 사용하는 부동산의 임대차계약은 유효하다.,부동산,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],222,Relation
+2차 대금,모든 조건 충족 시,지급된다,"['allocate', 'furnish', 'provide', 'give', 'distribute']",[],223,Relation
+모든 조건,거래종결일로부터 90일간 영업실적 확인,포함한다,"['encompass', 'hold', 'consist of', 'comprise', 'contain']",[],224,Relation
+모든 조건,목표 매출액의 90% 이상 달성,포함한다,"['encompass', 'hold', 'consist of', 'comprise', 'contain']",[],225,Relation
+모든 조건,중대한 고객 이탈 없음,포함한다,"['encompass', 'hold', 'consist of', 'comprise', 'contain']",[],226,Relation
+영업실적,제45조에 정한 방법,확인된다,"['verify', 'confirm', 'validate', 'substantiate', 'prove']",[],227,Relation
+거래종결일이 발생한다.,90일간의 영업실적 확인 기간이 시작된다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],228,Relation
+90일간의 영업실적 확인이 완료된다.,목표 매출액의 90% 이상 달성 여부가 판단된다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],229,Relation
+목표 매출액의 90% 이상이 달성된다.,중대한 고객 이탈이 없다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],230,Relation
+"90일간의 영업실적 확인이 이루어지고, 목표 매출액의 90% 이상이 달성되며, 중대한 고객 이탈이 없다.",2차 대금이 지급된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],231,Relation
+영업실적을 확인한다.,제45조에 정한 방법이 적용된다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],232,Relation
+"2차 대금은 거래종결일로부터 90일간 영업실적 확인, 목표 매출액의 90% 이상 달성, 중대한 고객 이탈 없음의 조건이 모두 충족된 경우에만 지급된다.",2차 대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],233,Relation
+"2차 대금은 거래종결일로부터 90일간 영업실적 확인, 목표 매출액의 90% 이상 달성, 중대한 고객 이탈 없음의 조건이 모두 충족된 경우에만 지급된다.",거래종결일,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],234,Relation
+"2차 대금은 거래종결일로부터 90일간 영업실적 확인, 목표 매출액의 90% 이상 달성, 중대한 고객 이탈 없음의 조건이 모두 충족된 경우에만 지급된다.",영업실적,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],235,Relation
+"2차 대금은 거래종결일로부터 90일간 영업실적 확인, 목표 매출액의 90% 이상 달성, 중대한 고객 이탈 없음의 조건이 모두 충족된 경우에만 지급된다.",목표 매출액,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],236,Relation
+"2차 대금은 거래종결일로부터 90일간 영업실적 확인, 목표 매출액의 90% 이상 달성, 중대한 고객 이탈 없음의 조건이 모두 충족된 경우에만 지급된다.",고객,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],237,Relation
+영업실적은 제45조에 정한 방법으로 확인한다.,영업실적,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],238,Relation
+영업실적은 제45조에 정한 방법으로 확인한다.,제45조,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],239,Relation
+3차 대금,2차 대금이 정상 지급되고 추가 하자가 없는 경우,지급된다,"['allocate', 'furnish', 'provide', 'give', 'distribute']",[],240,Relation
+2차 대금이 정상 지급된다,3차 대금이 지급된다,이전에,"['precedence', 'earlier time', 'prior state', 'previous condition', 'antecedence']",[],241,Relation
+추가 하자가 없다,3차 대금이 지급된다,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],242,Relation
+2차 대금이 정상 지급된다,3차 대금이 지급된다,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],243,Relation
+추가 하자가 없다,3차 대금이 지급된다,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],244,Relation
+3차 대금이 지급된다.,3차 대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],245,Relation
+2차 대금이 정상 지급된다.,2차 대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],246,Relation
+추가 하자가 없는 경우가 발생한다.,추가 하자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],247,Relation
+대상회사,환경 관련 법규,준수하고 있다,"['follow', 'adhere', 'observe', 'conform', 'comply']",[],248,Relation
+환경 관련 법규가 존재한다,대상회사가 환경 관련 법규를 준수한다,이전에,"['precedence', 'earlier time', 'prior state', 'previous condition', 'antecedence']",[],249,Relation
+대상회사가 환경 관련 법규를 준수한다,대상회사가 법적 책임을 면한다,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],250,Relation
+대상회사는 모든 환경 관련 법규를 준수하고 있다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],251,Relation
+대상회사는 모든 환경 관련 법규를 준수하고 있다.,환경 관련 법규,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],252,Relation
+대상회사,개인정보보호 관련 법규,준수한다,"['follow', 'adhere', 'conform', 'obey', 'comply']",[],253,Relation
+대상회사는 개인정보보호 관련 법규를 완전히 준수한다.,데이터 보호가 이루어진다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],254,Relation
+대상회사가 개인정보보호 관련 법규를 완전히 준수한다.,개인정보가 보호된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],255,Relation
+대상회사가 개인정보보호 관련 법규를 완전히 준수한다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],256,Relation
+대상회사가 개인정보보호 관련 법규를 완전히 준수한다.,개인정보보호 관련 법규,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],257,Relation
+매도인,대상회사,운영한다,"['oversee', 'lead', 'control', 'manage', 'administer']",[],258,Relation
+운영,통상의 영업과정,따른다,"['follow', 'comply with', 'conform to', 'obey', 'adhere to']",[],259,Relation
+운영,거래종결일까지,지속된다,"['last', 'remain', 'persist', 'continue', 'endure']",[],260,Relation
+매도인은 거래종결일까지 대상회사를 통상의 영업과정에 따라 운영한다.,거래종결이 이루어진다.,이전,"['shift', 'change', 'move', 'transition', 'transfer']",[],261,Relation
+거래종결이 이루어진다.,매도인은 더 이상 대상회사를 운영하지 않는다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],262,Relation
+매도인은 거래종결일까지 대상회사를 통상의 영업과정에 따라 운영한다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],263,Relation
+매도인은 거래종결일까지 대상회사를 통상의 영업과정에 따라 운영한다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],264,Relation
+매도인,대상회사 관련 정보,제공한다,"['furnish', 'provide', 'offer', 'give', 'supply', 'deliver']",[],265,Relation
+매수인,대상회사 관련 정보,요청한다,"['appeal', 'demand', 'seek', 'request', 'ask']",[],266,Relation
+매수인이 대상회사 관련 정보를 요청한다.,매도인은 매수인이 요청하는 대상회사 관련 정보를 신속히 제공한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],267,Relation
+매수인은 대상회사 관련 정보를 요청한다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],268,Relation
+매수인은 대상회사 관련 정보를 요청한다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],269,Relation
+매도인은 매수인이 요청하는 대상회사 관련 정보를 신속히 제공한다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],270,Relation
+매도인은 매수인이 요청하는 대상회사 관련 정보를 신속히 제공한다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],271,Relation
+매도인은 매수인이 요청하는 대상회사 관련 정보를 신속히 제공한다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],272,Relation
+매도인,하자담보책임,진술보증 위반에 대한 하자담보책임을 진다,"['legal accountability', 'breach consequence', 'bear liability', 'warranty obligation', 'assume responsibility']",[],273,Relation
+하자담보책임,최종 대금 지급일로부터 1년,유효기간이 있다,"['expiration', 'duration', 'time limit', 'validity']",[],274,Relation
+사기,하자담보책임,기간 제한이 적용되지 않는다,"['unlimited period', 'perpetual', 'timeless', 'no time limit', 'unrestricted duration']",[],275,Relation
+고의적 은폐,하자담보책임,기간 제한이 적용되지 않는다,"['unlimited period', 'perpetual', 'timeless', 'no time limit', 'unrestricted duration']",[],276,Relation
+매도인이 진술보증을 위반한다,하자담보책임이 발생한다,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],277,Relation
+최종 대금이 지급된다,하자담보책임의 1년 유효기간이 시작된다,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],278,Relation
+사기나 고의적 은폐가 있다,하자담보책임의 기간 제한이 없다,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],279,Relation
+매도인의 진술보증 위반에 대한 하자담보책임이 최종 대금 지급일로부터 1년간 유효하다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],280,Relation
+사기나 고의적 은폐의 경우 하자담보책임의 기간 제한이 없다.,사기,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],281,Relation
+사기나 고의적 은폐의 경우 하자담보책임의 기간 제한이 없다.,고의적 은폐,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],282,Relation
+매도인,영업실적 달성,노력한다,"['work hard', 'try', 'make effort', 'pursue', 'strive', 'endeavor']",[],283,Relation
+매도인은 영업실적 달성을 위해 최선의 노력을 다한다.,매도인은 영업실적을 달성한다.,이전에,"['precedence', 'earlier time', 'prior state', 'previous condition', 'antecedence']",[],284,Relation
+매도인은 영업실적 달성을 위해 최선의 노력을 다한다.,매도인은 영업실적을 달성한다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],285,Relation
+매도인은 영업실적 달성을 위해 최선의 노력을 다한다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],286,Relation
+매도인은 영업실적 달성을 위해 최선의 노력을 다한다.,영업실적,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],287,Relation
+각 당사자,자신의 비용,부담한다,"['bear cost', 'carry burden', 'take responsibility', 'assume obligation']",[],288,Relation
+자신의 비용,본 거래와 관련하여,발생한다,"['일어난다', '시작된다', '출현한다', '나타난다', '생성된다']",[],289,Relation
+각 당사자가 본 거래와 관련하여 비용을 부담한다.,각 당사자는 자신의 비용을 각각 부담한다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],290,Relation
+각 당사자가 본 거래와 관련하여 발생한 자신의 비용을 부담한다.,각 당사자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],291,Relation
+각 당사자가 본 거래와 관련하여 발생한 자신의 비용을 부담한다.,본 거래,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],292,Relation
+매도인,다음 사항이 진실하고 정확함,진술하고 보증한다,"['guarantee', 'state', 'warrant', 'declare', 'assure', 'affirm']",[],293,Relation
+매도인,본 계약 체결일 및 각 대금 지급일 현재,진술하고 보증한다,"['guarantee', 'state', 'warrant', 'declare', 'assure', 'affirm']",[],294,Relation
+매도인은 본 계약 체결일 및 각 대금 지급일 현재 다음 사항이 진실하고 정확함을 진술하고 보증한다.,본 계약이 체결된다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],295,Relation
+매도인은 본 계약 체결일 및 각 대금 지급일 현재 다음 사항이 진실하고 정확함을 진술하고 보증한다.,각 대금이 지급된다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],296,Relation
+매도인이 본 계약 체결일 현재 다음 사항이 진실하고 정확함을 진술하고 보증한다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],297,Relation
+매도인이 본 계약 체결일 현재 다음 사항이 진실하고 정확함을 진술하고 보증한다.,본 계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],298,Relation
+매도인이 각 대금 지급일 현재 다음 사항이 진실하고 정확함을 진술하고 보증한다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],299,Relation
+매도인이 각 대금 지급일 현재 다음 사항이 진실하고 정확함을 진술하고 보증한다.,각 대금 지급일,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],300,Relation
+매도인,매매주식,소유하다,"['have', 'hold', 'control', 'own', 'possess']",[],301,Relation
+매도인,처분권한,가지다,"['갖추다', '보유하다', '소유하다', '지니다', '포함하다']",[],302,Relation
+매도인은 매매주식의 적법하고 완전한 소유자이다.,매도인은 처분권한을 가진다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],303,Relation
+매도인은 매매주식의 적법하고 완전한 소유자이다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],304,Relation
+매도인은 매매주식의 적법하고 완전한 소유자이다.,매매주식,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],305,Relation
+매도인은 매매주식의 처분권한을 가진다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],306,Relation
+매도인은 매매주식의 처분권한을 가진다.,매매주식,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],307,Relation
+제공된 대상회사의 재무제표,한국채택국제회계기준,작성되었다,"['produced', 'created', 'composed', 'documented', 'recorded']",[],308,Relation
+제공된 대상회사의 재무제표,제공된 대상회사의 재무제표,정확하다,"['be correct', 'be accurate', 'be precise', 'be exact']",[],309,Relation
+제공된 대상회사의 재무제표는 한국채택국제회계기준에 따라 작성되었다.,재무제표는 정확하다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],310,Relation
+제공된 대상회사의 재무제표는 한국채택국제회계기준에 따라 작성되었다.,재무제표는 정확하다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],311,Relation
+대상회사의 재무제표가 한국채택국제회계기준에 따라 작성되었다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],312,Relation
+대상회사의 재무제표가 한국채택국제회계기준에 따라 작성되었다.,재무제표,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],313,Relation
+대상회사의 재무제표가 한국채택국제회계기준에 따라 작성되었다.,한국채택국제회계기준,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],314,Relation
+대상회사의 재무제표가 정확하다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],315,Relation
+대상회사의 재무제표가 정확하다.,재무제표,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],316,Relation
+재무제표,부채,기재하다,"['note', 'record', 'document', 'write down', 'enter']",[],317,Relation
+대상회사,중요한 부채,가지고 있지 않다,"['absence', 'be without', 'not possess', 'lack', 'miss']",[],318,Relation
+대상회사,우발채무,가지고 있지 않다,"['absence', 'be without', 'not possess', 'lack', 'miss']",[],319,Relation
+재무제표에 부채가 기재되어 있다,대상회사의 중요한 부채나 우발채무가 있는지 여부를 확인한다,이전에,"['precedence', 'earlier time', 'prior state', 'previous condition', 'antecedence']",[],320,Relation
+재무제표에 기재된 것 외에 대상회사의 중요한 부채나 우발채무는 없다,회사에 추가적으로 숨겨진 중요한 부채나 우발채무가 없다고 판단된다,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],321,Relation
+대상회사의 중요한 부채나 우발채무가 재무제표에 기재된 것 외에는 존재하지 않는다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],322,Relation
+대상회사의 중요한 부채나 우발채무가 재무제표에 기재된 것 외에는 존재하지 않는다.,재무제표,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],323,Relation
+대상회사의 중요한 부채나 우발채무가 재무제표에 기재된 것 외에는 존재하지 않는다.,중요한 부채,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],324,Relation
+대상회사의 중요한 부채나 우발채무가 재무제표에 기재된 것 외에는 존재하지 않는다.,우발채무,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],325,Relation
+대상회사,중요한 소송이나 분쟁,상대방이 되는 소송이나 분쟁이 없다,"['harmonious relationship', 'no conflict', 'litigation-free', 'controversy-free', 'no dispute']",[],326,Relation
+대상회사,중요한 소송이나 분쟁,당사자가 되는 소송이나 분쟁이 없다,"['exclusion from conflict', 'lack of participation', 'non-engagement', 'absence of involvement', 'not implicated']",[],327,Relation
+대상회사를 상대로 하거나 대상회사가 당사자인 중요한 소송이나 분쟁이 없다.,대상회사가 현재 소송 또는 분쟁에 연루되어 있지 않다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],328,Relation
+중요한 소송이나 분쟁이 없다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],329,Relation
+대상회사,중요한 계약,이행하고 있다,"['implement', 'execute', 'fulfill', 'perform', 'carry out']",[],330,Relation
+대상회사는 모든 중요한 계약을 성실히 이행하고 있다.,계약이 준수되고 있다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],331,Relation
+대상회사는 모든 중요한 계약을 성실히 이행하고 있다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],332,Relation
+대상회사는 모든 중요한 계약을 성실히 이행하고 있다.,중요한 계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],333,Relation
+대상회사,모든 법령,준수하다,"['adhere', 'follow rules', 'conform', 'obey', 'comply']",[],334,Relation
+대상회사는 사업과 관련된 모든 법령을 준수하고 있다.,대상회사는 법규 위반으로 인한 제재를 받지 않는다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],335,Relation
+대상회사는 사업과 관련된 모든 법령을 준수하고 있다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],336,Relation
+대상회사는 사업과 관련된 모든 법령을 준수하고 있다.,모든 법령,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],337,Relation
+대상회사,모든 세금,신고했다,"['disclose', 'report', 'alert', 'inform', 'notify']",[],338,Relation
+대상회사,모든 세금,납부했다,"['submit', 'provide payment', 'remit', 'fulfill obligation', 'pay']",[],339,Relation
+대상회사는 모든 세금을 적시에 신고했다.,대상회사는 모든 세금을 적시에 납부했다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],340,Relation
+대상회사는 모든 세금을 적시에 신고했다.,대상회사는 모든 세금을 적시에 납부했다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],341,Relation
+대상회사는 모든 세금을 적시에 신고했다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],342,Relation
+대상회사는 모든 세금을 적시에 신고했다.,모든 세금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],343,Relation
+대상회사는 모든 세금을 적시에 납부했다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],344,Relation
+대상회사는 모든 세금을 적시에 납부했다.,모든 세금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],345,Relation
+대상회사,노동 관련 법규,준수하다,"['adhere', 'follow rules', 'conform', 'obey', 'comply']",[],346,Relation
+대상회사,노사 분쟁 없음,가지고 있다,"['contain', 'have', 'hold', 'own', 'possess']",[],347,Relation
+대상회사는 노동 관련 법규를 준수한다.,노사 분쟁이 없다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],348,Relation
+대상회사가 노동 관련 법규를 준수한다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],349,Relation
+대상회사가 노동 관련 법규를 준수한다.,노동 관련 법규,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],350,Relation
+대상회사에 노사 분쟁이 없다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],351,Relation
+대상회사에 노사 분쟁이 없다.,노사 분쟁,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],352,Relation
+대상회사,모든 중요 자산,보유하다,"['retain', 'have', 'acquire', 'hold', 'own', 'possess']",[],353,Relation
+모든 중요 자산,양호한 상태,유지되다,"['preserve', 'remain', 'persist', 'continue', 'endure']",[],354,Relation
+대상회사의 모든 중요 자산은 양호한 상태로 유지되고 있다.,대상회사가 자산을 잘 관리했다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],355,Relation
+대상회사의 모든 중요 자산은 양호한 상태로 유지되고 있다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],356,Relation
+대상회사의 모든 중요 자산은 양호한 상태로 유지되고 있다.,중요 자산,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],357,Relation
+실사 과정,중요 계약,공개하다,"['disclose', 'unveil', 'make public', 'reveal', 'announce']",[],358,Relation
+중요 계약,연간 1억원,금액이 이상이다,"['surpass', 'be above', 'exceed', 'be greater than', 'go beyond']",[],359,Relation
+중요 계약,연간 1억원 이상의 것(실사 과정에서 공개된 것 외),존재하지 않는다,"['nonexistence', 'absence', 'missing', 'void', 'lack']",[],360,Relation
+실사 과정에서 공개된 내용이 있다.,연간 1억원 이상의 중요 계약이 없는 것이 확인되었다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],361,Relation
+실사 과정에서 공개된 것 외에 연간 1억원 이상의 중요 계약이 없다.,중요 계약에 대한 추가 공개 사항이 필요하지 않다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],362,Relation
+실사 과정에서 연간 1억원 이상의 중요 계약이 공개되었다.,실사 과정,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],363,Relation
+실사 과정에서 연간 1억원 이상의 중요 계약이 공개되었다.,연간 1억원 이상의 중요 계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],364,Relation
+실사 과정에서 공개된 것 외에 연간 1억원 이상의 중요 계약은 존재하지 않는다.,실사 과정,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],365,Relation
+실사 과정에서 공개된 것 외에 연간 1억원 이상의 중요 계약은 존재하지 않는다.,연간 1억원 이상의 중요 계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],366,Relation
+매수인,본 계약을 체결하고 이행할 완전한 권한과 능력,보유한다,"['retain', 'have', 'hold', 'own', 'possess']",[],367,Relation
+매수인은 본 계약을 체결할 완전한 권한과 능력을 보유한다.,매수인은 본 계약을 체결한다.,이전에,"['precedence', 'earlier time', 'prior state', 'previous condition', 'antecedence']",[],368,Relation
+매수인은 본 계약을 체결하고 이행할 완전한 권한과 능력을 보유한다.,매수인은 본 계약을 이행할 수 있다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],369,Relation
+매수인은 본 계약을 체결할 완전한 권한과 능력을 보유한다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],370,Relation
+매수인은 본 계약을 체결할 완전한 권한과 능력을 보유한다.,본 계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],371,Relation
+매수인은 본 계약을 이행할 완전한 권한과 능력을 보유한다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],372,Relation
+매수인은 본 계약을 이행할 완전한 권한과 능력을 보유한다.,본 계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],373,Relation
+매수인,각 대금 지급에 필요한 자금,확보했다,"['obtain', 'acquire', 'secure', 'gain', 'achieve']",[],374,Relation
+매수인은 각 대금 지급에 필요한 자금을 확보했다.,매수인은 각 대금을 지급했다.,이전에,"['precedence', 'earlier time', 'prior state', 'previous condition', 'antecedence']",[],375,Relation
+매수인은 각 대금 지급에 필요한 자금을 확보했다.,매수인은 각 대금을 지급할 수 있었다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],376,Relation
+매수인이 각 대금 지급에 필요한 자금을 확보했다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],377,Relation
+매도인의 진술보증,매수인이 실제로 인지한 사항,적용되지 않는다,"['irrelevant', 'excluded', 'not valid', 'inapplicable', 'does not pertain']",[],378,Relation
+매수인이 어떤 사항을 실제로 인지한다,매도인의 진술보증이 그 사항에는 적용되지 않는다,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],379,Relation
+매수인이 어떤 사항을 실제로 인지한다,매도인의 진술보증이 그 사항에는 적용되지 않는다,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],380,Relation
+매도인의 진술보증이 매수인이 실제로 인지한 사항에 적용되지 않는다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],381,Relation
+매도인의 진술보증이 매수인이 실제로 인지한 사항에 적용되지 않는다.,진술보증,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],382,Relation
+매도인의 진술보증이 매수인이 실제로 인지한 사항에 적용되지 않는다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],383,Relation
+매도인의 진술보증이 매수인이 실제로 인지한 사항에 적용되지 않는다.,실제로 인지한 사항,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],384,Relation
+영업실적,감사보고서,확인된다,"['verify', 'confirm', 'validate', 'substantiate', 'prove']",[],385,Relation
+감사보고서,회계법인,작성한다,"['compose', 'draft', 'create', 'generate', 'produce']",[],386,Relation
+회계법인,제67조,선정된다,"['choose', 'appoint', 'designate', 'pick', 'elect']",[],387,Relation
+영업실적은 감사보고서로 확인한다.,감사보고서가 작성된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],388,Relation
+회계법인은 감사보고서를 작성한다.,영업실적이 감사보고서로 확인된다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],389,Relation
+회계법인은 제67조에 따라 선정된다.,회계법인이 감사보고서를 작성한다.,이전,"['shift', 'change', 'move', 'transition', 'transfer']",[],390,Relation
+영업실적은 감사보고서로 확인된다.,영업실적,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],391,Relation
+영업실적은 감사보고서로 확인된다.,감사보고서,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],392,Relation
+감사보고서는 회계법인이 작성한다.,감사보고서,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],393,Relation
+감사보고서는 회계법인이 작성한다.,회계법인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],394,Relation
+회계법인은 제67조에 따라 선정된다.,회계법인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],395,Relation
+회계법인은 제67조에 따라 선정된다.,제67조,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],396,Relation
+각 당사자,진술보증 사항에 변경,즉시 통지한다,"['inform immediately', 'instant alert', 'prompt communication', 'notify at once']",[],397,Relation
+각 당사자에게 진술보증 사항에 변경이 발생한다.,각 당사자는 즉시 통지한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],398,Relation
+각 당사자에게 진술보증 사항에 변경이 발생한다.,각 당사자는 즉시 통지한다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],399,Relation
+각 당사자는 즉시 통지한다.,각 당사자에게 진술보증 사항에 변경이 발생한다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],400,Relation
+각 당사자가 진술보증 사항에 변경이 발생할 경우 즉시 통지한다.,각 당사자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],401,Relation
+각 당사자가 진술보증 사항에 변경이 발생할 경우 즉시 통지한다.,진술보증 사항,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],402,Relation
+매수인,중대한 진술보증 위반,추가 대금 지급을 거부할 수 있다,"['refuse compensation', 'withhold funds', 'deny payment', 'reject charges']",[],403,Relation
+중대한 진술보증 위반이 발생한다.,매수인은 추가 대금 지급을 거부할 수 있다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],404,Relation
+매수인은 추가 대금 지급을 거부할 수 있다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],405,Relation
+매도인,제공한 모든 정보의 정확성,확인한다,"['verify', 'confirm', 'ascertain', 'validate', 'check']",[],406,Relation
+매도인은 정보를 제공한다.,매도인은 제공한 모든 정보의 정확성을 확인한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],407,Relation
+매도인은 제공한 모든 정보의 정확성을 확인한다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],408,Relation
+매도인은 제공한 모든 정보의 정확성을 확인한다.,모든 정보,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],409,Relation
+재무 정보,일관된 회계 기준,작성되었다,"['produced', 'created', 'composed', 'documented', 'recorded']",[],410,Relation
+모든 재무 정보는 일관된 회계 기준에 따라 작성되었다.,재무 정보가 서로 비교 가능하게 되었다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],411,Relation
+모든 재무 정보가 일관된 회계 기준에 따라 작성되었다.,재무 정보,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],412,Relation
+모든 재무 정보가 일관된 회계 기준에 따라 작성되었다.,회계 기준,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],413,Relation
+사업계획,합리적인 가정,작성되었다,"['produced', 'created', 'composed', 'documented', 'recorded']",[],414,Relation
+합리적인 가정이 존재한다.,제공된 사업계획이 작성되었다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],415,Relation
+제공된 사업계획이 작성되었다.,제공된 사업계획이 존재한다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],416,Relation
+사업계획이 합리적인 가정에 기초하여 작성되었다.,사업계획,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],417,Relation
+사업계획이 합리적인 가정에 기초하여 작성되었다.,합리적인 가정,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],418,Relation
+제4장 거래종결이 언급된다.,이전 장들에서 거래의 조건과 절차가 논의된다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],419,Relation
+제4장 거래종결이 언급된다.,제4장,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],420,Relation
+제4장 거래종결이 언급된다.,거래종결,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],421,Relation
+거래종결,본 계약 체결일로부터 30일 이내,이루어진다,"['생성된다', '만들어진다', '구성된다', '형성된다']",[],422,Relation
+본 계약이 체결된다.,거래종결이 이루어진다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],423,Relation
+본 계약이 체결된다.,거래종결이 30일 이내에 이루어진다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],424,Relation
+거래종결은 본 계약 체결일로부터 30일 이내에 이루어진다.,거래종결,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],425,Relation
+거래종결은 본 계약 체결일로부터 30일 이내에 이루어진다.,본 계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],426,Relation
+매수인,조건이 충족된 경우,1차 대금 지급 의무가 발생한다,"['monetary responsibility', 'financial duty', 'payment obligation', 'debt arises', 'obligation triggered']",[],427,Relation
+매도인,조건,진술보증이 정확해야 한다,"['truthfulness assurance', 'compliance assertion', 'accuracy requirement', 'correctness obligation']",[],428,Relation
+중요한 부정적 변동,조건,존재하지 않아야 한다,"['lacking', 'nonexistence', 'absence', 'omission', 'exclusion']",[],429,Relation
+매도인의 진술보증이 정확하다,매수인의 1차 대금 지급 의무가 발생한다,이전,"['shift', 'change', 'move', 'transition', 'transfer']",[],430,Relation
+중요한 부정적 변동이 없다,매수인의 1차 대금 지급 의무가 발생한다,이전,"['shift', 'change', 'move', 'transition', 'transfer']",[],431,Relation
+매도인의 진술보증이 정확하다,매수인의 1차 대금 지급 의무가 발생한다,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],432,Relation
+중요한 부정적 변동이 없다,매수인의 1차 대금 지급 의무가 발생한다,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],433,Relation
+매수인의 1차 대금 지급 의무가 발생한다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],434,Relation
+매도인의 진술보증이 정확하다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],435,Relation
+매수인,매도인,1차 대금을 준비하면,"['dependency', 'prerequisite', 'requirement', 'contingency', 'conditional']",[],436,Relation
+매도인,매수인,주식 양도 의무가 발생한다,"['obligation arises', 'duty imposed', 'responsibility incurred', 'requirement triggered']",[],437,Relation
+매수인이 1차 대금을 준비한다.,매도인의 주식 양도 의무가 발생한다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],438,Relation
+매수인이 1차 대금을 준비한다.,매도인의 주식 양도 의무가 발생한다.,이전,"['shift', 'change', 'move', 'transition', 'transfer']",[],439,Relation
+매수인이 1차 대금을 준비한다.,매도인의 주식 양도 의무가 발생한다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],440,Relation
+매수인이 1차 대금을 준비한다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],441,Relation
+매수인이 1차 대금을 준비한다.,1차 대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],442,Relation
+매도인의 주식 양도 의무가 발생한다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],443,Relation
+매도인의 주식 양도 의무가 발생한다.,주식 양도 의무,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],444,Relation
+거래종결,서울특별시 소재 합의된 장소,이루어진다,"['생성된다', '만들어진다', '구성된다', '형성된다']",[],445,Relation
+거래종결은 서울특별시 소재 합의된 장소에서 이루어진다.,거래종결 장소가 합의된다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],446,Relation
+거래종결 장소가 합의된다.,거래종결이 이루어진다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],447,Relation
+거래종결 장소가 합의된다.,거래종결이 서울특별시 소재 합의된 장소에서 이루어진다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],448,Relation
+거래종결이 합의된 장소에서 이루어진다.,거래종결,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],449,Relation
+거래종결이 합의된 장소에서 이루어진다.,합의된 장소,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],450,Relation
+합의된 장소가 서울특별시에 소재한다.,합의된 장소,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],451,Relation
+합의된 장소가 서울특별시에 소재한다.,서울특별시,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],452,Relation
+매도인,주권,인도한다,"['lead', 'conduct', 'show the way', 'guide', 'direct']",[],453,Relation
+매도인,주주명부,인도한다,"['lead', 'conduct', 'show the way', 'guide', 'direct']",[],454,Relation
+매도인,필요 서류,인도한다,"['lead', 'conduct', 'show the way', 'guide', 'direct']",[],455,Relation
+거래종결 시가 도래한다.,"매도인은 주권, 주주명부 등 필요 서류를 인도한다.",이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],456,Relation
+거래종결 시가 도래한다.,"매도인은 주권, 주주명부 등 필요 서류를 인도한다.",때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],457,Relation
+"매도인은 거래종결 시 주권, 주주명부 등 필요 서류를 인도한다.",매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],458,Relation
+"매도인은 거래종결 시 주권, 주주명부 등 필요 서류를 인도한다.",주권,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],459,Relation
+"매도인은 거래종결 시 주권, 주주명부 등 필요 서류를 인도한다.",주주명부,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],460,Relation
+"매도인은 거래종결 시 주권, 주주명부 등 필요 서류를 인도한다.",필요 서류,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],461,Relation
+매수인,자,지명한다,"['nominate', 'assign', 'appoint', 'designate', 'select']",[],462,Relation
+자,이사,선임된다,"['nominate', 'assign', 'appoint', 'designate', 'select']",[],463,Relation
+거래종결이 이루어진다.,매수인이 지명한 자를 이사로 선임한다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],464,Relation
+매수인이 지명한 자를 이사로 선임한다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],465,Relation
+매수인이 지명한 자를 이사로 선임한다.,지명한 자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],466,Relation
+경영권,매수인,이전된다,"['shift', 'move', 'relocate', 'transition', 'transfer']",[],467,Relation
+경영권 이전,거래종결과 동시에,완료된다,"['accomplish', 'conclude', 'end', 'finish', 'achieve']",[],468,Relation
+거래가 종결된다.,완전한 경영권이 매수인에게 이전된다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],469,Relation
+완전한 경영권이 매수인에게 이전된다.,완전한 경영권,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],470,Relation
+완전한 경영권이 매수인에게 이전된다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],471,Relation
+거래종결이 이루어진다.,거래,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],472,Relation
+양 당사자,종결 확인서,작성한다,"['compose', 'draft', 'create', 'generate', 'produce']",[],473,Relation
+종결 확인서,거래종결,작성 시점이다,"['moment', 'timing', 'point in time', 'occurrence']",[],474,Relation
+거래종결이 이루어진다.,양 당사자는 종결 확인서를 작성한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],475,Relation
+거래종결이 이루어진다.,양 당사자는 종결 확인서를 작성한다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],476,Relation
+양 당사자가 거래종결 시 종결 확인서를 작성한다.,양 당사자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],477,Relation
+양 당사자가 거래종결 시 종결 확인서를 작성한다.,종결 확인서,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],478,Relation
+매수인,주주명부,기재된다,"['be listed', 'be registered', 'be recorded', 'be entered', 'be documented']",[],479,Relation
+주주명부,거래종결 즉시,변경된다,"['update', 'shift', 'alter', 'modify', 'adjust', 'transform']",[],480,Relation
+거래가 종결된다.,주주명부에 매수인을 기재한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],481,Relation
+거래가 종결된다.,주주명부에 매수인을 기재한다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],482,Relation
+거래종결 즉시 주주명부에 매수인을 기재한다.,주주명부,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],483,Relation
+거래종결 즉시 주주명부에 매수인을 기재한다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],484,Relation
+경영권,매수인,이전된다,"['shift', 'move', 'relocate', 'transition', 'transfer']",[],485,Relation
+경영권,1차 대금 지급과 동시에,이전 시점,"['precedence', 'earlier time', 'prior state', 'preceding moment', 'antecedence']",[],486,Relation
+1차 대금이 지급된다.,경영권이 매수인에게 이전된다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],487,Relation
+경영권이 매수인에게 이전된다.,경영권,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],488,Relation
+경영권이 매수인에게 이전된다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],489,Relation
+1차 대금이 지급된다.,1차 대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],490,Relation
+거래종결,손해배상 청구,정당한 사유 없이 거부될 경우,"['invalid rejection', 'improper refusal', 'unlawful rejection', 'unreasonable refusal', 'unjust denial']",[],491,Relation
+상대방,거래종결 거부,손해배상을 청구할 수 있다,"['claim damages', 'seek redress', 'pursue restitution', 'request compensation', 'demand reimbursement']",[],492,Relation
+정당한 사유 없이 거래종결을 거부한다.,상대방은 손해배상을 청구할 수 있다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],493,Relation
+정당한 사유 없이 거래종결을 거부한다.,상대방은 손해배상을 청구할 수 있다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],494,Relation
+거래종결을 정당한 사유 없이 거부한다.,거래종결 거부자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],495,Relation
+손해배상을 청구할 수 있다.,거래종결 거부의 상대방,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],496,Relation
+각 당사자,자신을 위한 전제조건,전제조건을 포기할 수 있다,"['relinquish condition', 'forgo prerequisite', 'waive requirement', 'abandon stipulation']",[],497,Relation
+각 당사자는 자신을 위한 전제조건을 포기할 수 있다.,전제조건이 더 이상 해당 당사자에게 적용되지 않는다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],498,Relation
+각 당사자는 자신을 위한 전제조건을 포기할 수 있다.,각 당사자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],499,Relation
+각 당사자는 자신을 위한 전제조건을 포기할 수 있다.,전제조건,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],500,Relation
+양 당사자,행정적 사항,협력한다,"['join forces', 'cooperate', 'team up', 'work together', 'collaborate']",[],501,Relation
+협력,거래종결 후,이루어진다,"['생성된다', '만들어진다', '구성된다', '형성된다']",[],502,Relation
+거래가 종결된다.,양 당사자는 행정적 사항에 협력한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],503,Relation
+양 당사자는 거래종결 후 행정적 사항에 협력한다.,양 당사자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],504,Relation
+거래종결일,영업실적,로부터 85일째 영업실적을 집계한다,"['monitor progress', 'track results', 'measure outcomes', 'calculate performance']",[],505,Relation
+90일째 감사보고서,2차 대금 지급 여부,를 기준으로 2차 대금 지급 여부를 결정한다,"['determine based on', 'conditional payment', 'payment dependency', 'trigger event', 'decision criteria']",[],506,Relation
+거래종결일로부터 85일째 영업실적을 집계한다.,90일째 감사보고서를 기준으로 2차 대금 지급 여부를 결정한다.,이전,"['shift', 'change', 'move', 'transition', 'transfer']",[],507,Relation
+90일째 감사보고서를 기준으로 2차 대금 지급 여부를 결정한다.,거래종결일로부터 85일째 영업실적을 집계한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],508,Relation
+거래종결일로부터 85일째 영업실적을 집계한다.,거래종결일,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],509,Relation
+거래종결일로부터 85일째 영업실적을 집계한다.,영업실적,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],510,Relation
+90일째 감사보고서를 기준으로 2차 대금 지급 여부를 결정한다.,90일째 감사보고서,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],511,Relation
+90일째 감사보고서를 기준으로 2차 대금 지급 여부를 결정한다.,2차 대금 지급 여부,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],512,Relation
+매도인,계좌 정보,통지한다,"['report', 'announce', 'inform', 'notify', 'communicate']",[],513,Relation
+계좌 정보,대금 지급 5영업일 전,관련된다,"['be connected to', 'involve', 'concern', 'pertain to', 'be associated with', 'relate']",[],514,Relation
+매도인은 계좌 정보를 통지한다.,대금 지급이 이루어진다.,이전,"['shift', 'change', 'move', 'transition', 'transfer']",[],515,Relation
+매도인은 계좌 정보를 통지한다.,대금 지급이 원활하게 이루어진다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],516,Relation
+매도인은 계좌 정보를 통지한다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],517,Relation
+매도인,양도소득세,부담한다,"['bear cost', 'carry burden', 'take responsibility', 'assume obligation']",[],518,Relation
+매수인,취득세,부담한다,"['bear cost', 'carry burden', 'take responsibility', 'assume obligation']",[],519,Relation
+매도인이 양도소득세를 부담한다.,매수인이 취득세를 부담한다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],520,Relation
+양도소득세는 매도인이 부담한다.,양도소득세,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],521,Relation
+양도소득세는 매도인이 부담한다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],522,Relation
+취득세는 매수인이 부담한다.,취득세,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],523,Relation
+취득세는 매수인이 부담한다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],524,Relation
+감사인,매도인,선임된다,"['nominate', 'assign', 'appoint', 'designate', 'select']",[],525,Relation
+감사인,4대 회계법인,선정된다,"['choose', 'appoint', 'designate', 'pick', 'elect']",[],526,Relation
+감사 비용,대상회사,부담한다,"['bear cost', 'carry burden', 'take responsibility', 'assume obligation']",[],527,Relation
+매도인이 감사인을 선임한다.,감사인은 4대 회계법인 중에서 선정한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],528,Relation
+감사인은 4대 회계법인 중에서 선정한다.,감사 비용은 대상회사가 부담한다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],529,Relation
+매도인이 영업실적 확인을 위한 감사인을 선임한다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],530,Relation
+매도인이 영업실적 확인을 위한 감사인을 선임한다.,감사인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],531,Relation
+감사인은 4대 회계법인 중에서 선정된다.,감사인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],532,Relation
+감사인은 4대 회계법인 중에서 선정된다.,4대 회계법인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],533,Relation
+감사 비용은 대상회사가 부담한다.,감사 비용,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],534,Relation
+감사 비용은 대상회사가 부담한다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],535,Relation
+기존 직원,승계된다,고용이,"['hiring', 'job status', 'workforce status', 'employment', 'occupation']",[],536,Relation
+기존 직원이 고용되어 있다.,기존 직원의 고용이 승계된다.,이전,"['shift', 'change', 'move', 'transition', 'transfer']",[],537,Relation
+기존 직원이 고용되어 있다.,기존 직원의 고용이 승계된다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],538,Relation
+기존 직원의 고용이 승계된다.,기존 직원,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],539,Relation
+정기 감사,감사인,수행된다,"['실행된다', '발생한다', '진행된다', '이루어진다']",[],540,Relation
+감사인,매수인,선임된다,"['nominate', 'assign', 'appoint', 'designate', 'select']",[],541,Relation
+매수인이 감사인을 선임한다.,정기 감사가 수행된다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],542,Relation
+정기 감사가 매수인이 선임한 감사인에 의해 수행된다.,정기 감사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],543,Relation
+정기 감사가 매수인이 선임한 감사인에 의해 수행된다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],544,Relation
+정기 감사가 매수인이 선임한 감사인에 의해 수행된다.,감사인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],545,Relation
+중요 문서,매수인,인도된다,"['lead', 'escort', 'guide', 'bring', 'direct']",[],546,Relation
+중요 문서,거래종결 시,인계된다,"['assign', 'hand over', 'transfer', 'pass on', 'delegate']",[],547,Relation
+거래가 종결된다.,모든 중요 문서는 매수인에게 인도된다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],548,Relation
+거래가 종결된다.,모든 중요 문서는 매수인에게 인도된다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],549,Relation
+모든 중요 문서가 거래종결 시 매수인에게 인도된다.,중요 문서,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],550,Relation
+모든 중요 문서가 거래종결 시 매수인에게 인도된다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],551,Relation
+주식매매계약이 체결된다.,거래종결 후 사항이 발생한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],552,Relation
+거래종결 후 사항이 발생한다.,계약 당사자들이 일정한 의무를 이행하게 된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],553,Relation
+계약 당사자들이 일정한 의무를 이행하게 된다.,거래종결 후 조치들이 진행된다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],554,Relation
+제5장 거래종결 후 사항이 언급된다.,제5장,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],555,Relation
+제5장 거래종결 후 사항이 언급된다.,거래종결 후 사항,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],556,Relation
+매도인,거래종결 후 6개월간,경영 전환을 지원한다,"['facilitate change', 'enable transition', 'support improvement', 'assist transformation']",[],557,Relation
+거래종결이 이루어진다.,매도인은 6개월간 경영 전환을 지원한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],558,Relation
+매도인은 거래종결 후 6개월간 경영 전환을 지원한다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],559,Relation
+손해배상 책임 한도,매매대금의 30%,제한된다,"['confined', 'constrained', 'restricted', 'limited', 'bound']",[],560,Relation
+손해배상 책임이 발생한다.,손해배상 책임 한도가 매매대금의 30%로 제한된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],561,Relation
+손해배상 책임이 매매대금의 30%로 제한된다.,손해배상 책임,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],562,Relation
+손해배상 책임이 매매대금의 30%로 제한된다.,매매대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],563,Relation
+매수인,매도인 책임 없음,인지한 사항에 대해,"['acknowledgment', 'awareness', 'understanding', 'perception', 'recognition']",[],564,Relation
+매수인이 어떤 사항을 인지한다,매도인이 그 사항에 대해 책임지지 않는다,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],565,Relation
+매수인이 어떤 사항을 인지한다,매도인이 그 사항에 대해 책임지지 않는다,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],566,Relation
+매수인이 어떤 사항을 인지한다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],567,Relation
+매수인이 어떤 사항을 인지한다.,사항,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],568,Relation
+매도인이 매수인이 인지한 사항에 대해 책임지지 않는다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],569,Relation
+매도인이 매수인이 인지한 사항에 대해 책임지지 않는다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],570,Relation
+매도인이 매수인이 인지한 사항에 대해 책임지지 않는다.,사항,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],571,Relation
+매도인,자문,제공한다,"['furnish', 'provide', 'offer', 'give', 'supply', 'deliver']",[],572,Relation
+자문,영업실적 달성,목적이다,"['intention', 'goal', 'objective', 'aim', 'purpose']",[],573,Relation
+매도인은 영업실적 달성을 위해 자문을 제공한다.,영업실적이 달성된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],574,Relation
+매도인은 자문을 제공한다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],575,Relation
+손해배상 청구,구체적 증빙,서면으로 해야 한다,"['formalize', 'paperwork', 'record keeping', 'written form', 'documented']",[],576,Relation
+손해배상 청구는 구체적 증빙과 함께 서면으로 해야 한다.,손해배상 청구를 하려면 구체적 증빙을 준비해야 한다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],577,Relation
+손해배상 청구는 구체적 증빙과 함께 서면으로 해야 한다.,손해배상 청구를 하려면 서면으로 작성해야 한다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],578,Relation
+손해배상 청구는 서면으로 해야 한다.,손해배상 청구,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],579,Relation
+손해배상 청구는 구체적 증빙과 함께 해야 한다.,손해배상 청구,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],580,Relation
+손해배상 청구는 구체적 증빙과 함께 해야 한다.,구체적 증빙,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],581,Relation
+확정된 손해배상액,미지급 대금,상계할 수 있다,"['counterbalance', 'offset', 'deduct', 'compensate', 'neutralize']",[],582,Relation
+손해배상액이 확정된다.,미지급 대금과 상계할 수 있다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],583,Relation
+손해배상액이 확정된다.,미지급 대금과 상계할 수 있다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],584,Relation
+확정된 손해배상액을 미지급 대금과 상계할 수 있다.,확정된 손해배상액,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],585,Relation
+확정된 손해배상액을 미지급 대금과 상계할 수 있다.,미지급 대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],586,Relation
+거래종결 후 발견된 자산,매수인,귀속된다,"['be assigned to', 'be associated with', 'be attributed to', 'be affiliated with', 'belong to']",[],587,Relation
+거래종결 후 발견된 부채,매도인,귀속된다,"['be assigned to', 'be associated with', 'be attributed to', 'be affiliated with', 'belong to']",[],588,Relation
+거래가 종결된다.,자산이 추가로 발견된다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],589,Relation
+자산이 추가로 발견된다.,그 자산은 매수인에게 귀속된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],590,Relation
+거래가 종결된다.,부채가 추가로 발견된다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],591,Relation
+부채가 추가로 발견된다.,그 부채는 매도인에게 귀속된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],592,Relation
+거래종결 후 발견된 자산이 매수인에게 귀속된다.,자산,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],593,Relation
+거래종결 후 발견된 자산이 매수인에게 귀속된다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],594,Relation
+거래종결 후 발견된 부채가 매도인에게 귀속된다.,부채,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],595,Relation
+거래종결 후 발견된 부채가 매도인에게 귀속된다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],596,Relation
+대상회사,기존 브랜드,계속 사용할 수 있다,"['availability', 'continuity', 'persistence', 'access', 'usability']",[],597,Relation
+대상회사는 기존 브랜드를 계속 사용할 수 있다.,브랜드와 관련된 권리가 유지된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],598,Relation
+대상회사가 기존 브랜드를 계속 사용할 수 있다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],599,Relation
+대상회사가 기존 브랜드를 계속 사용할 수 있다.,기존 브랜드,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],600,Relation
+거래종결 전 선언된 배당,매도인,귀속된다,"['be assigned to', 'be associated with', 'be attributed to', 'be affiliated with', 'belong to']",[],601,Relation
+거래종결 전에 배당이 선언된다.,거래가 종결된다.,이전,"['shift', 'change', 'move', 'transition', 'transfer']",[],602,Relation
+거래종결 전에 배당이 선언된다.,배당은 매도인에게 귀속된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],603,Relation
+거래종결 전에 선언된 배당이 매도인에게 귀속된다.,배당,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],604,Relation
+거래종결 전에 선언된 배당이 매도인에게 귀속된다.,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],605,Relation
+대상회사,매수인의 연결재무제표,포함된다,"['일원이다', '소속된다', '들어가다', '속하다', '포함시키다']",[],606,Relation
+거래종결,대상회사 포함,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],607,Relation
+거래가 종결된다.,대상회사는 매수인의 연결재무제표에 포함된다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],608,Relation
+거래가 종결된다.,대상회사는 매수인의 연결재무제표에 포함된다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],609,Relation
+대상회사가 매수인의 연결재무제표에 포함된다.,대상회사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],610,Relation
+대상회사가 매수인의 연결재무제표에 포함된다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],611,Relation
+대상회사가 매수인의 연결재무제표에 포함된다.,연결재무제표,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],612,Relation
+양 당사자,시너지 실현,협력한다,"['join forces', 'cooperate', 'team up', 'work together', 'collaborate']",[],613,Relation
+양 당사자는 시너지 실현을 위해 협력한다.,시너지가 실현된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],614,Relation
+양 당사자가 시너지 실현을 위해 협력한다.,양 당사자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],615,Relation
+양 당사자,영업비밀,보호한다,"['keep safe', 'safeguard', 'defend', 'preserve', 'shield']",[],616,Relation
+양 당사자는 영업비밀을 보호한다.,양 당사자는 서로의 영업비밀을 보호한다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],617,Relation
+양 당사자가 영업비밀을 보호한다.,양 당사자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],618,Relation
+양 당사자가 영업비밀을 보호한다.,영업비밀,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],619,Relation
+기존 공급계약,공급망,유지된다,"['maintain', 'persist', 'sustain', 'keep', 'continue']",[],620,Relation
+기존 공급계약이 존재한다.,기존 공급계약은 유지된다.,이전에,"['precedence', 'earlier time', 'prior state', 'previous condition', 'antecedence']",[],621,Relation
+기존 공급계약이 유지된다.,기존 공급계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],622,Relation
+R&D가 진행 중이다.,연구개발이 계속된다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],623,Relation
+진행 중인 연구개발이 계속된다.,진행 중인 연구개발,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],624,Relation
+기업의 사회적 책임 활동이 시작된다.,기업의 사회적 책임 활동은 지속된다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],625,Relation
+기업의 사회적 책임 활동이 지속된다.,기업,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],626,Relation
+규제 변경 대응,매수인,책임이 있다,"['의무', '담당', '부담', '소유', '소관']",[],627,Relation
+규제가 변경된다.,매수인이 변경된 규제에 대응한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],628,Relation
+규제가 변경된다.,매수인이 규제 대응 책임을 진다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],629,Relation
+규제 변경에 대응하는 책임이 매수인에게 있다.,규제,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],630,Relation
+규제 변경에 대응하는 책임이 매수인에게 있다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],631,Relation
+시설,현 상태,유지된다,"['maintain', 'persist', 'sustain', 'keep', 'continue']",[],632,Relation
+시설에 대한 어떠한 변경이나 조치가 이루어지지 않는다.,시설은 현 상태로 유지된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],633,Relation
+시설은 현 상태로 유지된다.,시설,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],634,Relation
+2차 대금 지급,3차 대금 지급 의무 자동 소멸,이행되지 않으면,"['default', 'unfulfilled', 'failure', 'noncompliance', 'unmet condition']",[],635,Relation
+2차 대금 지급,매도인 1차 대금 원상회복 요구 가능,이행되지 않으면,"['default', 'unfulfilled', 'failure', 'noncompliance', 'unmet condition']",[],636,Relation
+2차 대금 지급,주식 즉시 반환,이행되지 않으면,"['default', 'unfulfilled', 'failure', 'noncompliance', 'unmet condition']",[],637,Relation
+2차 대금 지급 미이행,전체 거래 무효,발생하면,"['caused by', 'initiated by', 'results from', 'originates from', 'triggered by']",[],638,Relation
+2차 대금이 지급되지 않는다.,3차 대금 지급 의무도 자동 소멸한다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],639,Relation
+2차 대금이 지급되지 않는다.,매도인은 1차 대금의 원상회복을 요구할 수 있다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],640,Relation
+2차 대금이 지급되지 않는다.,주식은 즉시 반환되어야 한다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],641,Relation
+2차 대금이 지급되지 않는다.,전체 거래가 무효화된 것으로 본다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],642,Relation
+2차 대금이 지급되지 않는다,2차 대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],643,Relation
+2차 대금이 지급되지 않는다,지급자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],644,Relation
+2차 대금이 지급되지 않는다,수령자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],645,Relation
+3차 대금 지급 의무가 자동 소멸된다,3차 대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],646,Relation
+3차 대금 지급 의무가 자동 소멸된다,지급자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],647,Relation
+3차 대금 지급 의무가 자동 소멸된다,수령자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],648,Relation
+매도인이 1차 대금의 원상회복을 요구할 수 있다,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],649,Relation
+매도인이 1차 대금의 원상회복을 요구할 수 있다,1차 대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],650,Relation
+매도인이 1차 대금의 원상회복을 요구할 수 있다,수취인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],651,Relation
+주식이 즉시 반환되어야 한다,주식,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],652,Relation
+주식이 즉시 반환되어야 한다,보유자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],653,Relation
+주식이 즉시 반환되어야 한다,원소유자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],654,Relation
+전체 거래가 무효화된 것으로 본다,전체 거래,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],655,Relation
+전체 거래가 무효화된 것으로 본다,매도인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],656,Relation
+전체 거래가 무효화된 것으로 본다,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],657,Relation
+양 당사자,원상회복 시,원상태로 복구한다,"['restore', 'reinstate', 'revert', 'recover', 'reset']",[],658,Relation
+원상회복이 진행된다.,양 당사자가 신속히 원상태로 복구한다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],659,Relation
+양 당사자가 원상회복 시 신속히 원상태로 복구한다.,양 당사자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],660,Relation
+제90조,별도 성과 인센티브 부재,규정한다,"['determine', 'establish', 'define', 'prescribe', 'set rules']",[],661,Relation
+별도 성과 인센티브가 없다.,직원들은 성과 인센티브를 받지 않는다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],662,Relation
+성과 인센티브가 존재하지 않는다.,성과 인센티브,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],663,Relation
+제6장 일반조항이 명시되었다.,제6장,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],664,Relation
+제6장 일반조항이 명시되었다.,일반조항,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],665,Relation
+통지,등기우편,이루어진다,"['생성된다', '만들어진다', '구성된다', '형성된다']",[],666,Relation
+통지,이메일,이루어진다,"['생성된다', '만들어진다', '구성된다', '형성된다']",[],667,Relation
+통지를 보낸다.,등기우편 또는 이메일을 사용한다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],668,Relation
+모든 통지는 등기우편으로 한다.,모든 통지,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],669,Relation
+모든 통지는 등기우편으로 한다.,등기우편,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],670,Relation
+모든 통지는 이메일로 한다.,모든 통지,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],671,Relation
+모든 통지는 이메일로 한다.,이메일,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],672,Relation
+운전자본 조정,최종 대금 지급 시,정산된다,"['process payment', 'clear payment', 'settle', 'reconcile', 'account for']",[],673,Relation
+최종 대금 지급이 이루어진다.,운전자본 조정을 정산한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],674,Relation
+최종 대금 지급이 이루어진다.,운전자본 조정을 정산한다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],675,Relation
+운전자본 조정은 정산된다.,운전자본 조정,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],676,Relation
+정산은 최종 대금 지급 시 이루어진다.,정산,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],677,Relation
+정산은 최종 대금 지급 시 이루어진다.,최종 대금 지급,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],678,Relation
+본 계약,대한민국 법률,따른다,"['follow', 'comply with', 'conform to', 'obey', 'adhere to']",[],679,Relation
+본 계약이 체결된다.,대한민국 법률에 따른다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],680,Relation
+본 계약은 대한민국 법률에 따른다.,본 계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],681,Relation
+본 계약은 대한민국 법률에 따른다.,대한민국 법률,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],682,Relation
+분쟁,서울중앙지방법원,관할로 한다,"['assign authority', 'govern by', 'subject to', 'delegate control', 'place under jurisdiction']",[],683,Relation
+분쟁이 발생한다.,서울중앙지방법원이 관할이 된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],684,Relation
+분쟁의 관할이 서울중앙지방법원으로 정해진다.,분쟁,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],685,Relation
+분쟁의 관할이 서울중앙지방법원으로 정해진다.,서울중앙지방법원,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],686,Relation
+주식,통지 후 3영업일 내,반환되어야 한다,"['회수', '귀속', '복귀', '회복', '돌려주기']",[],687,Relation
+대금,통지 후 90영업일 내,반환되어야 한다,"['회수', '귀속', '복귀', '회복', '돌려주기']",[],688,Relation
+반환 지연,연 12% 지연이자 부과,초래하면,"['cause', 'bring about', 'result in', 'lead to', 'produce']",[],689,Relation
+통지가 이루어진다.,주식이 통지 후 3영업일 이내에 반환된다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],690,Relation
+통지가 이루어진다.,대금이 통지 후 90영업일 이내에 반환된다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],691,Relation
+반환이 지연된다.,연 12%의 지연이자가 부과된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],692,Relation
+주식은 제88조에 따른 원상회복 통지 후 3영업일 이내에 반환된다.,주식,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],693,Relation
+주식은 제88조에 따른 원상회복 통지 후 3영업일 이내에 반환된다.,원상회복 통지,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],694,Relation
+대금은 제88조에 따른 원상회복 통지 후 90영업일 이내에 반환된다.,대금,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],695,Relation
+대금은 제88조에 따른 원상회복 통지 후 90영업일 이내에 반환된다.,원상회복 통지,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],696,Relation
+반환이 지연될 경우 연 12%의 지연이자가 부과된다.,반환,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],697,Relation
+반환이 지연될 경우 연 12%의 지연이자가 부과된다.,지연이자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],698,Relation
+계약 수정,서면 합의,가능하다,"['potential', 'capability', 'feasibility', 'possibility', 'be able']",[],699,Relation
+계약을 수정한다,서면 합의를 한다,이전에,"['precedence', 'earlier time', 'prior state', 'previous condition', 'antecedence']",[],700,Relation
+서면 합의를 한다,계약을 수정할 수 있다,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],701,Relation
+계약을 수정한다,서면 합의를 했다,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],702,Relation
+계약 수정이 가능하다.,계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],703,Relation
+계약 수정은 서면 합의로만 이루어진다.,계약 수정,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],704,Relation
+계약 수정은 서면 합의로만 이루어진다.,서면 합의,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],705,Relation
+일부,나머지,무효여도,"['ineffectiveness', 'nullification', 'invalidity', 'inapplicability']",[],706,Relation
+나머지,일부가 무효여도,유효하다,"['be applicable', 'be valid', 'hold true', 'apply', 'be effective']",[],707,Relation
+일부가 무효가 된다.,나머지는 유효하다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],708,Relation
+일부가 무효가 된다.,나머지는 유효하다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],709,Relation
+일부가 무효인 경우에도 나머지는 유효하다.,일부,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],710,Relation
+일부가 무효인 경우에도 나머지는 유효하다.,나머지,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],711,Relation
+권리 불행사,권리,포기로 간주되지 않는다,"['remain valid', 'still active', 'not surrendered', 'not forfeited', 'retain status']",[],712,Relation
+권리를 행사하지 않는다.,포기로 간주된다.,이전에,"['precedence', 'earlier time', 'prior state', 'previous condition', 'antecedence']",[],713,Relation
+권리를 행사하지 않는다.,포기로 간주된다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],714,Relation
+권리를 행사하지 않는다.,포기로 간주된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],715,Relation
+권리를 행사하지 않는다.,포기로 간주되지 않는다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],716,Relation
+권리 불행사가 포기로 간주되지 않는다.,권리,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],717,Relation
+본 계약,완전한 합의,구성한다,"['make up', 'compose', 'assemble', 'form', 'build', 'constitute']",[],718,Relation
+본 계약이 완전한 합의를 구성한다.,완전 합의가 성립한다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],719,Relation
+본 계약이 완전한 합의를 구성한다.,본 계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],720,Relation
+한국어본,다른 언어본,우선한다,"['supersede', 'override', 'take precedence', 'have priority', 'dominate']",[],721,Relation
+한국어본이 우선한다.,문서의 해석에 있어 다른 번역본보다 한국어본이 우선적으로 적용된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],722,Relation
+한국어본이 우선한다.,한국어본,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],723,Relation
+부록,계약,계약의 일부이다,"['be obligated', 'be bonded', 'formal agreement', 'legal connection', 'contractual tie']",[],724,Relation
+부록은 계약의 일부이다.,부록이 계약과 함께 효력을 가진다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],725,Relation
+부록이 계약의 일부가 된다.,부록,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],726,Relation
+부록이 계약의 일부가 된다.,계약,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],727,Relation
+계약서,각 1부,보관된다,"['retain', 'preserve', 'archive', 'keep', 'store']",[],728,Relation
+계약서를 각 1부씩 준비한다.,각 1부씩 보관한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],729,Relation
+계약서를 각 1부씩 보관한다.,계약 당사자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],730,Relation
+대리인,상대방,선임할 수 있다,"['authorize', 'assign', 'appoint', 'designate', 'select']",[],731,Relation
+대리인을 선임할 수 있다.,대리인이 존재하게 된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],732,Relation
+대리인을 선임할 수 있다.,대리인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],733,Relation
+대리인을 선임할 수 있다.,대리인을 선임하는 자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],734,Relation
+당사자,계약,성실히 이행할 의무가 있다,"['obligation', 'responsibility', 'accountability', 'commitment', 'duty']",[],735,Relation
+성실 의무가 규정된다.,성실히 이행한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],736,Relation
+성실 의무가 규정된다.,성실히 이행한다.,때문에,"['cause', 'reason', 'result from', 'due to', 'owing to']",[],737,Relation
+성실 의무를 성실히 이행한다.,성실 의무,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],738,Relation
+성실 의무를 성실히 이행한다.,이행 주체,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],739,Relation
+불가항력이 발생한다.,면책된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],740,Relation
+불가항력이 발생하면 면책된다.,불가항력,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],741,Relation
+제106조,일방 유리 해석,금지한다,"['prevent', 'disallow', 'prohibit', 'forbid', 'restrict']",[],742,Relation
+공정 해석이 요구된다.,일방 유리 해석이 금지된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],743,Relation
+일방 유리 해석을 금지한다.,제106조,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],744,Relation
+기한을 정한다.,기한을 엄수한다.,이후,"['come after', 'follow', 'succeed', 'post', 'subsequent to']",[],745,Relation
+기한을 엄수한다.,모든 기한이 지켜진다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],746,Relation
+모든 기한을 엄수한다.,모든 기한,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],747,Relation
+공동 비용,균등,분담한다,"['assign roles', 'share responsibility', 'allocate tasks', 'divide work', 'split duties']",[],748,Relation
+공동 비용이 발생한다.,공동 비용을 균등 분담한다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],749,Relation
+공동 비용을 균등하게 분담한다.,공동 비용 분담 당사자,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],750,Relation
+더 유리한 조건,매수인,적용된다,"['be enforced', 'be valid', 'be relevant', 'be in effect', 'be utilized', 'pertain']",[],751,Relation
+더 유리한 조건이 있다.,그 조건이 매수인에게도 적용된다.,결과로,"['cause', 'result from', 'bring about', 'lead to', 'produce']",[],752,Relation
+더 유리한 조건이 적용된다.,더 유리한 조건,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],753,Relation
+더 유리한 조건이 적용된다.,매수인,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],754,Relation
+주식회사 에타캐피탈,주식회사 쎄타파트너스,매도인이다,"['transact', 'transfer ownership', 'sell', 'provide']",[],755,Relation
+주식회사 쎄타파트너스,주식회사 에타캐피탈,매수인이다,"['purchase', 'obtain', 'acquire', 'ownership', 'buy']",[],756,Relation
+대표이사,2025년 1월 1일,서명한다,"['approve', 'authorize', 'sign', 'consent', 'endorse']",[],757,Relation
+2025년 1월 1일에 계약서 서명을 한다.,주식회사 에타캐피탈 대표이사가 서명한다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],758,Relation
+2025년 1월 1일에 계약서 서명을 한다.,주식회사 쎄타파트너스 대표이사가 서명한다.,동시에,"['concurrently', 'synchronously', 'at the same time', 'simultaneously']",[],759,Relation
+주식회사 에타캐피탈의 대표이사가 2025년 1월 1일 서명한다.,주식회사 에타캐피탈,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],760,Relation
+주식회사 에타캐피탈의 대표이사가 2025년 1월 1일 서명한다.,주식회사 에타캐피탈 대표이사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],761,Relation
+주식회사 에타캐피탈의 대표이사가 2025년 1월 1일 서명한다.,2025년 1월 1일,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],762,Relation
+주식회사 쎄타파트너스의 대표이사가 2025년 1월 1일 서명한다.,주식회사 쎄타파트너스,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],763,Relation
+주식회사 쎄타파트너스의 대표이사가 2025년 1월 1일 서명한다.,주식회사 쎄타파트너스 대표이사,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],764,Relation
+주식회사 쎄타파트너스의 대표이사가 2025년 1월 1일 서명한다.,2025년 1월 1일,is participated by,"['attract', 'receive participation', 'include', 'involve', 'engage']",[],765,Relation

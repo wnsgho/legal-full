@@ -53,12 +53,42 @@ logging.getLogger("transformers").setLevel(logging.WARNING)
 project_root = Path(__file__).parent.parent
 sys.path.append(str(project_root))
 
+# .env 파일 로드 (서버 실행 시 경로 수정)
+def load_env_file():
+    """서버와 직접 실행 모두에서 .env 파일을 찾아서 로드"""
+    # 현재 스크립트의 디렉토리에서 BE 디렉토리 찾기
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    be_dir = os.path.join(current_dir, '..')
+    
+    # .env 파일 경로들 시도
+    env_paths = [
+        os.path.join(be_dir, '.env'),  # BE/.env
+        '.env',                        # 현재 디렉토리
+        '../.env'                      # 상위 디렉토리
+    ]
+    
+    for env_path in env_paths:
+        if os.path.exists(env_path):
+            load_dotenv(env_path)
+            print(f"✅ .env 파일 로드 성공: {env_path}")
+            return True
+    
+    print("⚠️ .env 파일을 찾을 수 없습니다.")
+    return False
+
 # .env 파일 로드
-load_dotenv()
+load_env_file()
 
 def load_enhanced_rag_system():
     """향상된 LKG 리트라이버 + HippoRAG2Retriever 하이브리드 RAG 시스템 로드"""
     print("🚀 load_enhanced_rag_system() 함수 시작")
+    
+    # 디버깅 정보 출력
+    import os
+    print(f"📁 현재 작업 디렉토리: {os.getcwd()}")
+    print(f" __file__ 경로: {__file__}")
+    print(f"📁 스크립트 디렉토리: {os.path.dirname(os.path.abspath(__file__))}")
+    
     try:
         from atlas_rag.retriever import HippoRAG2Retriever
         from atlas_rag.retriever.lkg_retriever.enhanced_lkgr import EnhancedLargeKGRetriever
@@ -84,9 +114,14 @@ def load_enhanced_rag_system():
         from neo4j import GraphDatabase
         neo4j_uri = os.getenv('NEO4J_URI', 'neo4j://127.0.0.1:7687')
         neo4j_user = os.getenv('NEO4J_USER', 'neo4j')
-        neo4j_password = os.getenv('NEO4J_PASSWORD', 'qwer1234')
+        neo4j_password = os.getenv('NEO4J_PASSWORD')
         neo4j_database = os.getenv('NEO4J_DATABASE', 'neo4j')
         keyword = os.getenv('KEYWORD', 'contract_v5')
+        
+        print(f"🔧 환경변수 확인:")
+        print(f"   - NEO4J_URI: {neo4j_uri}")
+        print(f"   - NEO4J_DATABASE: {neo4j_database}")
+        print(f"   - KEYWORD: {keyword}")
         
         try:
             neo4j_driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_password))
@@ -100,7 +135,17 @@ def load_enhanced_rag_system():
         project_root = os.path.dirname(script_dir)
         import_dir = os.getenv('IMPORT_DIRECTORY', 'import')
         precompute_dir = os.getenv('PRECOMPUTE_DIRECTORY', 'precompute')
+        
+        print(f"📁 경로 정보:")
+        print(f"   - script_dir: {script_dir}")
+        print(f"   - project_root: {project_root}")
+        print(f"   - import_dir: {import_dir}")
+        print(f"   - precompute_dir: {precompute_dir}")
+        
         data_path = os.path.join(project_root, import_dir, keyword, precompute_dir, f"{keyword}_eventTrue_conceptTrue_all-MiniLM-L6-v2_node_faiss.index")
+        print(f"   - data_path: {data_path}")
+        print(f"   - data_path 존재: {os.path.exists(data_path)}")
+        
         if not os.path.exists(data_path):
             print("❌ 저장된 RAG 데이터를 찾을 수 없습니다.")
             print("먼저 experiment_multihop_qa.py를 실행해서 임베딩을 생성하세요.")
@@ -130,7 +175,7 @@ def load_enhanced_rag_system():
         
         # 데이터 구조 확인
         print(f"📊 데이터 구조:")
-        print(f"   - data 키들: {list(data.keys())}")
+        # print(f"   - data 키들: {list(data.keys())}")  # 이 줄을 주석 처리하거나 삭제
         
         # FAISS 인덱스 직접 로드 (기존 방식 사용)
         enhanced_lkg_retriever = None
@@ -143,6 +188,12 @@ def load_enhanced_rag_system():
                 node_index_path = os.path.join(project_root, import_dir, keyword, precompute_dir, f"{keyword}_eventTrue_conceptTrue_all-MiniLM-L6-v2_node_faiss.index")
                 passage_index_path = os.path.join(project_root, import_dir, keyword, precompute_dir, f"{keyword}_text_faiss.index")
                 
+                print(f" FAISS 인덱스 경로:")
+                print(f"   - node_index_path: {node_index_path}")
+                print(f"   - passage_index_path: {passage_index_path}")
+                print(f"   - node_index_path 존재: {os.path.exists(node_index_path)}")
+                print(f"   - passage_index_path 존재: {os.path.exists(passage_index_path)}")
+                
                 if os.path.exists(node_index_path) and os.path.exists(passage_index_path):
                     node_index = faiss.read_index(node_index_path)
                     passage_index = faiss.read_index(passage_index_path)
@@ -151,10 +202,14 @@ def load_enhanced_rag_system():
                     # node_list 로드
                     import pickle
                     node_list_path = os.path.join(project_root, import_dir, keyword, precompute_dir, f"{keyword}_eventTrue_conceptTrue_node_list.pkl")
+                    print(f"   - node_list_path: {node_list_path}")
+                    print(f"   - node_list_path 존재: {os.path.exists(node_list_path)}")
+                    
                     if os.path.exists(node_list_path):
                         with open(node_list_path, "rb") as f:
                             node_list = pickle.load(f)
                         print(f"✅ node_list 로드 성공: {len(node_list)}개 노드")
+                        print(f"   - node_list 첫 3개: {node_list[:3] if len(node_list) >= 3 else node_list}")
                     else:
                         print("❌ node_list 파일을 찾을 수 없습니다!")
                         node_list = []
@@ -194,6 +249,9 @@ def load_enhanced_rag_system():
                     # GraphML 그래프 로드 (노드 타입 정보용)
                     import networkx as nx
                     graphml_path = os.path.join(project_root, "import", keyword, "kg_graphml", f"{keyword}_graph_with_numeric_id.graphml")
+                    print(f"   - graphml_path: {graphml_path}")
+                    print(f"   - graphml_path 존재: {os.path.exists(graphml_path)}")
+                    
                     if os.path.exists(graphml_path):
                         with open(graphml_path, "rb") as f:
                             enhanced_lkg_retriever.kg_graph = nx.read_graphml(f)
@@ -357,6 +415,110 @@ def search_by_concept_matching(question, concepts, enhanced_lkg_retriever, neo4j
         print(f"⚠️ Concept 매칭 검색 실패: {e}")
         return [], []
 
+def search_text_nodes_by_content(question, concepts, neo4j_driver, topN=15):
+    """
+    Text 노드의 실제 내용에서 검색합니다.
+    """
+    if not concepts or not neo4j_driver:
+        return [], []
+    
+    print("🔍 Text 노드 내용 검색 시작...")
+    
+    try:
+        with neo4j_driver.session() as session:
+            all_matched_texts = []
+            
+            # 각 concept에 대해 Text 노드에서 검색
+            for concept in concepts:
+                # concept을 단어 단위로 분리
+                words = concept.split()
+                for word in words:
+                    if len(word) > 1:  # 1글자 단어 제외
+                        # 유사한 단어들도 검색
+                        similar_words = get_similar_words(word)
+                        
+                        for search_word in similar_words:
+                            # Text 노드에서 검색
+                            text_query = """
+                            MATCH (t:Text)
+                            WHERE t.text CONTAINS $word
+                            RETURN t.id as text_id, t.text as text_content
+                            LIMIT 10
+                            """
+                            
+                            result = session.run(text_query, word=search_word)
+                            for record in result:
+                                all_matched_texts.append({
+                                    'text_id': record["text_id"],
+                                    'text_content': record["text_content"],
+                                    'search_word': search_word,
+                                    'original_word': word
+                                })
+            
+            # 중복 제거 및 점수 계산
+            text_scores = {}
+            for text in all_matched_texts:
+                text_id = text['text_id']
+                if text_id not in text_scores:
+                    text_scores[text_id] = {
+                        'text_id': text_id,
+                        'text_content': text['text_content'],
+                        'score': 0,
+                        'matched_words': []
+                    }
+                
+                # 매칭된 단어 수로 점수 계산
+                matched_words = []
+                for concept in concepts:
+                    for word in concept.split():
+                        if len(word) > 1 and word in text['text_content']:
+                            matched_words.append(word)
+                
+                text_scores[text_id]['score'] += len(matched_words)
+                text_scores[text_id]['matched_words'].extend(matched_words)
+            
+            # 점수순으로 정렬
+            sorted_texts = sorted(text_scores.values(), key=lambda x: x['score'], reverse=True)
+            
+            # 상위 N개 선택
+            selected_texts = sorted_texts[:topN]
+            
+            content = [text['text_content'] for text in selected_texts]
+            context_ids = [text['text_id'] for text in selected_texts]
+            
+            print(f"✅ Text 노드 내용 검색 결과: {len(selected_texts)}개")
+            for i, text in enumerate(selected_texts[:5]):  # 상위 5개만 출력
+                print(f"   - {text['text_content'][:50]}... (점수: {text['score']}, 매칭: {text['matched_words'][:3]})")
+            
+            return content, context_ids
+            
+    except Exception as e:
+        print(f"⚠️ Text 노드 내용 검색 실패: {e}")
+        return [], []
+
+def get_similar_words(word):
+    """한국어 유사어 반환"""
+    similar_dict = {
+        '중대한': ['중요한', '주요한', '핵심적인'],
+        '부정적': ['나쁜', '악화된', '불리한'],
+        '변경': ['변동', '변화', '수정'],
+        'MAE': ['중요한 부정적 변동', '중대한 부정적 변경'],
+        '거래종결': ['거래 종결', '거래완료', '거래마감'],
+        '계약': ['계약서', '협약', '약정']
+    }
+    
+    # 정확한 매칭
+    if word in similar_dict:
+        return [word] + similar_dict[word]
+    
+    # 부분 매칭
+    similar_words = [word]
+    for key, values in similar_dict.items():
+        if word in key or key in word:
+            similar_words.extend(values)
+    
+    return list(set(similar_words))  # 중복 제거
+
 def enhance_search_with_concept_expansion(question, concepts, enhanced_lkg_retriever, topN=10):
     """
     Concept을 활용하여 검색 쿼리를 확장합니다.
@@ -370,8 +532,26 @@ def enhance_search_with_concept_expansion(question, concepts, enhanced_lkg_retri
         # 원본 질문 + concept들을 결합한 확장 쿼리 생성
         expanded_query = f"{question} {' '.join(concepts)}"
         
-        # EnhancedLargeKGRetriever로 검색
-        content, context_ids = enhanced_lkg_retriever.retrieve(expanded_query, topN=topN)
+        # 조항 검색이 아닌 경우만 일반 검색 실행 (중복 방지)
+        if not enhanced_lkg_retriever.is_clause_question(expanded_query):
+            # EnhancedLargeKGRetriever로 검색
+            result = enhanced_lkg_retriever.retrieve(expanded_query, topN=topN)
+            
+            # 결과가 2개인지 확인하고 안전하게 언패킹
+            if result and len(result) == 2:
+                content, context_ids = result
+            else:
+                # 결과가 2개가 아닌 경우 빈 리스트 반환
+                print(f"⚠️ retrieve 결과가 올바르지 않음: {type(result)}, 길이: {len(result) if result else 'None'}")
+                return [], []
+        else:
+            # 조항 질문인 경우 조항 검색만 실행
+            clause_results = enhanced_lkg_retriever.search_clause_directly(expanded_query, topN=topN)
+            if clause_results:
+                content = [result['text'] for result in clause_results]
+                context_ids = [result['textId'] for result in clause_results]
+            else:
+                content, context_ids = [], []
         
         if content and context_ids:
             print(f"✅ Concept 확장 검색: {len(content)}개 결과")
@@ -512,7 +692,7 @@ def extract_key_terms_from_hippo_results(hippo_content, llm_generator):
     
     try:
         # 검색 결과를 하나의 텍스트로 합치기
-        combined_text = "\n".join(hippo_content[:5])  # 상위 5개 결과만 사용
+        combined_text = "\n".join(hippo_content[:10])  # 상위 10개 결과만 사용
         
         # 키워드 추출을 위한 프롬프트
         keyword_extraction_prompt = f"""
@@ -622,7 +802,8 @@ def search_multiple_clauses(extracted_keywords, enhanced_lkg_retriever, topN=10)
 
 def concept_enhanced_hybrid_retrieve(question, enhanced_lkg_retriever, hippo_retriever, llm_generator, neo4j_driver, topN=50):
     """
-    Concept을 활용한 향상된 하이브리드 검색
+    Concept을 활용한 향상된 하이브리드 검색 (수정 버전)
+    0. 조항 검색 시도 (조항 질문인 경우)
     1. 질문에서 concept 추출
     2. Concept 매칭 검색
     3. Concept 확장 검색
@@ -634,10 +815,69 @@ def concept_enhanced_hybrid_retrieve(question, enhanced_lkg_retriever, hippo_ret
     content = []
     context_ids = []
     
-    # 1단계: 질문에서 concept 추출
+    # 0단계: Neo4j 직접 검색 (모든 질문에 대해)
+    print(f"🔍 0단계 - Neo4j 직접 검색 시도")
+    try:
+        # 키워드 추출
+        keywords = enhanced_lkg_retriever._extract_keywords_from_query(question)
+        print(f"🔍 추출된 키워드: {keywords}")
+        
+        if keywords:
+            # 키워드로 Neo4j에서 직접 검색
+            keyword_results = enhanced_lkg_retriever._search_by_keywords(keywords, topN=15)
+            if keyword_results:
+                keyword_content = [result['text'] for result in keyword_results]
+                keyword_ids = [result['textId'] for result in keyword_results]
+                content.extend(keyword_content)
+                context_ids.extend(keyword_ids)
+                print(f"✅ Neo4j 직접 검색: {len(keyword_content)}개 결과")
+            else:
+                print("⚠️ Neo4j 직접 검색: 결과 없음")
+        else:
+            print("⚠️ 키워드 추출 실패")
+    except Exception as e:
+        print(f"⚠️ Neo4j 직접 검색 실패: {e}")
+    
+    # 0.5단계: 조항 검색 시도 (조항 질문인 경우)
+    if enhanced_lkg_retriever.is_clause_question(question):
+        print(f"🔍 0.5단계 - 조항 검색 시도")
+        try:
+            # 조항 검색만 직접 실행 (중복 방지)
+            clause_results = enhanced_lkg_retriever.search_clause_directly(question, topN=10)
+            if clause_results:
+                clause_content = [result['text'] for result in clause_results]
+                clause_ids = [result['textId'] for result in clause_results]
+                content.extend(clause_content)
+                context_ids.extend(clause_ids)
+                print(f"✅ 조항 검색: {len(clause_content)}개 결과")
+            else:
+                print("⚠️ 조항 검색: 결과 없음")
+        except Exception as e:
+            print(f"⚠️ 조항 검색 실패: {e}")
+    
+    # 1단계: 질문에서 concept 추출 (조항 질문이어도 실행)
     concepts = extract_concepts_from_question(question, llm_generator)
     
     # 2단계: Concept 매칭 검색 (전체의 30%)
+    # 2.5단계: Text 노드 내용 검색 (전체의 20%)
+    text_content_topN = max(1, int(topN * 0.2))
+    print(f"🔍 1.5단계 - Text 노드 내용 검색: {text_content_topN}개")
+
+    if concepts and neo4j_driver:
+        try:
+            text_content, text_ids = search_text_nodes_by_content(
+                question, concepts, neo4j_driver, text_content_topN
+            )
+            
+            if text_content and text_ids:
+                content.extend(text_content)
+                context_ids.extend(text_ids)
+                print(f"✅ Text 노드 내용 검색: {len(text_content)}개 결과")
+            else:
+                print("⚠️ Text 노드 내용 검색: 결과 없음")
+        except Exception as e:
+            print(f"⚠️ Text 노드 내용 검색 실패: {e}")
+        
     concept_matching_topN = max(1, int(topN * 0.3))
     print(f"�� 1단계 - Concept 매칭 검색: {concept_matching_topN}개")
     
@@ -657,7 +897,7 @@ def concept_enhanced_hybrid_retrieve(question, enhanced_lkg_retriever, hippo_ret
             print(f"⚠️ Concept 매칭 검색 실패: {e}")
     
     # 3단계: Concept 확장 검색 (전체의 40%)
-    concept_expansion_topN = max(1, int(topN * 0.4))
+    concept_expansion_topN = max(1, int(topN * 0.3))
     print(f"�� 2단계 - Concept 확장 검색: {concept_expansion_topN}개")
     
     if concepts and enhanced_lkg_retriever:
@@ -778,7 +1018,7 @@ def load_qa_history(qa_file_path, max_entries=5):
 
 def run_single_question(question, llm_generator, enhanced_lkg_retriever, hippo_retriever, neo4j_driver, qa_file_path=None):
     """단일 질문 실행 (Concept 활용 하이브리드 검색)"""
-    print(f"\n📝 질문: {question}")
+    print(f"\n 질문: {question}")
     print("-" * 50)
     
     try:
@@ -795,8 +1035,16 @@ def run_single_question(question, llm_generator, enhanced_lkg_retriever, hippo_r
         # 결과 검증 및 안전한 언패킹
         if result and len(result) == 2:
             content, context_ids = result
-            print(f"�� 검색 결과 확인 - content: {type(content)}, context_ids: {type(context_ids)}")
+            print(f"🔍 검색 결과 확인 - content: {type(content)}, context_ids: {type(context_ids)}")
             print(f"🔍 content 길이: {len(content) if content else 'None'}, context_ids 길이: {len(context_ids) if context_ids else 'None'}")
+            
+            # 검색 결과 상세 출력
+            if content:
+                print(f"📋 검색된 컨텍스트 (처음 3개):")
+                for i, ctx in enumerate(content[:3], 1):
+                    print(f"   {i}. {ctx[:100]}...")
+            else:
+                print("❌ 검색된 컨텍스트가 없습니다!")
         else:
             print("⚠️ 하이브리드 검색 결과가 올바르지 않습니다.")
             print(f"🔍 result 타입: {type(result)}, 길이: {len(result) if result else 'None'}")
@@ -804,11 +1052,9 @@ def run_single_question(question, llm_generator, enhanced_lkg_retriever, hippo_r
         
         if content and context_ids:
             print(f"✅ {len(content)}개의 관련 컨텍스트를 찾았습니다.")
-            for j, ctx in enumerate(content, 1):
-                print(f"   컨텍스트 {j}: {ctx[:200]}...")
             
             # 컨텍스트를 사용한 답변 생성
-            print("�� LLM을 사용해서 답변을 생성 중...")
+            print("🤖 LLM을 사용해서 답변을 생성 중...")
             sorted_context = "\n".join(content)
             
             try:
@@ -825,13 +1071,14 @@ def run_single_question(question, llm_generator, enhanced_lkg_retriever, hippo_r
                     {"role": "user", "content": f"{sorted_context}\n\n{question}\nThought:"},
                 ]
                 
+                print(f" LLM 호출 시작 - 컨텍스트 길이: {len(sorted_context)}")
                 answer = llm_generator.generate_response(
                     messages, 
                     max_new_tokens=2048, 
                     temperature=0.5,
                     validate_function=None
                 )
-                print(f"💡 답변: {answer}")
+                print(f" 답변: {answer}")
                 
                 # 질문과 답변을 파일에 저장
                 if qa_file_path:
@@ -839,7 +1086,7 @@ def run_single_question(question, llm_generator, enhanced_lkg_retriever, hippo_r
                 
                 # 빈 답변인 경우 다른 방법 시도
                 if not answer or answer == "[]" or len(str(answer)) < 5:
-                    print("�� 빈 답변 감지, 다른 방법으로 시도...")
+                    print(" 빈 답변 감지, 다른 방법으로 시도...")
                     # 한국어 답변을 위한 KG 시스템 프롬프트 사용
                     korean_kg_system_instruction = (
                         "당신은 고급 독해 전문가입니다. 추출된 정보와 질문을 꼼꼼히 분석하고 답변해야 합니다. "
@@ -858,7 +1105,7 @@ def run_single_question(question, llm_generator, enhanced_lkg_retriever, hippo_r
                         temperature=0.5,
                         validate_function=None
                     )
-                    print(f"�� 백업 답변: {answer}")
+                    print(f" 백업 답변: {answer}")
                     
                     # 백업 답변도 파일에 저장
                     if qa_file_path:
@@ -866,6 +1113,8 @@ def run_single_question(question, llm_generator, enhanced_lkg_retriever, hippo_r
                     
             except Exception as e:
                 print(f"❌ LLM 호출 오류: {e}")
+                import traceback
+                print(f"❌ 상세 오류 정보:\n{traceback.format_exc()}")
                 answer = "답변 생성 중 오류가 발생했습니다."
             
         else:
@@ -878,6 +1127,8 @@ def run_single_question(question, llm_generator, enhanced_lkg_retriever, hippo_r
             
     except Exception as e:
         print(f"❌ 질문 처리 중 오류 발생: {e}")
+        import traceback
+        print(f"❌ 상세 오류 정보:\n{traceback.format_exc()}")
         answer = f"질문 처리 중 오류가 발생했습니다: {str(e)}"
         
         # 오류 상황도 파일에 저장

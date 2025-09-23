@@ -1,0 +1,161 @@
+classDiagram
+    class User {
+        +string id
+        +string email
+        +string name
+        +UserRole role
+        +SubscriptionPlan subscription
+        +Date createdAt
+        +Date lastLogin
+        +boolean isActive
+        +register() AuthResponse
+        +login() AuthResponse
+        +resetPassword() void
+    }
+
+    class Contract {
+        +string id
+        +string userId
+        +string fileName
+        +number fileSize
+        +string fileType
+        +Date uploadedAt
+        +ContractStatus status
+        +string s3Key
+        +string ocrText
+        +upload() Contract
+        +download() Buffer
+        +delete() void
+    }
+
+    class AnalysisResult {
+        +string id
+        +string contractId
+        +AnalysisStatus status
+        +RiskLevel riskLevel
+        +RiskClause[] riskClauses
+        +string summary
+        +string[] recommendations
+        +string aiModel
+        +number confidence
+        +Date createdAt
+        +Date completedAt
+        +startAnalysis() AnalysisResult
+        +getResult() AnalysisResult
+        +retry() AnalysisResult
+    }
+
+    class RiskClause {
+        +string id
+        +string analysisId
+        +string text
+        +RiskLevel riskLevel
+        +ClauseCategory category
+        +TextPosition position
+        +string explanation
+        +string recommendation
+        +highlight() void
+        +getDetails() ClauseDetails
+    }
+
+    class ChatMessage {
+        +string id
+        +string contractId
+        +string userId
+        +string message
+        +string response
+        +boolean isUserMessage
+        +Date createdAt
+        +send() ChatResponse
+        +getHistory() ChatMessage[]
+    }
+
+    class AuthService {
+        +register(userData: RegisterRequest) AuthResponse
+        +login(credentials: LoginRequest) AuthResponse
+        +refreshToken(token: string) AuthResponse
+        +logout(userId: string) void
+        +resetPassword(email: string) void
+        +validateToken(token: string) boolean
+    }
+
+    class ContractService {
+        +uploadContract(file: File, userId: string) Contract
+        +getContracts(userId: string, pagination: Pagination) Contract[]
+        +getContract(contractId: string, userId: string) Contract
+        +deleteContract(contractId: string, userId: string) void
+        +downloadContract(contractId: string, userId: string) Buffer
+    }
+
+    class AnalysisService {
+        +startAnalysis(contractId: string, params: AnalysisParams) AnalysisResult
+        +getAnalysisResult(analysisId: string) AnalysisResult
+        +getAnalysisHistory(userId: string) AnalysisResult[]
+        +compareAnalyses(analysisId1: string, analysisId2: string) ComparisonResult
+        +retryAnalysis(analysisId: string) AnalysisResult
+    }
+
+    class ChatService {
+        +sendMessage(contractId: string, message: string, userId: string) ChatResponse
+        +getChatHistory(contractId: string, userId: string) ChatMessage[]
+        +clearChatHistory(contractId: string, userId: string) void
+    }
+
+    class OCRService {
+        +extractText(fileBuffer: Buffer, fileType: string) OCRResult
+        +validateOCRResult(ocrResult: OCRResult) ValidationResult
+        +preprocessImage(imageBuffer: Buffer) Buffer
+    }
+
+    class FileStorageService {
+        +uploadFile(file: Buffer, key: string) string
+        +downloadFile(key: string) Buffer
+        +deleteFile(key: string) void
+        +generateSignedUrl(key: string, expiry: number) string
+    }
+
+    class AIAnalyzer {
+        +GPT4Client primaryModel
+        +ClaudeClient secondaryModel
+        +CustomNLPModel fallbackModel
+        +analyzeContract(text: string, params: AnalysisParams) AnalysisResult
+        +validateLegalTerms(result: AnalysisResult) AnalysisResult
+        +mergeResults(result1: AnalysisResult, result2: AnalysisResult) AnalysisResult
+    }
+
+    class CacheService {
+        +getAnalysisResult(analysisId: string) AnalysisResult
+        +setAnalysisResult(analysisId: string, result: AnalysisResult) void
+        +getChatContext(contractId: string) ChatContext
+        +setChatContext(contractId: string, context: ChatContext) void
+        +invalidateCache(key: string) void
+    }
+
+    class MetricsService {
+        +recordAnalysisTime(duration: number, model: string) void
+        +recordAPILatency(endpoint: string, duration: number) void
+        +recordUserActivity(userId: string, action: string) void
+        +getSystemMetrics() SystemMetrics
+    }
+
+    %% Relationships
+    User ||--o{ Contract : owns
+    Contract ||--o{ AnalysisResult : has
+    AnalysisResult ||--o{ RiskClause : contains
+    Contract ||--o{ ChatMessage : discusses
+    User ||--o{ ChatMessage : sends
+
+    %% Service Dependencies
+    ContractService --> FileStorageService : uses
+    ContractService --> OCRService : uses
+    AnalysisService --> AIAnalyzer : uses
+    AnalysisService --> CacheService : uses
+    ChatService --> AIAnalyzer : uses
+    ChatService --> CacheService : uses
+    AuthService --> CacheService : uses
+    
+    %% All services use MetricsService
+    AuthService --> MetricsService : records
+    ContractService --> MetricsService : records
+    AnalysisService --> MetricsService : records
+    ChatService --> MetricsService : records

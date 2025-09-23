@@ -1,0 +1,10 @@
+# shadcn-ui specific ignores
+# Lerna monorepo logs
+lerna-debug.log*
+
+# SSR build output
+dist-ssr
+
+# VSCode settings (more specific than parent)
+.vscode/*
+!.vscode/extensions.json

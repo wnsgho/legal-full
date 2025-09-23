@@ -5,7 +5,10 @@ from neo4j import GraphDatabase
 import time
 import nltk
 from nltk.corpus import stopwords
-nltk.download('stopwords')
+try:
+    stopwords.words('english')
+except LookupError:
+    nltk.download('stopwords', quiet=True)
 from graphdatascience import GraphDataScience
 from atlas_rag.llm_generator.llm_generator import LLMGenerator
 from atlas_rag.vectorstore.embedding_model import BaseEmbeddingModel
@@ -52,9 +55,24 @@ class LargeKGRetriever(BaseLargeKGRetriever):
         return self.llm_generator.large_kg_ner(text, simple_ner=self.simple_ner)
     
     def convert_numeric_id_to_name(self, numeric_id):
-        if numeric_id.isdigit():
-            return self.gds_driver.util.asNode(self.gds_driver.find_node_id(["Node"], {"numeric_id": numeric_id})).get('name')
-        else:
+        try:
+            if numeric_id.isdigit():
+                gds_id = self.gds_driver.find_node_id(["Node"], {"numeric_id": numeric_id})
+                if gds_id is not None:
+                    node = self.gds_driver.util.asNode(gds_id)
+                    name = node.get('name') if node else None
+                    if self.verbose:
+                        self.logger.info(f"convert_numeric_id_to_name: {numeric_id} -> {name}")
+                    return name
+                else:
+                    if self.verbose:
+                        self.logger.warning(f"convert_numeric_id_to_name: GDS ID not found for numeric_id {numeric_id}")
+                    return numeric_id
+            else:
+                return numeric_id
+        except Exception as e:
+            if self.verbose:
+                self.logger.error(f"convert_numeric_id_to_name error for {numeric_id}: {e}")
             return numeric_id
 
     def has_intersection(self, word_set, input_string):
@@ -114,13 +132,13 @@ class LargeKGRetriever(BaseLargeKGRetriever):
             try:
                 self.gds_driver.graph.drop('rwr_sample')
                 start_time = time.time()
-                G_sample, _ = self.gds_driver.graph.sample.rwr("rwr_sample", graph, concurrency=4, samplingRatio = sampling_ratio, startNodes = [node_id],
+                G_sample, _ = self.gds_driver.graph.sample.rwr("rwr_sample", graph, concurrency=4, samplingRatio = sampling_ratio, startNodes = [int(node_id)],
                                                                restartProbability = 0.4, logProgress = False)
                 if self.verbose:
                     self.logger.info(f"largekgRAG : Sampled graph for node {node_id} in {time.time() - start_time:.2f} seconds")
                 start_time = time.time()
                 result = self.gds_driver.pageRank.stream(
-                    G_sample, maxIterations=30, sourceNodes=[node_id], logProgress=False
+                    G_sample, maxIterations=30, sourceNodes=[int(node_id)], logProgress=False
                 ).sort_values("score", ascending=False)
                 
                 if self.verbose:
@@ -189,7 +207,7 @@ class LargeKGRetriever(BaseLargeKGRetriever):
             query_text = """
             UNWIND $textIds AS textId
             MATCH (t:Text {numeric_id: textId})
-            RETURN t.original_text AS text, t.numeric_id AS textId
+            RETURN t.text AS text, t.numeric_id AS textId
             """
             result_texts = session.run(query_text, textIds=top_numeric_ids)
             topN_passages = []
@@ -275,6 +293,9 @@ class LargeKGRetriever(BaseLargeKGRetriever):
         topk_nodes = list(set(filtered_top_k_nodes))
         if len(topk_nodes) > 2 * num_entities:
             topk_nodes = topk_nodes[:2 * num_entities]
+        
+        if self.verbose:
+            self.logger.info(f"largekgRAG : Final topk_nodes: {topk_nodes}")
         return topk_nodes
     
     def _process_text(self, text):
@@ -318,8 +339,38 @@ class LargeKGRetriever(BaseLargeKGRetriever):
                 else:
                     numeric_id_int = numeric_id
                 
-                node_id = self.gds_driver.find_node_id(["Node"], {"numeric_id": numeric_id_int})
-                personalization_dict[node_id] = 1 / file_count
+                # GDS ID를 직접 Neo4j 쿼리로 찾기
+                with self.neo4j_driver.session() as session:
+                    # 먼저 해당 numeric_id가 존재하는지 확인
+                    check_result = session.run(
+                        "MATCH (n:Node {numeric_id: $numeric_id}) RETURN n.numeric_id as numeric_id, n.name as name",
+                        numeric_id=numeric_id_int
+                    )
+                    check_record = check_result.single()
+                    
+                    if check_record:
+                        if self.verbose:
+                            self.logger.info(f"Node found for numeric_id {numeric_id}: {check_record['name']}")
+                        
+                        # GDS ID 찾기
+                        result = session.run(
+                            "MATCH (n:Node {numeric_id: $numeric_id}) RETURN id(n) as node_id",
+                            numeric_id=numeric_id_int
+                        )
+                        record = result.single()
+                        
+                        if record and record['node_id'] is not None:
+                            node_id = record['node_id']
+                            personalization_dict[node_id] = 1 / file_count
+                            if self.verbose:
+                                self.logger.info(f"Found GDS ID for numeric_id {numeric_id}: {node_id}")
+                        else:
+                            if self.verbose:
+                                self.logger.warning(f"Could not get GDS ID for numeric_id {numeric_id}")
+                    else:
+                        if self.verbose:
+                            self.logger.warning(f"No node found for numeric_id {numeric_id} in database")
+                        
             except Exception as e:
                 if self.verbose:
                     self.logger.error(f"Error finding node_id for numeric_id {numeric_id}: {e}")
@@ -335,9 +386,15 @@ class LargeKGRetriever(BaseLargeKGRetriever):
         number_of_source_nodes_per_ner = self.number_of_source_nodes_per_ner
         sampling_area = self.sampling_area
         personalization_dict = self.retrieve_personalization_dict(query, number_of_source_nodes_per_ner)
+        if self.verbose:
+            self.logger.info(f"largekgRAG : Personalization dict size: {len(personalization_dict)}")
         if personalization_dict == {}:
-            return [], [0]
+            if self.verbose:
+                self.logger.warning("largekgRAG : Personalization dict is empty - returning empty results")
+            return [], []
         topN_passages, topN_scores = self.pagerank(personalization_dict, topN, sampling_area = sampling_area)
+        if self.verbose:
+            self.logger.info(f"largekgRAG : Pagerank results - passages: {len(topN_passages)}, scores: {len(topN_scores)}")
         return topN_passages, topN_scores
 
 

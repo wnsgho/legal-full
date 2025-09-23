@@ -1,0 +1,9 @@
+$ pnpm add react-dropzone
+Progress: resolved 0, reused 1, downloaded 0, added 0
+Progress: resolved 75, reused 75, downloaded 0, added 0
+Progress: resolved 420, reused 402, downloaded 0, added 0
+ WARN  1 deprecated subdependencies found: rollup-plugin-terser@7.0.2
+Already up to date
+Progress: resolved 501, reused 427, downloaded 0, added 0, done
+
+Done in 4.9s

@@ -55,15 +55,10 @@ class HippoRAG2Retriever(BasePassageRetriever):
         else:
             self.logging = True
         
-        hipporag2mode = "query2edge"
-        if hipporag2mode == "query2edge":
-            self.retrieve_node_fn = self.query2edge
-        elif hipporag2mode == "query2node":
-            self.retrieve_node_fn = self.query2node
-        elif hipporag2mode == "ner2node":
-            self.retrieve_node_fn = self.ner2node
-        else:
-            raise ValueError(f"Invalid mode: {hipporag2mode}. Choose from 'query2edge', 'query2node', or 'query2passage'.")
+        # 하이브리드 모드: query2edge + query2node 조합
+        self.hybrid_mode = True
+        self.edge_weight = 0.6  # query2edge 가중치
+        self.node_weight = 0.4  # query2node 가중치
 
         self.inference_config = inference_config if inference_config is not None else InferenceConfig()
         node_id_to_file_id = {}
@@ -182,15 +177,50 @@ class HippoRAG2Retriever(BasePassageRetriever):
         
         return node_score_dict
     
-    def query2passage(self, query, weight_adjust = 0.05):
+    def query2passage(self, query, weight_adjust = 0.3):
         query_emb = self.sentence_encoder.encode([query], query_type="passage")
         sim_scores = self.text_embeddings @ query_emb[0].T
         sim_scores = min_max_normalize(sim_scores)*weight_adjust # converted to probability
         # create dict of passage id and score
         return dict(zip(self.text_id_list, sim_scores))
     
-    def retrieve_personalization_dict(self, query, topN=30, weight_adjust=0.05):
-        node_dict = self.retrieve_node_fn(query, topN=topN)
+    def hybrid_retrieve_nodes(self, query, topN=30):
+        """하이브리드 모드: query2edge + query2node 결과 병합"""
+        # 1. query2edge로 관계 검색
+        edge_node_dict = self.query2edge(query, topN=topN)
+        
+        # 2. query2node로 내용 검색
+        content_node_dict = self.query2node(query, topN=topN)
+        
+        # 3. 두 결과를 가중치로 병합
+        combined_node_dict = {}
+        
+        # edge 결과 추가 (가중치 적용)
+        for node, score in edge_node_dict.items():
+            combined_node_dict[node] = score * self.edge_weight
+        
+        # content 결과 추가/병합 (가중치 적용)
+        for node, score in content_node_dict.items():
+            if node in combined_node_dict:
+                combined_node_dict[node] += score * self.node_weight
+            else:
+                combined_node_dict[node] = score * self.node_weight
+        
+        if self.logging:
+            self.logger.info(f"하이브리드 검색 - Edge: {len(edge_node_dict)}개, Content: {len(content_node_dict)}개, 병합: {len(combined_node_dict)}개")
+        
+        return combined_node_dict
+
+    def retrieve_personalization_dict(self, query, topN=30, weight_adjust=0.3):
+        if self.hybrid_mode:
+            node_dict = self.hybrid_retrieve_nodes(query, topN=topN)
+        else:
+            # 기존 단일 모드 (호환성 유지)
+            if hasattr(self, 'retrieve_node_fn'):
+                node_dict = self.retrieve_node_fn(query, topN=topN)
+            else:
+                node_dict = self.query2edge(query, topN=topN)
+        
         text_dict = self.query2passage(query, weight_adjust=weight_adjust)
   
         return node_dict, text_dict

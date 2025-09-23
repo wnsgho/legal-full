@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 ATLAS 전체 파이프라인 테스트 스크립트
 README의 예제를 기반으로 지식그래프 구축을 테스트합니다.
@@ -30,13 +31,18 @@ import subprocess
 import sys
 import glob
 import logging
+import io
 
-# 서버 배포 시 Python 경로 설정
-if __name__ == "__main__":
-    # 현재 스크립트의 디렉토리를 Python 경로에 추가
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    if current_dir not in sys.path:
-        sys.path.insert(0, current_dir)
+# Windows에서 UTF-8 출력을 위한 설정
+if sys.platform.startswith('win'):
+    # stdout과 stderr을 UTF-8로 설정
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+
+# 서버 배포 시 Python 경로 설정 (모듈로 import될 때도 실행)
+current_dir = os.path.dirname(os.path.abspath(__file__))
+if current_dir not in sys.path:
+    sys.path.insert(0, current_dir)
 
 from dotenv import load_dotenv
 from atlas_rag.kg_construction.triple_extraction import KnowledgeGraphExtractor
@@ -44,6 +50,12 @@ from atlas_rag.kg_construction.triple_config import ProcessingConfig
 from atlas_rag.llm_generator import LLMGenerator
 from openai import OpenAI
 from transformers import pipeline
+
+# UTF-8 로깅 설정
+from atlas_rag.utils.utf8_logging import setup_utf8_logging
+
+# UTF-8 로깅 초기화
+setup_utf8_logging()
 
 # OpenAI 클라이언트의 로깅 비활성화
 logging.getLogger("openai").setLevel(logging.WARNING)
@@ -70,7 +82,7 @@ def convert_md_to_json(keyword):
     """마크다운 파일을 JSON으로 변환합니다."""
     print("📝 마크다운을 JSON으로 변환 중...")
     
-    data_directory = os.getenv('DATA_DIRECTORY', 'example_data')
+    data_directory = os.getenv('DATA_DIRECTORY', 'BE/example_data')
     target_json = f"{data_directory}/{keyword}.json"
     if os.path.exists(target_json):
         print(f"✅ {keyword}.json 파일이 이미 존재합니다. 변환을 건너뜁니다.")
@@ -105,19 +117,46 @@ def test_atlas_pipeline(start_step=1, keyword=None):
     """ATLAS 전체 파이프라인을 테스트합니다."""
     
     print(f"🚀 ATLAS 파이프라인 시작! (단계 {start_step}부터)")
+    print(f"📝 전달받은 keyword: {keyword}")
+    print(f"📂 현재 작업 디렉토리: {os.getcwd()}")
     
     # kg_extractor 초기화
     kg_extractor = None
     
-    # .env 파일 로드 (현재 폴더의 .env 파일)
-    load_dotenv('.env')
+    # .env 파일 로드 (BE 폴더의 .env 파일 우선)
+    # API 서버에서 실행될 때를 고려하여 경로 설정
+    env_path = 'BE/.env'  # 프로젝트 루트에서 실행될 때
+    if not os.path.exists(env_path):
+        env_path = '.env'  # BE 디렉토리에서 직접 실행될 때
+    
+    print(f"🔍 .env 파일 경로 확인: {env_path}")
+    print(f"📄 .env 파일 존재 여부: {os.path.exists(env_path)}")
+    
+    try:
+        load_dotenv(env_path)
+        print(f"✅ .env 파일 로드 성공")
+    except Exception as e:
+        print(f"❌ .env 파일 로드 실패: {e}")
+        return False
     
     # keyword가 제공되지 않은 경우 환경변수에서 읽기
     if keyword is None:
         keyword = os.getenv('KEYWORD', 'contract_v5')
     
+    print(f"🔑 사용할 keyword: {keyword}")
+    
     import_dir = os.getenv('IMPORT_DIRECTORY', 'import')
     output_directory = f'{import_dir}/{keyword}'
+    
+    print(f"📁 import_directory: {import_dir}")
+    print(f"📁 output_directory: {output_directory}")
+    
+    # 주요 환경변수 확인
+    print(f"🔐 OPENAI_API_KEY 존재: {'있음' if os.getenv('OPENAI_API_KEY') else '없음'}")
+    print(f"🌐 OPENAI_BASE_URL: {os.getenv('OPENAI_BASE_URL', '기본값')}")
+    print(f"🤖 DEFAULT_MODEL: {os.getenv('DEFAULT_MODEL', '기본값')}")
+    print(f"🗄️ NEO4J_URI: {os.getenv('NEO4J_URI', '기본값')}")
+    print(f"📊 DATA_DIRECTORY: {os.getenv('DATA_DIRECTORY', '기본값')}")
     
     if start_step <= 1:
         # 1. 모델 설정
@@ -155,7 +194,7 @@ def test_atlas_pipeline(start_step=1, keyword=None):
         
         kg_extraction_config = ProcessingConfig(
             model_path=model_name,
-            data_directory=os.getenv('DATA_DIRECTORY', "example_data"),
+            data_directory=os.getenv('DATA_DIRECTORY', "BE/example_data"),
             filename_pattern=keyword,
             remove_doc_spaces=True,
             output_directory=output_directory,
@@ -192,7 +231,7 @@ def test_atlas_pipeline(start_step=1, keyword=None):
         # 간단한 설정으로 kg_extractor 생성
         kg_extraction_config = ProcessingConfig(
             model_path="",  # 빈 문자열로 설정 (LLM 사용 시)
-            data_directory=os.getenv('DATA_DIRECTORY', "example_data"),
+            data_directory=os.getenv('DATA_DIRECTORY', "BE/example_data"),
             filename_pattern=keyword,
             remove_doc_spaces=True,
             output_directory=output_directory,
@@ -447,8 +486,13 @@ def test_atlas_pipeline(start_step=1, keyword=None):
         env['NEO4J_DATABASE'] = os.getenv('NEO4J_DATABASE', 'neo4j')
         env['KEYWORD'] = keyword
         
+        # API 서버에서 실행될 때를 고려하여 경로 설정
+        script_path = "neo4j_with_hash_ids_and_concept_attributes.py"
+        if not os.path.exists(script_path):
+            script_path = "BE/neo4j_with_hash_ids_and_concept_attributes.py"
+        
         result = subprocess.run([
-            sys.executable, "neo4j_with_hash_ids_and_concept_attributes.py", "--keyword", keyword
+            sys.executable, script_path, "--keyword", keyword
         ], capture_output=True, text=True, encoding='utf-8', errors='ignore', env=env, check=True, cwd=".")
         print("✅ Neo4j 임포트 완료!")
     except subprocess.CalledProcessError as e:
@@ -471,8 +515,13 @@ def test_atlas_pipeline(start_step=1, keyword=None):
         env['NEO4J_DATABASE'] = os.getenv('NEO4J_DATABASE', 'neo4j')
         env['KEYWORD'] = keyword
         
+        # API 서버에서 실행될 때를 고려하여 경로 설정
+        script_path = "experiment/create_gds_graph.py"
+        if not os.path.exists(script_path):
+            script_path = "BE/experiment/create_gds_graph.py"
+        
         result = subprocess.run([
-            sys.executable, "experiment/create_gds_graph.py"
+            sys.executable, script_path
         ], capture_output=True, text=True, encoding='utf-8', errors='ignore', env=env, check=True, cwd=".")
         print("✅ GDS 그래프 프로젝션 완료!")
     except subprocess.CalledProcessError as e:
