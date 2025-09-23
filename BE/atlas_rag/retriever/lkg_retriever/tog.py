@@ -11,7 +11,10 @@ from atlas_rag.vectorstore.embedding_model import BaseEmbeddingModel
 from atlas_rag.retriever.lkg_retriever.base import BaseLargeKGEdgeRetriever
 import nltk
 from nltk.corpus import stopwords
-nltk.download('stopwords')
+try:
+    stopwords.words('english')
+except LookupError:
+    nltk.download('stopwords', quiet=True)
 
 class LargeKGToGRetriever(BaseLargeKGEdgeRetriever):
     def __init__(self, keyword: str, neo4j_driver: GraphDatabase, 

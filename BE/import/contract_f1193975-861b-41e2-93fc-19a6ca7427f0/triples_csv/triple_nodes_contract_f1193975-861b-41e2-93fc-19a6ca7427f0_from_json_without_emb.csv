@@ -1,0 +1,667 @@
+name:ID,type,concepts,synsets,:LABEL
+주식매매계약서가 작성된다,event,[],[],Node
+주식매매계약서,entity,[],[],Node
+주식회사 카파벤처스,entity,[],[],Node
+주식회사 뮤테크놀로지,entity,[],[],Node
+주식회사 람다홀딩스,entity,[],[],Node
+계약일자,entity,[],[],Node
+2025년 1월 1일,entity,[],[],Node
+2025년 1월 1일에 계약일자가 정해졌다.,event,[],[],Node
+계약 당사자인 주식회사 카파벤처스와 주식회사 람다홀딩스가 계약을 체결했다.,event,[],[],Node
+주식회사 카파벤처스와 주식회사 람다홀딩스가 계약을 체결했다.,event,[],[],Node
+주식회사 뮤테크놀로지가 거래 대상회사가 되었다.,event,[],[],Node
+주식회사 카파벤처스와 주식회사 람다홀딩스가 2025년 1월 1일에 계약을 체결한다.,event,[],[],Node
+주식회사 카파벤처스가 주식회사 뮤테크놀로지의 주식을 매도한다.,event,[],[],Node
+주식회사 람다홀딩스가 주식회사 뮤테크놀로지의 주식을 매수한다.,event,[],[],Node
+제1장 총칙이 시작된다.,event,[],[],Node
+제1장 총칙,entity,[],[],Node
+매도인,entity,[],[],Node
+"대상회사 발행 보통주식 12,000,000주",entity,[],[],Node
+매매주식,entity,[],[],Node
+매수인,entity,[],[],Node
+계약,entity,[],[],Node
+매도와 매수에 필요한 제반 사항,entity,[],[],Node
+"매도인이 보유한 대상회사 발행 보통주식 12,000,000주를 매수인에게 매도한다.",event,[],[],Node
+매수인이 매매주식을 매도인으로부터 매수한다.,event,[],[],Node
+매수인이 이를 매수함에 있어 필요한 제반 사항을 규정한다.,event,[],[],Node
+"매도인이 대상회사가 발행한 보통주식 12,000,000주를 매수인에게 매도한다.",event,[],[],Node
+대상회사,entity,[],[],Node
+"보통주식 12,000,000주",entity,[],[],Node
+"매수인이 매도인으로부터 대상회사가 발행한 보통주식 12,000,000주를 매수한다.",event,[],[],Node
+계약은 매도와 매수에 필요한 제반 사항을 규정한다.,event,[],[],Node
+매도,entity,[],[],Node
+매수,entity,[],[],Node
+거래종결일,entity,[],[],Node
+제51조에 따라 주식 양도가 완료되는 날,entity,[],[],Node
+영업일,entity,[],[],Node
+대한민국의 은행이 정상 영업하는 날,entity,[],[],Node
+서면,entity,[],[],Node
+문서,entity,[],[],Node
+이메일,entity,[],[],Node
+기타 서면 형태,entity,[],[],Node
+주식 양도가 완료된다,event,[],[],Node
+"""거래종결일""이 된다",event,[],[],Node
+대한민국의 은행이 정상 영업한다,event,[],[],Node
+"""영업일""에 해당한다",event,[],[],Node
+"문서, 이메일, 기타 서면 형태가 있다",event,[],[],Node
+"""서면""으로 인정된다",event,[],[],Node
+거래종결일은 제51조에 따라 주식 양도가 완료되는 날로 정의된다.,event,[],[],Node
+제51조,entity,[],[],Node
+주식,entity,[],[],Node
+영업일은 대한민국의 은행이 정상 영업하는 날로 정의된다.,event,[],[],Node
+대한민국의 은행,entity,[],[],Node
+"서면은 문서, 이메일, 기타 서면 형태를 포함하는 것으로 정의된다.",event,[],[],Node
+양 당사자,entity,[],[],Node
+본 계약,entity,[],[],Node
+양 당사자는 본 계약을 체결한다.,event,[],[],Node
+양 당사자는 본 계약의 이행에 있어 상호 선의와 신뢰를 바탕으로 성실히 협력한다.,event,[],[],Node
+양 당사자는 상호 선의와 신뢰를 바탕으로 한다.,event,[],[],Node
+양 당사자는 성실히 협력한다.,event,[],[],Node
+양 당사자는 본 계약의 체결에 있어 상호 선의와 신뢰를 바탕으로 성실히 협력한다.,event,[],[],Node
+매매주식의 매매와 관련한 당사자 간의 모든 합의,entity,[],[],Node
+본 계약은 매매주식의 매매와 관련한 당사자 간의 모든 합의를 포함한다.,event,[],[],Node
+매매주식의 매매와 관련한 별도의 합의가 존재하지 않는다.,event,[],[],Node
+본 계약이 매매주식의 매매와 관련한 당사자 간의 모든 합의를 포함한다.,event,[],[],Node
+당사자,entity,[],[],Node
+"일천이백억원(₩120,000,000,000)",entity,[],[],Node
+주당 매매가격,entity,[],[],Node
+"일만원(₩10,000)",entity,[],[],Node
+"매매주식의 총 매매가격은 금 일천이백억원(₩120,000,000,000)으로 한다.",event,[],[],Node
+"주당 매매가격은 금 일만원(₩10,000)으로 한다.",event,[],[],Node
+"매매주식의 총 매매가격을 금 일천이백억원(₩120,000,000,000)으로 정한다.",event,[],[],Node
+총 매매가격,entity,[],[],Node
+"주당 매매가격을 금 일만원(₩10,000)으로 정한다.",event,[],[],Node
+모든 거래 과정,entity,[],[],Node
+투명하고 공정하게,entity,[],[],Node
+모든 거래 과정은 투명하고 공정하게 진행된다.,event,[],[],Node
+거래의 투명성과 공정성이 보장된다.,event,[],[],Node
+모든 거래 과정은 투명하게 진행된다.,event,[],[],Node
+거래 과정,entity,[],[],Node
+모든 거래 과정은 공정하게 진행된다.,event,[],[],Node
+각 당사자,entity,[],[],Node
+상대방,entity,[],[],Node
+통지 불이행 시,entity,[],[],Node
+통지의 구체적 방법,entity,[],[],Node
+관련 조항,entity,[],[],Node
+각 당사자에게 중요한 사항이 발생한다.,event,[],[],Node
+상대방에게 적시 통지해야 한다.,event,[],[],Node
+통지를 불이행한다.,event,[],[],Node
+관련 권리를 행사할 수 없다.,event,[],[],Node
+통지의 구체적 방법이 결정된다.,event,[],[],Node
+통지의 구체적 방법은 관련 조항에 따른다.,event,[],[],Node
+각 당사자가 중요한 사항이 발생할 경우 상대방에게 적시에 통지한다.,event,[],[],Node
+통지를 이행하지 않을 경우 관련 권리를 행사할 수 없다.,event,[],[],Node
+통지의무 불이행 당사자,entity,[],[],Node
+통지의 구체적인 방법은 관련 조항에 따라 정해진다.,event,[],[],Node
+비밀정보,entity,[],[],Node
+보호의무,entity,[],[],Node
+법령상 요구,entity,[],[],Node
+상대방 동의,entity,[],[],Node
+각 당사자는 본 계약과 관련하여 취득한 비밀정보를 보호한다.,event,[],[],Node
+법령상 요구 또는 상대방 동의 시 예외로 한다.,event,[],[],Node
+법령상 요구 또는 상대방 동의가 있다.,event,[],[],Node
+비밀정보 보호 의무에서 예외로 한다.,event,[],[],Node
+각 당사자가 본 계약과 관련하여 취득한 비밀정보를 보호한다.,event,[],[],Node
+법령상 요구 또는 상대방 동의 시 비밀정보 보호의 예외가 인정된다.,event,[],[],Node
+법령,entity,[],[],Node
+매매대금,entity,[],[],Node
+현금,entity,[],[],Node
+지급,entity,[],[],Node
+매도인 지정 계좌,entity,[],[],Node
+매매대금은 거래종결일에 전액 현금으로 지급한다.,event,[],[],Node
+지급은 매도인 지정 계좌로 송금한다.,event,[],[],Node
+매매대금을 거래종결일에 전액 현금으로 지급한다.,event,[],[],Node
+매매대금을 매도인 지정 계좌로 송금한다.,event,[],[],Node
+지정 계좌,entity,[],[],Node
+대한민국 법률,entity,[],[],Node
+본 계약은 대한민국 법률에 따라 해석된다.,event,[],[],Node
+계약의 해석에 대한민국 법률이 적용된다.,event,[],[],Node
+제2장 매매조건이 명시된다.,event,[],[],Node
+제2장,entity,[],[],Node
+매매조건,entity,[],[],Node
+매매주식의 완전한 소유권,entity,[],[],Node
+이전,entity,[],[],Node
+매도인은 거래종결일에 매매주식의 완전한 소유권을 매수인에게 이전한다.,event,[],[],Node
+거래종결일이 도래한다.,event,[],[],Node
+정밀 실사,entity,[],[],Node
+매수인은 거래를 수행한다,event,[],[],Node
+매수인은 정밀 실사를 수행할 수 있다,event,[],[],Node
+거래가 이루어진다,event,[],[],Node
+정밀 실사를 수행한다,event,[],[],Node
+매수인은 정밀 실사를 수행할 수 있다.,event,[],[],Node
+운전자본 등의 변동,entity,[],[],Node
+별도 합의,entity,[],[],Node
+운전자본 등의 변동이 발생한다.,event,[],[],Node
+대금조정이 이루어진다.,event,[],[],Node
+별도 합의에 따라 대금조정이 이루어진다.,event,[],[],Node
+운전자본 등의 변동에 따른 대금조정은 별도 합의에 따른다.,event,[],[],Node
+운전자본,entity,[],[],Node
+어떠한 제한도 없는 상태,entity,[],[],Node
+매매주식은 어떠한 제한도 없는 상태가 된다.,event,[],[],Node
+양도된다.,event,[],[],Node
+매매주식이 양도된다.,event,[],[],Node
+본 거래,entity,[],[],Node
+단순 주식 양도 방식,entity,[],[],Node
+본 거래는 단순 주식 양도 방식으로 진행된다.,event,[],[],Node
+거래 구조가 결정된다.,event,[],[],Node
+본 거래가 단순 주식 양도 방식으로 진행된다.,event,[],[],Node
+3년간,entity,[],[],Node
+거래종결일로부터,entity,[],[],Node
+거래종결일이 발생한다.,event,[],[],Node
+매도인은 경쟁 사업을 영위하지 않는다.,event,[],[],Node
+매도인은 3년간 경쟁 사업을 영위하지 않는다.,event,[],[],Node
+매도인은 거래종결일로부터 3년간 경쟁 사업을 영위하지 않는다.,event,[],[],Node
+경쟁 사업,entity,[],[],Node
+회사,entity,[],[],Node
+핵심 임직원의 근무 유지,entity,[],[],Node
+핵심 임직원의 근무 유지를 위해 노력한다.,event,[],[],Node
+핵심 임직원이 계속 근무한다.,event,[],[],Node
+핵심 임직원,entity,[],[],Node
+통지 시스템,entity,[],[],Node
+효율적인 통지 시스템,entity,[],[],Node
+신속한 의사소통,entity,[],[],Node
+효율적인 통지 시스템을 구축한다.,event,[],[],Node
+신속한 의사소통을 보장한다.,event,[],[],Node
+적시,entity,[],[],Node
+3영업일 이내,entity,[],[],Node
+일반조항,entity,[],[],Node
+기간,entity,[],[],Node
+특별한 사정,entity,[],[],Node
+"""적시""란 별도 정의가 없는 한 3영업일 이내를 의미한다.",event,[],[],Node
+"""적시""는 ""일반조항""에만 적용된다.",event,[],[],Node
+특별한 사정이 있는 경우 기간을 연장할 수 있다.,event,[],[],Node
+"""적시""의 기간이 3영업일을 초과할 수 있다.",event,[],[],Node
+"""적시""가 별도 정의가 없는 한 3영업일 이내를 의미한다고 정의된다.",event,[],[],Node
+"""적시""의 정의가 ""일반조항""에만 적용된다.",event,[],[],Node
+라이선스가 발급된다.,event,[],[],Node
+라이선스가 유효하게 유지된다.,event,[],[],Node
+모든 라이선스가 유효하게 유지된다.,event,[],[],Node
+모든 라이선스,entity,[],[],Node
+보험,entity,[],[],Node
+적절한 보험,entity,[],[],Node
+보험 계약이 체결되었다.,event,[],[],Node
+적절한 보험이 유지되고 있다.,event,[],[],Node
+부동산 관련 계약,entity,[],[],Node
+부동산,entity,[],[],Node
+부동산 관련 계약이 체결된다.,event,[],[],Node
+부동산 관련 계약은 정상적이다.,event,[],[],Node
+제23조,entity,[],[],Node
+지적재산권 보유,entity,[],[],Node
+필요한 지적재산권을 보유하고 있다.,event,[],[],Node
+지적재산권을 활용할 수 있다.,event,[],[],Node
+지적재산권의 보유 주체,entity,[],[],Node
+계약 당사자,entity,[],[],Node
+권리의무,entity,[],[],Node
+상대방 동의 없이 권리의무를 양도한다,event,[],[],Node
+권리의무를 양도할 수 없다,event,[],[],Node
+상대방 동의가 없다,event,[],[],Node
+계약 당사자는 상대방의 동의 없이 권리와 의무를 양도할 수 없다.,event,[],[],Node
+환경 법규,entity,[],[],Node
+환경,entity,[],[],Node
+환경 법규가 제정된다.,event,[],[],Node
+환경 법규를 준수한다.,event,[],[],Node
+환경 오염이 감소한다.,event,[],[],Node
+제26조,entity,[],[],Node
+데이터,entity,[],[],Node
+개인정보보호법 준수,entity,[],[],Node
+개인정보보호법,entity,[],[],Node
+데이터를 다룬다.,event,[],[],Node
+개인정보보호법을 철저히 준수한다.,event,[],[],Node
+데이터가 안전하게 보호된다.,event,[],[],Node
+운영,entity,[],[],Node
+거래종결 전,entity,[],[],Node
+거래종결이 이루어지기 전이다.,event,[],[],Node
+통상의 영업과정에 따라 운영한다.,event,[],[],Node
+요청 정보,entity,[],[],Node
+신속히,entity,[],[],Node
+정보 제공 요청이 접수된다.,event,[],[],Node
+요청 정보를 신속히 제공한다.,event,[],[],Node
+제공자,entity,[],[],Node
+진술보증 위반에 대한 책임,entity,[],[],Node
+거래종결일로부터 2년간,entity,[],[],Node
+진술보증 위반에 대한 책임이 발생한다,event,[],[],Node
+거래종결일이 도래한다,event,[],[],Node
+진술보증 위반에 대한 책임이 2년간 유효하다,event,[],[],Node
+진술보증 위반에 대한 책임이 거래종결일로부터 2년간 유효하다.,event,[],[],Node
+진술보증,entity,[],[],Node
+책임,entity,[],[],Node
+각자,entity,[],[],Node
+비용,entity,[],[],Node
+각자 비용을 부담한다.,event,[],[],Node
+거래 비용이 발생한다.,event,[],[],Node
+각 당사자는 거래 비용을 부담한다.,event,[],[],Node
+거래 비용,entity,[],[],Node
+제3장,entity,[],[],Node
+진술 및 보증,entity,[],[],Node
+제3장 진술 및 보증이 시작된다.,event,[],[],Node
+제3장 진술 및 보증의 세부 조항이 기술된다.,event,[],[],Node
+제3장 진술 및 보증이 규정된다.,event,[],[],Node
+계약 당사자들은 각자의 진술 및 보증에 동의한다.,event,[],[],Node
+다음 사항,entity,[],[],Node
+매도인은 다음 사항을 진술한다.,event,[],[],Node
+매도인은 다음 사항을 보증한다.,event,[],[],Node
+매도인은 다음 사항을 진술하고 보증한다.,event,[],[],Node
+소유자,entity,[],[],Node
+매매주식의 완전한 소유자이다.,event,[],[],Node
+주식을 소유하게 된다.,event,[],[],Node
+매매주식의 완전한 소유자가 존재한다.,event,[],[],Node
+완전한 소유자,entity,[],[],Node
+재무제표는 작성된다.,event,[],[],Node
+재무제표는 정확하다.,event,[],[],Node
+재무제표가 정확하다.,event,[],[],Node
+재무제표,entity,[],[],Node
+중요 부채,entity,[],[],Node
+중요 부채가 공개되었다.,event,[],[],Node
+공개된 것 외 중요 부채가 없다.,event,[],[],Node
+회사의 재무상태가 투명하다.,event,[],[],Node
+중요한 소송이 없다.,event,[],[],Node
+현재 시점이다.,event,[],[],Node
+성실히,entity,[],[],Node
+계약이 체결되었다.,event,[],[],Node
+모든 계약을 성실히 이행 중이다.,event,[],[],Node
+계약 이행의무가 존재한다.,event,[],[],Node
+모든 계약을 성실히 이행하고 있다.,event,[],[],Node
+모든 계약,entity,[],[],Node
+제37조,entity,[],[],Node
+법규 준수,entity,[],[],Node
+관련 법규를 준수한다.,event,[],[],Node
+법규 위반에 따른 불이익을 피할 수 있다.,event,[],[],Node
+조직의 신뢰도가 높아진다.,event,[],[],Node
+제37조를 준수한다.,event,[],[],Node
+관련 법규,entity,[],[],Node
+계약의 조항,entity,[],[],Node
+특별조항,entity,[],[],Node
+제19조의 적시 정의,entity,[],[],Node
+특별조항의 범위,entity,[],[],Node
+별도,entity,[],[],Node
+본 계약의 조항은 '일반조항'과 '특별조항'으로 구분된다.,event,[],[],Node
+제19조의 적시 정의는 일반조항에만 적용된다.,event,[],[],Node
+특별조항의 범위는 별도로 정한다.,event,[],[],Node
+본 계약의 조항이 일반조항과 특별조항으로 구분된다.,event,[],[],Node
+제19조의 적시 정의가 일반조항에만 적용된다.,event,[],[],Node
+특별조항의 범위가 별도로 정해진다.,event,[],[],Node
+세금,entity,[],[],Node
+납부,entity,[],[],Node
+세금을 적시 납부했다.,event,[],[],Node
+세금 체납에 대한 불이익을 받지 않았다.,event,[],[],Node
+법적 의무를 준수했다.,event,[],[],Node
+세금을 납부했다.,event,[],[],Node
+노동,entity,[],[],Node
+노동법규,entity,[],[],Node
+노동법규를 준수한다.,event,[],[],Node
+노동과 관련된 법적 의무를 이행한다.,event,[],[],Node
+제40조,entity,[],[],Node
+자산,entity,[],[],Node
+양호한 상태,entity,[],[],Node
+자산은 양호한 상태이다.,event,[],[],Node
+해당 자산의 관리 및 유지가 적절하게 이루어졌다.,event,[],[],Node
+중요 계약,entity,[],[],Node
+공개된 중요 계약,entity,[],[],Node
+공개된 것 외 중요 계약이 없다.,event,[],[],Node
+중요 계약이 공개된 것만 존재한다.,event,[],[],Node
+완전한 권한,entity,[],[],Node
+매수인은 완전한 권한을 보유한다.,event,[],[],Node
+매수인이 진술을 한다.,event,[],[],Node
+매수인이 완전한 권한을 보유한다.,event,[],[],Node
+자금,entity,[],[],Node
+매매대금을 확보했다.,event,[],[],Node
+자금이 마련되었다.,event,[],[],Node
+매수인이 인지한 사항,entity,[],[],Node
+매수인이 어떤 사항을 인지한다.,event,[],[],Node
+그 사항은 진술보증에서 제외된다.,event,[],[],Node
+매수인이 진술보증에서 인지한 사항이 제외된다.,event,[],[],Node
+제공 정보,entity,[],[],Node
+공개 정보,entity,[],[],Node
+제공 정보는 정확하다.,event,[],[],Node
+공개 정보가 된다.,event,[],[],Node
+제46조가 공개 정보를 규정한다.,event,[],[],Node
+제46조,entity,[],[],Node
+제46조가 제공 정보의 정확성을 명시한다.,event,[],[],Node
+변경 사항,entity,[],[],Node
+즉시 통지,entity,[],[],Node
+변경 사항이 발생한다.,event,[],[],Node
+즉시 통지한다.,event,[],[],Node
+변경 사항을 즉시 통지한다.,event,[],[],Node
+통지 대상자,entity,[],[],Node
+손해 배상,entity,[],[],Node
+진술보증을 위반한다.,event,[],[],Node
+손해를 배상한다.,event,[],[],Node
+진술보증이 위반된다.,event,[],[],Node
+진술보증 위반 시 손해를 배상한다.,event,[],[],Node
+진술보증 위반자,entity,[],[],Node
+손해 배상 청구자,entity,[],[],Node
+모든 정보,entity,[],[],Node
+최선을 다해,entity,[],[],Node
+모든 정보는 최선을 다해 준비되었다.,event,[],[],Node
+정보의 정확성이 보장된다.,event,[],[],Node
+모든 정보가 최선을 다해 준비되었다.,event,[],[],Node
+예측,entity,[],[],Node
+합리적 가정,entity,[],[],Node
+합리적 가정에 기초한다.,event,[],[],Node
+예측한다.,event,[],[],Node
+예측은 합리적 가정에 기초한다.,event,[],[],Node
+거래종결,entity,[],[],Node
+계약일로부터 30일 내,entity,[],[],Node
+계약이 체결된다.,event,[],[],Node
+거래종결이 이루어진다.,event,[],[],Node
+30일 이내에 거래종결이 이루어진다.,event,[],[],Node
+거래종결이 계약일로부터 30일 내에 이루어진다.,event,[],[],Node
+계약일,entity,[],[],Node
+진술보증의 정확성,entity,[],[],Node
+매수인의 진술보증이 정확하다.,event,[],[],Node
+계약의 효력이 발생한다.,event,[],[],Node
+매수인의 진술보증이 정확해야 한다.,event,[],[],Node
+대금,entity,[],[],Node
+대금이 준비되어야 한다.,event,[],[],Node
+매도인은 전제조건을 충족한다.,event,[],[],Node
+매수인이 대금을 준비한다.,event,[],[],Node
+종결,entity,[],[],Node
+서울,entity,[],[],Node
+종결 장소를 지정한다.,event,[],[],Node
+서울에서 종결한다.,event,[],[],Node
+종결을 서울에서 한다.,event,[],[],Node
+필요 서류를 준비한다.,event,[],[],Node
+필요 서류를 인도한다.,event,[],[],Node
+필요 서류,entity,[],[],Node
+인도하는 자,entity,[],[],Node
+인도받는 자,entity,[],[],Node
+진술보증 관련 사항,entity,[],[],Node
+하자담보 관련 사항,entity,[],[],Node
+별도의 통지 규정,entity,[],[],Node
+진술보증 관련 사항(제31조-제50조)은 '특별조항'으로 분류된다.,event,[],[],Node
+"하자담보 관련 사항(제29조, 제73조)도 특별조항이다.",event,[],[],Node
+특별조항은 별도의 통지 규정을 따른다.,event,[],[],Node
+진술보증 및 하자담보 관련 사항이 특별조항으로 분류된다.,event,[],[],Node
+진술보증 관련 사항이 특별조항으로 분류된다.,event,[],[],Node
+하자담보 관련 사항도 특별조항이다.,event,[],[],Node
+특별조항이 별도의 통지 규정을 따른다.,event,[],[],Node
+이사,entity,[],[],Node
+매수인 지명 이사를 선임한다.,event,[],[],Node
+임원이 변경된다.,event,[],[],Node
+지명 이사,entity,[],[],Node
+모든 권리가 완전히 이전된다.,event,[],[],Node
+권리의 소유자가 변경된다.,event,[],[],Node
+기존 권리자는 권리를 상실한다.,event,[],[],Node
+모든 권리,entity,[],[],Node
+종결 확인서,entity,[],[],Node
+종결 확인,entity,[],[],Node
+종결이 확정된다.,event,[],[],Node
+종결 확인서를 작성한다.,event,[],[],Node
+주주명부,entity,[],[],Node
+매수인을 주주명부에 기재한다.,event,[],[],Node
+매수인이 주주로 인정된다.,event,[],[],Node
+매수인이 주주로 간주된다.,event,[],[],Node
+경영권이 이전된다.,event,[],[],Node
+새로운 경영자가 기업을 운영한다.,event,[],[],Node
+경영권,entity,[],[],Node
+이전받는 자,entity,[],[],Node
+이전하는 자,entity,[],[],Node
+불이행,entity,[],[],Node
+손해배상,entity,[],[],Node
+불이행이 발생한다.,event,[],[],Node
+손해배상을 한다.,event,[],[],Node
+전제조건,entity,[],[],Node
+없음,entity,[],[],Node
+전제조건을 포기할 수 있다.,event,[],[],Node
+조건 포기가 발생한다.,event,[],[],Node
+전제조건이 더 이상 요구되지 않는다.,event,[],[],Node
+행정,entity,[],[],Node
+협력,entity,[],[],Node
+행정 사항에 협력한다.,event,[],[],Node
+행정 업무가 진행된다.,event,[],[],Node
+계좌,entity,[],[],Node
+수신자,entity,[],[],Node
+계좌 정보를 통지한다.,event,[],[],Node
+상대방이 계좌 정보를 확인한다.,event,[],[],Node
+계좌 정보,entity,[],[],Node
+통지자,entity,[],[],Node
+세금을 부담한다.,event,[],[],Node
+각자 세금을 부담한다.,event,[],[],Node
+각자가 세금을 부담한다.,event,[],[],Node
+제67조,entity,[],[],Node
+등기,entity,[],[],Node
+누군가 등기에 협력한다.,event,[],[],Node
+등기가 진행된다.,event,[],[],Node
+직원을 고용한다.,event,[],[],Node
+고용을 승계한다.,event,[],[],Node
+직원의 고용을 승계한다.,event,[],[],Node
+직원,entity,[],[],Node
+감사,entity,[],[],Node
+매수인이 감사를 선임한다.,event,[],[],Node
+감사가 존재하게 된다.,event,[],[],Node
+수령자,entity,[],[],Node
+문서를 작성한다.,event,[],[],Node
+문서를 인도한다.,event,[],[],Node
+상대방이 문서를 받는다.,event,[],[],Node
+인도자,entity,[],[],Node
+제5장은 거래종결 후 사항을 다룬다.,event,[],[],Node
+거래가 종결된다.,event,[],[],Node
+제5장 거래종결 후 사항이 논의된다.,event,[],[],Node
+제5장,entity,[],[],Node
+거래종결 후 사항,entity,[],[],Node
+전환 지원,entity,[],[],Node
+3개월,entity,[],[],Node
+전환 지원을 시작한다.,event,[],[],Node
+3개월간 지원이 제공된다.,event,[],[],Node
+전환 지원이 종료된다.,event,[],[],Node
+전환 지원을 3개월간 제공한다.,event,[],[],Node
+제공 주체,entity,[],[],Node
+배상 한도,entity,[],[],Node
+매매대금의 25%,entity,[],[],Node
+배상 한도를 정한다.,event,[],[],Node
+배상 한도를 매매대금의 25%로 제한한다.,event,[],[],Node
+총 배상액이 매매대금의 25%를 초과할 수 없다.,event,[],[],Node
+제7조의 적시 통지,entity,[],[],Node
+관련 권리 자동 소멸,entity,[],[],Node
+진술보증 위반 관련 통지,entity,[],[],Node
+청구권 소멸,entity,[],[],Node
+통지 기한,entity,[],[],Node
+제7조의 적시 통지를 하지 못한 경우,event,[],[],Node
+관련 권리가 자동 소멸한다,event,[],[],Node
+진술보증 위반 관련 통지를 놓친 경우,event,[],[],Node
+청구권이 소멸한다,event,[],[],Node
+통지 기한은 엄격히 해석된다,event,[],[],Node
+통지 실패에 따른 권리 소멸이 발생한다,event,[],[],Node
+제7조의 적시 통지를 하지 못한 경우 관련 권리가 자동 소멸된다.,event,[],[],Node
+제7조,entity,[],[],Node
+관련 권리,entity,[],[],Node
+진술보증 위반 관련 통지를 놓친 경우 청구권이 소멸된다.,event,[],[],Node
+진술보증 위반,entity,[],[],Node
+통지,entity,[],[],Node
+청구권,entity,[],[],Node
+통지 기한은 엄격히 해석된다.,event,[],[],Node
+어떤 사항을 인지한다,event,[],[],Node
+해당 사항에 대해 면책된다,event,[],[],Node
+인지한 사항이 면책된다.,event,[],[],Node
+인지한 사항,entity,[],[],Node
+제75조,entity,[],[],Node
+경영,entity,[],[],Node
+적극적으로 경영을 지원한다.,event,[],[],Node
+지원이 강화된다.,event,[],[],Node
+경영을 적극적으로 지원한다.,event,[],[],Node
+보상,entity,[],[],Node
+서면으로 청구한다.,event,[],[],Node
+보상 절차가 시작된다.,event,[],[],Node
+보상을 청구한다.,event,[],[],Node
+청구인,entity,[],[],Node
+청구인은 서면으로 보상을 청구한다.,event,[],[],Node
+손해배상액,entity,[],[],Node
+채권,entity,[],[],Node
+손해배상액을 산정한다.,event,[],[],Node
+손해배상액을 상계할 수 있다.,event,[],[],Node
+상계된 금액만큼 실제 지급액이 결정된다.,event,[],[],Node
+부채,entity,[],[],Node
+자산은 매수인에게 귀속된다.,event,[],[],Node
+부채는 매도인에게 귀속된다.,event,[],[],Node
+자산이 귀속된다.,event,[],[],Node
+부채가 귀속된다.,event,[],[],Node
+기존 브랜드,entity,[],[],Node
+브랜드,entity,[],[],Node
+기존 브랜드가 존재한다.,event,[],[],Node
+기존 브랜드를 사용한다.,event,[],[],Node
+새로운 브랜드를 개발하지 않는다.,event,[],[],Node
+기존 배당,entity,[],[],Node
+기존 배당이 발생한다.,event,[],[],Node
+배당이 매도인에게 귀속된다.,event,[],[],Node
+기존 배당이 매도인에게 귀속된다.,event,[],[],Node
+연결,entity,[],[],Node
+연결재무제표,entity,[],[],Node
+연결재무제표가 작성된다.,event,[],[],Node
+연결재무제표에 포함된다.,event,[],[],Node
+시너지,entity,[],[],Node
+시너지를 위해 협력한다.,event,[],[],Node
+시너지가 발생한다.,event,[],[],Node
+협약 당사자들이 시너지를 위해 협력한다,event,[],[],Node
+협약 당사자들,entity,[],[],Node
+제83조,entity,[],[],Node
+영업비밀,entity,[],[],Node
+영업비밀을 보호한다.,event,[],[],Node
+비밀이 유지된다.,event,[],[],Node
+공급망,entity,[],[],Node
+공급망을 유지한다.,event,[],[],Node
+공급이 안정적으로 이루어진다.,event,[],[],Node
+공급망에 문제가 생기지 않는다.,event,[],[],Node
+제85조,entity,[],[],Node
+연구개발을 계속함,entity,[],[],Node
+R&D 연구개발을 계속한다.,event,[],[],Node
+연구개발 활동이 지속적으로 이루어진다.,event,[],[],Node
+연구개발을 계속한다.,event,[],[],Node
+R&D,entity,[],[],Node
+제86조,entity,[],[],Node
+CSR,entity,[],[],Node
+사회적 책임,entity,[],[],Node
+기업이 CSR을 실천한다.,event,[],[],Node
+기업이 사회적 책임을 다한다.,event,[],[],Node
+규제 대응,entity,[],[],Node
+규제 대응은 매수인 책임이다.,event,[],[],Node
+매수인이 규제에 대응해야 한다.,event,[],[],Node
+규제 대응이 매수인 책임이 된다.,event,[],[],Node
+규제,entity,[],[],Node
+시설,entity,[],[],Node
+불특정,entity,[],[],Node
+시설이 존재한다.,event,[],[],Node
+시설을 유지한다.,event,[],[],Node
+시설의 상태가 보존된다.,event,[],[],Node
+분쟁,entity,[],[],Node
+분쟁이 발생한다.,event,[],[],Node
+분쟁 해결에 협력한다.,event,[],[],Node
+분쟁 당사자,entity,[],[],Node
+제90조,entity,[],[],Node
+추가 조정은 없다,entity,[],[],Node
+제90조가 성과에 대해 정한다.,event,[],[],Node
+추가 조정은 없다.,event,[],[],Node
+성과에 추가 조정이 없다.,event,[],[],Node
+성과,entity,[],[],Node
+제6장 일반조항이 언급된다.,event,[],[],Node
+제6장 일반조항,entity,[],[],Node
+매도인에 대한 통지,entity,[],[],Node
+등기우편,entity,[],[],Node
+매수인에 대한 통지,entity,[],[],Node
+특별조항 관련 통지,entity,[],[],Node
+매도인에 대한 통지는 등기우편으로만 유효하다.,event,[],[],Node
+매도인에 대한 통지를 등기우편이 아닌 방법으로 하면 효력이 없다.,event,[],[],Node
+매수인에 대한 통지는 이메일로 가능하다.,event,[],[],Node
+매수인에게 이메일로 통지하면 유효하다.,event,[],[],Node
+특별조항 관련 통지는 반드시 등기우편으로 해야 한다.,event,[],[],Node
+특별조항에 관한 통지를 등기우편 이외의 방법으로 하면 효력이 없다.,event,[],[],Node
+거래종결 후,entity,[],[],Node
+운전자본을 조정한다.,event,[],[],Node
+운전자본을 거래종결 후 조정한다.,event,[],[],Node
+제93조,entity,[],[],Node
+제93조가 규정된다.,event,[],[],Node
+대한민국 법률에 따른다는 내용이 명시된다.,event,[],[],Node
+대한민국 법률에 따른다.,event,[],[],Node
+법적 분쟁 발생 시 대한민국 법률이 적용된다.,event,[],[],Node
+제93조가 준거법으로 대한민국 법률을 정한다.,event,[],[],Node
+제94조,entity,[],[],Node
+서울중앙지방법원 관할,entity,[],[],Node
+서울중앙지방법원이 관할이다.,event,[],[],Node
+제94조가 규정된다.,event,[],[],Node
+제94조가 관할을 정한다,event,[],[],Node
+서울중앙지방법원이 관할이 된다,event,[],[],Node
+서울중앙지방법원,entity,[],[],Node
+제95조,entity,[],[],Node
+중재,entity,[],[],Node
+우호적 해결,entity,[],[],Node
+우호적 해결을 우선한다.,event,[],[],Node
+중재가 이루어진다.,event,[],[],Node
+제96조,entity,[],[],Node
+서면 합의,entity,[],[],Node
+수정한다.,event,[],[],Node
+서면 합의로,event,[],[],Node
+수정은 서면 합의로 이루어진다.,event,[],[],Node
+수정,entity,[],[],Node
+제97조,entity,[],[],Node
+분리가능성,entity,[],[],Node
+일부,entity,[],[],Node
+나머지,entity,[],[],Node
+어떤 조항의 일부가 무효가 된다.,event,[],[],Node
+나머지 조항은 유효하다.,event,[],[],Node
+일부가 무효여도 나머지는 유효하다.,event,[],[],Node
+권리 불행사,entity,[],[],Node
+권리,entity,[],[],Node
+권리를 행사하지 않았다.,event,[],[],Node
+권리를 포기한 것은 아니다.,event,[],[],Node
+권리의 불행사가 권리의 포기가 아니다.,event,[],[],Node
+제99조,entity,[],[],Node
+완전한 합의,entity,[],[],Node
+완전한 합의를 구성한다.,event,[],[],Node
+제99조가 적용된다.,event,[],[],Node
+제99조가 완전한 합의를 구성한다.,event,[],[],Node
+한국어본,entity,[],[],Node
+다른 언어본,entity,[],[],Node
+한국어본이 우선한다.,event,[],[],Node
+제100조 (언어)가 명시된다.,event,[],[],Node
+부록,entity,[],[],Node
+계약의 일부,entity,[],[],Node
+부록도 계약의 일부이다.,event,[],[],Node
+부록의 내용이 계약에 적용된다.,event,[],[],Node
+부록이 계약의 일부가 된다.,event,[],[],Node
+각,entity,[],[],Node
+1부,entity,[],[],Node
+각 1부씩 보관한다.,event,[],[],Node
+문서가 보관된다.,event,[],[],Node
+대리인,entity,[],[],Node
+대리인 선임 가능하다.,event,[],[],Node
+대리인이 법률행위를 수행한다.,event,[],[],Node
+대리인을 선임할 수 있다.,event,[],[],Node
+본인,entity,[],[],Node
+제104조,entity,[],[],Node
+성실 이행,entity,[],[],Node
+성실히 이행한다.,event,[],[],Node
+의무를 다한다.,event,[],[],Node
+제104조의 내용을 성실히 이행한다.,event,[],[],Node
+이행 주체,entity,[],[],Node
+불가항력,entity,[],[],Node
+불가항력이 발생한다.,event,[],[],Node
+면책된다.,event,[],[],Node
+불가항력이 면책된다.,event,[],[],Node
+제106조,entity,[],[],Node
+공정하게,entity,[],[],Node
+제106조가 존재한다.,event,[],[],Node
+제106조를 해석한다.,event,[],[],Node
+공정하게 해석한다.,event,[],[],Node
+해석 결과가 공정하게 도출된다.,event,[],[],Node
+제106조를 공정하게 해석한다.,event,[],[],Node
+기한,entity,[],[],Node
+의무,entity,[],[],Node
+기한을 엄수한다.,event,[],[],Node
+기한이 도래한다.,event,[],[],Node
+공동비용,entity,[],[],Node
+공동비용의 부담 주체,entity,[],[],Node
+공동비용이 발생한다.,event,[],[],Node
+공동비용을 균분한다.,event,[],[],Node
+공동소유자,entity,[],[],Node
+제109조,entity,[],[],Node
+조항,entity,[],[],Node
+필요시 조항을 보완한다.,event,[],[],Node
+필요성이 발생한다.,event,[],[],Node
+조항을 보완한다.,event,[],[],Node
+2025년 1월 1일에 아래와 같이 서명한다.,event,[],[],Node
+매도인 주식회사 카파벤처스 대표이사가 서명한다.,event,[],[],Node
+매수인 주식회사 람다홀딩스 대표이사가 서명한다.,event,[],[],Node
+주식회사 카파벤처스가 매도인으로 서명한다.,event,[],[],Node
+주식회사 람다홀딩스가 매수인으로 서명한다.,event,[],[],Node
+주식회사 카파벤처스의 대표이사가 서명한다.,event,[],[],Node
+대표이사,entity,[],[],Node
+주식회사 람다홀딩스의 대표이사가 서명한다.,event,[],[],Node

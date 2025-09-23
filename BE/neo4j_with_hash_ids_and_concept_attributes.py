@@ -13,26 +13,26 @@ import pandas as pd
 import json
 import argparse
 from collections import defaultdict
-from configparser import ConfigParser
 from neo4j import GraphDatabase
+from dotenv import load_dotenv
+
+# .env 파일 로드
+load_dotenv()
 
 def fix_neo4j_with_hash_ids_and_concept_attributes(keyword=None):
     """node_list.pkl의 해시 ID를 사용하면서 concept을 속성으로 저장하여 Neo4j 임포트"""
     try:
         print("[INFO] node_list.pkl의 해시 ID + concept 속성을 사용해서 Neo4j 임포트 시작...")
         
-        # 설정 로드
-        config = ConfigParser()
-        config.read('config.ini', encoding='utf-8')
+        # 환경변수에서 설정 로드
+        neo4j_uri = os.getenv('NEO4J_URI', 'neo4j://127.0.0.1:7687')
+        neo4j_user = os.getenv('NEO4J_USER', 'neo4j')
+        neo4j_password = os.getenv('NEO4J_PASSWORD', 'qwer1234')
+        neo4j_database = os.getenv('NEO4J_DATABASE', 'neo4j')
         
-        neo4j_uri = os.getenv('NEO4J_URI', config.get('urls', 'NEO4J_URI', fallback='neo4j://127.0.0.1:7687'))
-        neo4j_user = os.getenv('NEO4J_USER', config.get('urls', 'NEO4J_USER', fallback='neo4j'))
-        neo4j_password = os.getenv('NEO4J_PASSWORD', config.get('urls', 'NEO4J_PASSWORD', fallback='qwer1234'))
-        neo4j_database = os.getenv('NEO4J_DATABASE', config.get('urls', 'NEO4J_DATABASE', fallback='neo4j'))
-        
-        # keyword 우선순위: 함수 인수 > 환경변수 > 설정파일 > 기본값
+        # keyword 우선순위: 함수 인수 > 환경변수 > 기본값
         if keyword is None:
-            keyword = os.getenv('KEYWORD', config.get('data', 'KEYWORD', fallback='contract_v5'))
+            keyword = os.getenv('KEYWORD', 'contract_v5')
         
         print(f"🔗 Neo4j 연결 정보: {neo4j_uri} (데이터베이스: {neo4j_database})")
         print(f"🔑 사용할 키워드: '{keyword}' (길이: {len(keyword)})")

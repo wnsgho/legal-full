@@ -6,23 +6,23 @@ GDS 그래프 프로젝션을 생성하는 스크립트
 
 import os
 import sys
-from configparser import ConfigParser
+from dotenv import load_dotenv
 from neo4j import GraphDatabase
 from graphdatascience import GraphDataScience
+
+# .env 파일 로드
+load_dotenv()
 
 def create_gds_graph():
     """GDS 그래프 프로젝션 생성"""
     try:
         print("🔄 GDS 그래프 프로젝션 생성 시작...")
         
-        # 설정 로드
-        config = ConfigParser()
-        config.read('../config.ini', encoding='utf-8')
-        
-        neo4j_uri = os.getenv('NEO4J_URI', config.get('urls', 'NEO4J_URI', fallback='neo4j://127.0.0.1:7687'))
-        neo4j_user = os.getenv('NEO4J_USER', config.get('urls', 'NEO4J_USER', fallback='neo4j'))
-        neo4j_password = os.getenv('NEO4J_PASSWORD', config.get('urls', 'NEO4J_PASSWORD', fallback='qwer1234'))
-        neo4j_database = os.getenv('NEO4J_DATABASE', config.get('urls', 'NEO4J_DATABASE', fallback='neo4j'))
+        # 환경변수에서 Neo4j 설정 로드
+        neo4j_uri = os.getenv('NEO4J_URI', 'neo4j://127.0.0.1:7687')
+        neo4j_user = os.getenv('NEO4J_USER', 'neo4j')
+        neo4j_password = os.getenv('NEO4J_PASSWORD')
+        neo4j_database = os.getenv('NEO4J_DATABASE', 'neo4j')
         
         print(f"🔗 Neo4j 연결 정보: {neo4j_uri} (데이터베이스: {neo4j_database})")
         
@@ -56,11 +56,12 @@ def create_gds_graph():
         # GDS 그래프 프로젝션 생성
         print("🔄 GDS 그래프 프로젝션 생성 중...")
         
-        # 원래 개발자 방식: 라벨만 지정, 속성은 지정하지 않음
+        # GDS 그래프 프로젝션 생성 (숫자 타입 속성만 포함)
         graph, result = gds.graph.project(
             'largekgrag_graph',
             ['Node'],
-            ['Relation']
+            ['Relation'],
+            nodeProperties=['numeric_id']  # 숫자 타입 속성만 포함
         )
         
         print(f"✅ GDS 그래프 프로젝션 생성 완료!")

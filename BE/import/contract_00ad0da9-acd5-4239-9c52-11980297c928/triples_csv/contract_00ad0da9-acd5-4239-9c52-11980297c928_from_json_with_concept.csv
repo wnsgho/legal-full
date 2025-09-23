@@ -1,0 +1,777 @@
+node,conceptualized_node,node_type
+자산은 양호한 상태이다.,"evaluation, assessment, stability, verification, reliability",event
+매수인은 규제와 관련된 문제에 대해 책임을 진다.,"liability, responsibility, regulation, compliance, obligation",event
+영업일은 대한민국의 은행이 정상 영업하는 날이다.,"business day, banking, transaction, operation, service",event
+불이행이 발생한다.,"violation, breach, failure, noncompliance, default",event
+매수인에게 소유권이 이전된다.,"transfer, transaction, ownership change, acquisition, conveyance",event
+매수인이 대금을 준비한다.,"payment preparation, transaction, deal, negotiation, financial arrangement",event
+매매주식의 완전한 소유자이다.,"ownership, possession, acquisition, transaction, investment",event
+감사가 회사의 회계 및 업무를 감사할 수 있다.,"inspection, evaluation, oversight, verification, assessment",event
+상대방은 계좌 정보를 확인할 수 있다.,"verification, authentication, checking, access, information sharing",event
+어떤 사항을 인지한다.,"awareness, realization, recognition, perception, understanding",event
+자산은 일정 기간 동안 관리되었다.,"management, supervision, administration, oversight, stewardship",event
+제3장이 시작된다.,"beginning, transition, progression, development, change",event
+각 1부씩 보관한다.,"distribution, preservation, recordkeeping, documentation, organization",event
+매도인은 대금이 준비되어야 한다.,"transaction, obligation, payment, contract, fulfillment",event
+중재 절차가 진행된다.,"dispute resolution, negotiation, mediation, legal process, conflict management",event
+종결이 확인된다.,"completion, confirmation, closure, validation, finalization",event
+한국어본이 우선한다.,"priority, preference, selection, decision",event
+배상액이 매매대금의 25%를 초과하지 않는다.,"limitation, compensation, transaction, contract, restriction",event
+매도인이 거래종결일에 매매주식의 완전한 소유권을 매수인에게 이전한다.,"ownership transfer, transaction, conveyance, settlement, agreement",event
+주식회사 카파벤처스의 대표이사가 2025년 1월 1일에 서명한다.,"authorization, decision, agreement, leadership, commitment",event
+나머지 조항이 유효하게 유지된다.,"enforcement, validity, continuity, legal effect, survivability",event
+서면이 된다,"documentation, agreement, formalization, recordkeeping, validation",event
+제96조를 서면 합의로 수정한다.,"agreement, amendment, modification, contract, documentation",event
+진술보증 관련 사항(제31조-제50조)은 '특별조항'으로 분류된다.,"classification, regulation, legal provision, categorization, documentation",event
+CSR을 이행한다.,"responsibility, compliance, contribution, sustainability, ethics",event
+부채가 귀속된다.,"liability transfer, obligation, assignment, succession, responsibility",event
+매수인은 완전한 권한을 보유한다.,"authorization, empowerment, ownership, control, entitlement",event
+통지 기한은 엄격히 해석된다,"interpretation, strictness, legal process, deadline, regulation",event
+대금조정이 별도 합의에 따른다.,"negotiation, agreement, adjustment, contract, settlement",event
+거래 비용이 발생한다.,"exchange, transaction, cost, expenditure, economic activity",event
+권리의 소유자가 바뀐다.,"transfer, succession, change, acquisition, inheritance",event
+신속한 의사소통을 보장한다.,"communication, efficiency, coordination, connection, transmission",event
+완전 합의가 이루어진다.,"agreement, consensus, resolution, understanding, negotiation",event
+새로운 경영자가 회사의 의사결정을 주도한다.,"leadership, management, decision-making, authority, influence",event
+지급은 매도인 지정 계좌로 송금된다.,"payment, transfer, transaction, remittance, settlement",event
+제93조가 존재한다.,"existence, regulation, rulemaking, governance",event
+매매대금의 25%로 배상 한도를 제한한다.,"compensation, limitation, restriction, liability, transaction",event
+노동 관련 권리와 의무가 보장된다.,"protection, guarantee, regulation, equality, empowerment",event
+추가 조정은 없다.,"agreement, negotiation, finalization, resolution, confirmation",event
+불가항력이 면책된다.,"exemption, liability, contract law, force majeure, legal defense",event
+연구개발을 계속한다.,"innovation, experimentation, progress, improvement, advancement",event
+통상의 영업과정에 따라 운영한다.,"business operation, routine, management, administration, commerce",event
+제106조를 해석한다.,"interpretation, analysis, legal reasoning, understanding, explanation",event
+지원이 강화된다.,"enhancement, improvement, development, support, strengthening",event
+우호적 해결을 시도한다.,"negotiation, mediation, reconciliation, conflict resolution, peacemaking",event
+서명이 완료된다.,"agreement, contract, authorization, completion, validation",event
+재무제표를 작성한다.,"accounting, reporting, documentation, analysis, management",event
+30일 내에 거래종결이 이루어진다.,"transaction, deadline, agreement, completion, closure",event
+계약의 권리와 의무를 양도한다.,"assignment, transfer, delegation, obligation, legal action",event
+보험에 가입한다.,"protection, risk management, security, planning, coverage",event
+손해배상을 한다.,"compensation, restitution, reimbursement, settlement, redress",event
+서울에서 종결한다.,"ending, closure, conclusion, termination, finalization, resolution",event
+제46조 (공개 정보) 제공 정보가 공개된다.,"disclosure, transparency, announcement, information sharing, publication",event
+기존 배당이 매도인에게 귀속된다.,"allocation, entitlement, distribution, ownership, transaction",event
+임원 변경이 이루어진다.,"restructuring, leadership, transition, appointment, succession",event
+수정이 이루어진다.,"correction, improvement, transformation, adjustment, refinement",event
+제86조가 사회적 책임을 다한다는 내용을 규정한다.,"regulation, responsibility, governance, obligation, accountability",event
+세금을 각자 부담한다.,"cost sharing, responsibility, contribution, financial obligation",event
+특별한 사정이 있는 경우 기간을 연장할 수 있다.,"extension, exception, permission, flexibility, regulation",event
+부록도 계약의 일부이다.,"agreement, inclusion, documentation, binding, legal recognition",event
+매수인이 진술한다.,"declaration, statement, affirmation, assertion, communication",event
+손해를 배상한다.,"compensation, restitution, settlement, redress, reparation",event
+법령상 요구 또는 상대방 동의 시 예외로 한다.,"exception, consent, regulation, compliance, permission",event
+변경 사항이 발생하면 즉시 통지한다.,"notification, communication, update, alert, reporting",event
+양 당사자는 성실히 협력한다.,"cooperation, agreement, partnership, collaboration, commitment",event
+거래종결 전에는 통상의 영업과정에 따라 운영한다.,"business operation, transaction process, continuity, management, routine",event
+세무 관련 업무가 발생했다.,"accounting, taxation, compliance, finance, reporting",event
+주식 소유가 이루어진다.,"ownership, transaction, investment, acquisition, finance",event
+인도 서류가 준비된다.,"preparation, documentation, processing, arrangement, organization",event
+자금을 사용할 수 있게 되었다.,"financing, empowerment, liquidity, access, resource allocation",event
+모든 라이선스가 유효하게 유지된다.,"authorization, validation, compliance, maintenance, regulation",event
+진술보증 위반 관련 통지를 놓친 경우 청구권이 소멸된다.,"계약, 소멸, 통지, 권리, 위반, 법률",event
+종결이 서울에서 이루어진다.,"conclusion, resolution, closure, location, finalization",event
+상대방에게 적시 통지해야 한다.,"notification, communication, obligation, warning, informing",event
+자산은 매수인에게 귀속된다.,"transfer, ownership, allocation, assignment, acquisition",event
+주식매매계약서가 작성된다.,"legal process, agreement, contract drafting, documentation, transaction",event
+제5장은 거래종결 후의 사항을 규정한다.,"regulation, documentation, procedure, compliance, legal process",event
+특별조항 관련 통지는 반드시 등기우편으로 해야 한다.,"notification, communication, documentation, legal process, compliance",event
+매매 가격이 결정된다.,"거래, 결정, 협상, 평가, 합의",event
+제7조의 적시 통지를 하지 못한 경우 관련 권리가 자동 소멸된다.,"expiration, forfeiture, noncompliance, notification, legal consequence",event
+즉시 통지한다.,"notification, communication, reporting, informing, alert",event
+통지를 이행하지 않을 경우 관련 권리를 행사할 수 없다.,"compliance, forfeiture, enforcement, notification, waiver",event
+통지 실패 시 권리 소멸 조항이 적용된다,"expiration, regulation, notification, enforcement, compliance",event
+관련 조항을 따른다.,"compliance, regulation, adherence, conformity, obligation",event
+데이터는 개인정보보호법을 철저히 준수한다.,"compliance, regulation, privacy, protection, security",event
+전환 지원을 시작한다.,"transition, assistance, initiation, support, facilitation",event
+납세 의무가 개인별로 발생한다.,"taxation, obligation, responsibility, assessment, individualization",event
+계약의 체결이 이루어진다.,"agreement, negotiation, commitment, partnership, transaction",event
+매도인은 매매계약의 전제조건을 충족한다.,"fulfillment, compliance, obligation, agreement, transaction",event
+분쟁 해결에 협력한다.,"cooperation, negotiation, conflict resolution, agreement, diplomacy",event
+각 당사자는 상대방에게 필요한 서류를 제출한다.,"submission, documentation, obligation, exchange, cooperation",event
+본 계약은 매도인의 매도와 매수인의 매수에 필요한 제반 사항을 규정한다.,"contract, agreement, transaction, regulation, terms, negotiation",event
+면책된다.,"exemption, release, immunity, absolution, protection",event
+서면 합의가 이루어진다.,"agreement, documentation, negotiation, resolution, contract",event
+적극적으로 경영을 지원한다.,"support, management, assistance, promotion, facilitation, collaboration",event
+매매대금은 거래종결일에 전액 현금으로 지급된다.,"payment, settlement, transaction, completion, fulfillment",event
+양 당사자가 본 계약의 체결에 있어 상호 선의와 신뢰를 바탕으로 성실히 협력한다.,"cooperation, trust, good faith, agreement, collaboration",event
+매도인과 매수인의 대표이사가 서명란에 서명한다.,"contract, agreement, authorization, transaction, validation",event
+관할 법원이 서울중앙지방법원으로 정해졌다.,"jurisdiction, assignment, designation, legal process, court selection",event
+거래종결일은 제51조에 따라 주식 양도가 완료되는 날이다.,"contract completion, transaction, ownership transfer, legal process, agreement",event
+전제조건이 충족된다.,"requirement, condition, fulfillment, prerequisite, validation",event
+본 계약은 매매주식의 매매와 관련한 당사자 간의 모든 합의를 포함한다.,"agreement, contract, negotiation, transaction, commitment",event
+진술보증 위반 관련 통지를 놓친 경우,"계약위반, 통지실패, 법적분쟁, 위험관리, 손해",event
+상대방에게 적시 통지하지 않는다.,"notification, omission, negligence, delay, communication",event
+계약 당사자들이 주식의 매매에 대해 합의한다.,"agreement, transaction, negotiation, contract, settlement",event
+매매주식이 제한 없이 양도된다.,"trading, exchange, deregulation, transfer, investment",event
+고용을 승계한다.,"employment, succession, transition, continuity, workforce",event
+본 계약이 완성된다.,"completion, agreement, finalization, confirmation, contract formation",event
+모든 거래 과정은 투명하게 진행된다.,"transparency, openness, accountability, trust, monitoring",event
+자산이 양호한 상태이다.,"stability, security, prosperity, sufficiency, well-being",event
+보험 만기일까지 보장이 지속된다.,"coverage, protection, continuation, assurance, security",event
+매도인은 3년간 경쟁 사업을 영위하지 않는다.,"restriction, agreement, noncompete, contract, business ethics",event
+재무제표는 정확하다.,"accuracy, verification, reliability, trustworthiness, assessment",event
+매수인 지명 이사를 선임한다.,"appointment, delegation, authorization, assignment, decision-making",event
+"""적시""는 별도 정의가 없는 한 3영업일 이내를 의미한다.","timeframe, definition, deadline, regulation, schedule",event
+매도인은 매매계약을 진행할 수 있다.,"transaction, authorization, contract, negotiation, selling",event
+통지의 구체적인 방법은 관련 조항에 따른다.,"notification, procedure, compliance, regulation, communication",event
+사회적 책임을 다한다.,"contribution, duty, obligation, ethics, citizenship, service",event
+연결이 이루어진다.,"connection, interaction, communication, relationship, union",event
+모든 거래 과정은 공정하게 진행된다.,"fairness, justice, transparency, integrity, regulation",event
+비밀이 유지된다.,"confidentiality, concealment, protection, silence, reservation",event
+운전자본을 거래종결 후 조정한다.,"settlement, adjustment, negotiation, finance, reconciliation",event
+제104조를 성실히 이행한다.,"compliance, obligation, fulfillment, duty, adherence",event
+본 거래는 단순 주식 양도 방식으로 진행된다.,"transaction, transfer, ownership, agreement, exchange",event
+서면으로 청구한다.,"request, documentation, communication, submission, formality",event
+법적 책임을 이행한다.,"compliance, obligation, duty, accountability, fulfillment",event
+권리를 포기한다.,"renunciation, waiver, abandonment, relinquishment, surrender",event
+공급망을 유지한다.,"maintenance, logistics, management, continuity, coordination",event
+매도인은 다음 사항을 진술한다.,"declaration, affirmation, statement, disclosure, representation",event
+제1장의 총칙이 시작된다.,"initiation, introduction, preamble, commencement, opening",event
+통지 방법에 대해 궁금하다.,"문의, 정보요청, 소통, 절차, 의사소통",event
+변경 사항이 발생한다.,"change, transition, transformation, update, adjustment",event
+모든 계약을 성실히 이행하고 있다.,"commitment, obligation, responsibility, trust, fulfillment",event
+진술보증 위반에 대한 책임이 거래종결일로부터 2년간 유효하다.,"계약책임, 보증, 법적책임, 유효기간, 거래조건, 리스크관리",event
+손해배상액이 산정된다.,"compensation, calculation, assessment, liability, damages",event
+예측은 합리적 가정에 기초한다.,"prediction, reasoning, assumption, logic, inference",event
+해당 사항은 진술보증에서 제외된다.,"exclusion, limitation, exception, warranty, disclaimer",event
+적절한 보험이 유지되고 있다.,"protection, security, coverage, preparedness, risk management",event
+라이선스가 유효하게 유지된다.,"approval, validation, authorization, continuation, permission",event
+매수인의 진술보증이 정확하다.,"verification, accuracy, assurance, confirmation, compliance",event
+경영권이 이전된다.,"succession, transition, authority change, leadership, control transfer",event
+예측이 이루어진다.,"anticipation, forecasting, inference, estimation, expectation",event
+합리적 가정이 수립된다.,"assumption, reasoning, formulation, deduction, hypothesis",event
+권리를 포기한 것이 아니다.,"declaration, assertion, clarification, statement, denial",event
+부동산에 관한 다른 활동도 정상적으로 이루어진다.,"transaction, operation, business, management, commerce",event
+제90조에서 추가 조정이 없다고 명시한다.,"legal process, regulation, clarification, amendment, legislation",event
+2025년 1월 1일에 계약일자가 정해진다.,"agreement, scheduling, arrangement, planning, decision",event
+공동비용을 균분한다.,"cost sharing, equal division, resource allocation, cooperation, fairness",event
+계약 당사자들의 의무와 책임이 명확해진다.,"clarification, specification, obligation, responsibility, agreement, definition",event
+"주당 매매가격은 금 일만원(₩10,000)으로 한다.","transaction, pricing, agreement, valuation, exchange",event
+매매대금이 지급되지 않는다.,"breach, nonpayment, default, dispute, contract violation",event
+특별조항은 진술보증 관련 사항과 하자담보 관련 사항을 포함한다.,"contract, agreement, assurance, guarantee, liability, responsibility",event
+부록이 계약의 일부가 된다.,"agreement, inclusion, extension, incorporation, formalization",event
+보완이 필요한 상황이 발생한다.,"problem, deficiency, improvement, correction, issue",event
+매수인을 주주명부에 기재한다.,"registration, recordkeeping, ownership transfer, documentation",event
+본 거래가 단순 주식 양도 방식으로 진행된다.,"transaction, transfer, ownership change, agreement, exchange",event
+공동비용은 균분된다.,"cost sharing, allocation, distribution, fairness, equality",event
+대금이 준비되어야 한다.,"payment, transaction, obligation, preparation, finance",event
+물품의 원활한 공급이 이루어진다.,"distribution, logistics, supply, fulfillment, delivery",event
+매수인은 거래 전 언제든지 정밀 실사를 수행할 수 있다.,"inspection, verification, due diligence, assessment, evaluation",event
+대한민국 법률이 준거법이 된다.,"legal determination, jurisdiction, governance, legislation, regulation",event
+각 당사자가 본 계약과 관련하여 취득한 비밀정보를 보호한다.,"confidentiality, protection, information security, secrecy, obligation",event
+상계할 사유가 존재한다.,"compensation, justification, legal basis, dispute, claim",event
+제46조 (공개 정보) 제공 정보는 정확하다.,"information disclosure, accuracy, transparency, compliance, verification",event
+특별조항에 대해 등기우편이 아닌 방식의 통지는 효력이 없다.,"notification, legal process, communication, validity, regulation",event
+운전자본 등의 변동이 발생한다.,"change, fluctuation, adjustment, finance, capital, variation",event
+제7조의 적시 통지를 하지 못한 경우,"violation, breach, omission, noncompliance, notification failure",event
+특별조항의 적용 범위가 명확해진다.,"clarification, interpretation, regulation, specification, legal process",event
+각 당사자가 상대방에게 필요한 서류를 제출한다.,"document exchange, submission, cooperation, verification, communication",event
+그 사항에 대해 면책된다.,"exemption, absolution, release, waiver, immunity",event
+거래종결일이 도래한다.,"completion, finalization, settlement, closure, deadline",event
+모든 권리가 완전히 이전된다.,"transfer, assignment, conveyance, relinquishment, ownership change",event
+각 당사자는 본 계약과 관련하여 취득한 비밀정보를 보호한다.,"confidentiality, information protection, secrecy, obligation, contract compliance",event
+이용자가 필요한 정보를 빠르게 얻을 수 있다.,"information access, efficiency, convenience, satisfaction, usability",event
+제93조는 준거법을 대한민국 법률로 정한다.,"legal determination, jurisdiction, regulation, legislation, authority",event
+거래가 이루어진다.,"exchange, transaction, negotiation, agreement, commerce",event
+매도인이 매도 대금을 수령한다.,"payment, transaction, settlement, compensation, receipt",event
+매도인은 주식회사 카파벤처스로 지정된다.,"designation, appointment, authorization, assignment, transaction",event
+세금을 적시에 납부했다.,"납부, 이행, 책임, 준수, 신고",event
+계약 당사자들이 계약서를 작성한다.,"합의, 문서화, 거래, 체결, 협상",event
+시설이 존재한다.,"existence, presence, infrastructure, availability, establishment",event
+매수인에 대한 통지는 이메일로 가능하다.,"notification, communication, agreement, transaction, contract",event
+권리의무를 양도할 수 없다,"restriction, limitation, transferability, legal constraint, prohibition",event
+노동법규를 준수한다.,"규정준수, 법집행, 권리보호, 윤리, 책임",event
+기한이 도래한다,"expiration, deadline, time limit, due date, termination",event
+중요 계약이 공개되었다.,"disclosure, revelation, announcement, transparency, negotiation",event
+관련 권리를 행사할 수 없다.,"restriction, limitation, prohibition, disqualification, exclusion",event
+새로운 브랜드를 개발하지 않는다.,"stagnation, continuity, strategy, maintenance, decision-making",event
+진술보증을 위반한다.,"계약위반, 불이행, 법적책임, 신뢰손상, 법률분쟁",event
+제42조에 따라 중요 계약이 공개된 것 외에는 없다.,"disclosure, regulation, compliance, transparency, governance",event
+"""적시""의 정의는 ""일반조항""에만 적용된다.","legal interpretation, rule application, definition, regulation, scope",event
+잔금 지급일이 도래한다.,"payment, settlement, transaction, deadline, obligation",event
+중요한 소송이 없다.,"peace, stability, calm, inactivity, normalcy",event
+하자담보 관련 사항도 특별조항이다.,"agreement, warranty, obligation, contract, legal provision",event
+정보가 정확하다.,"accuracy, reliability, truthfulness, correctness, verification",event
+협력한다.,"collaboration, teamwork, partnership, unity, cooperation",event
+매수인은 매매주식의 완전한 소유권을 갖게 된다.,"ownership, acquisition, transfer, transaction, legal right",event
+매수인이 완전한 권한을 보유한다.,"ownership, authority, control, empowerment, entitlement",event
+성실히 이행한다.,"diligence, responsibility, commitment, perseverance, reliability",event
+나머지는 유효하다.,"validity, acceptance, approval, confirmation, inclusion",event
+"매매주식의 총 매매가격은 금 일천이백억원(₩120,000,000,000)으로 한다.","transaction, valuation, agreement, pricing, finance",event
+권리의 불행사가 권리의 포기를 의미하지 않는다.,"legal principle, waiver, rights, interpretation, legal doctrine",event
+공급망이 중단된다.,"disruption, shortage, interruption, crisis, instability",event
+보험료를 납부한다.,"payment, transaction, obligation, coverage, financial management",event
+"이 정의는 ""일반조항""에만 적용된다.","restriction, limitation, applicability, regulation, interpretation",event
+기존 배당이 발생한다.,"distribution, payment, finance, allocation, entitlement",event
+거래 구조가 결정된다.,"agreement, decision, negotiation, settlement, structure",event
+모든 계약을 성실히 이행 중이다.,"fulfillment, obligation, responsibility, trust, diligence",event
+매수인은 주식회사 람다홀딩스로 지정된다.,"designation, transaction, assignment, contracting, authorization",event
+소유권 이전 절차가 진행된다.,"transfer, transaction, registration, legal process, ownership",event
+경영을 적극적으로 지원한다.,"assistance, support, management, promotion, encouragement",event
+관련 법규를 준수한다.,"compliance, regulation, legality, governance, conformity",event
+제공 정보가 정확하다.,"accuracy, reliability, trustworthiness, validation, correctness",event
+자산이 귀속된다.,"ownership, transfer, assignment, inheritance, succession",event
+주식회사 람다홀딩스가 주식회사 뮤테크놀로지에 대한 매수인 역할을 한다.,"acquisition, investment, business transaction, ownership transfer, corporate action",event
+매수인이 이를 매수함에 있어 필요한 제반 사항을 규정한다.,"contract, regulation, transaction, agreement, compliance",event
+대리인을 선임할 수 있다.,"delegation, authorization, representation, appointment, empowerment",event
+법령상 요구 또는 상대방 동의 시 비밀정보 보호 의무에 예외가 발생한다.,"disclosure, exemption, regulation, compliance, consent",event
+잔금이 지급된다.,"payment, transaction, completion, settlement, fulfillment",event
+매매대금을 확보했다.,"자금확보, 거래완료, 재정관리, 이익실현, 금융활동",event
+각 당사자가 거래 비용을 부담한다.,"cost sharing, expense allocation, responsibility, agreement, negotiation",event
+불가항력이 발생한다.,"inevitability, uncontrollability, force majeure, unpredictability, externality",event
+세금을 적시 납부했다.,"납부, 이행, 준수, 책임, 성실",event
+잔금 지급일이 정해진다.,"payment, scheduling, agreement, transaction, deadline",event
+각 당사자에게 중요한 사항이 발생한다.,"incident, notification, significance, change, impact",event
+특별한 사정이 있는 경우,"exception, circumstance, situation, condition, justification",event
+개인정보보호법을 철저히 준수한다.,"compliance, regulation, protection, privacy, security",event
+상대방의 동의 없이 계약의 권리와 의무를 양도할 수 없다.,"consent, assignment, contract, obligation, transfer, restriction",event
+주식회사 카파벤처스와 주식회사 람다홀딩스가 2025년 1월 1일에 계약을 체결한다.,"agreement, partnership, contract signing, business deal, collaboration",event
+효율적인 통지 시스템을 구축한다.,"system improvement, communication, optimization, development, management",event
+손해배상액을 상계할 수 있다.,"compensation, offset, deduction, legal remedy, settlement",event
+"매도인이 보유한 대상회사 발행 보통주식 12,000,000주를 매수인에게 매도한다.","transaction, transfer, sale, ownership change, stock deal, agreement",event
+시너지가 발생한다.,"cooperation, synergy, interaction, collaboration, amplification",event
+기간을 연장할 수 있다.,"extension, postponement, delay, flexibility, adjustment",event
+요청 정보가 있다.,"request, inquiry, communication, information exchange, seeking",event
+양 당사자가 본 계약의 이행에 있어 상호 선의와 신뢰를 바탕으로 성실히 협력한다.,"cooperation, trust, good faith, collaboration, integrity",event
+"주당 매매가격을 금 일만원(₩10,000)으로 정한다.","valuation, pricing, agreement, transaction, finance",event
+관련 권리가 자동 소멸한다,"termination, expiration, dissolution, cessation, nullification",event
+손해가 발생한다.,"loss, damage, disadvantage, setback, misfortune",event
+거래종결일이 된다,"completion, closure, finalization, agreement, settlement",event
+이 통지만이 유효하다.,"notification, validity, communication, authorization, confirmation",event
+기존 브랜드가 존재한다.,"existence, branding, continuity, legacy, identity",event
+보상을 청구한다.,"compensation, claim, request, reimbursement, justice",event
+매수인이 어떤 사항을 인지한다.,"awareness, realization, recognition, perception, understanding",event
+상대방의 동의가 없다,"disagreement, conflict, refusal, dissent, opposition",event
+제90조가 규정되었다.,"legislation, regulation, enactment, legal process, codification",event
+양 당사자는 본 계약을 이행한다.,"agreement, execution, compliance, partnership, obligation",event
+거래가 종결된다.,"completion, closure, agreement, resolution, finalization",event
+규제 대응은 매수인 책임이다.,"compliance, responsibility, regulation, accountability, obligation",event
+주식회사 람다홀딩스의 대표이사가 2025년 1월 1일에 서명한다.,"signing, authorization, decision-making, leadership, documentation",event
+환경이 보호된다.,"conservation, preservation, sustainability, protection, improvement",event
+통지 기한은 엄격히 해석된다.,"interpretation, notification, regulation, legal strictness, compliance",event
+부채는 매도인에게 귀속된다.,"liability allocation, risk transfer, contract obligation, responsibility assignment",event
+제26조(데이터)가 시행된다.,"implementation, enforcement, regulation, governance, compliance",event
+일부 조항이 무효가 된다.,"invalidation, legal change, annulment, regulation, amendment",event
+주식회사 카파벤처스가 주식회사 뮤테크놀로지에 대한 매도인 역할을 한다.,"business transaction, divestment, intermediary role, corporate action, sale",event
+제85조가 시행된다.,"enactment, regulation, implementation, legislation, governance",event
+필요한 지적재산권을 보유하고 있다.,"ownership, authorization, protection, compliance, rights",event
+각 당사자는 중요한 사항 발생 시 상대방에게 적시에 통지해야 한다.,"notification, communication, obligation, information sharing, responsibility",event
+직원을 고용한다.,"recruitment, onboarding, staffing, employment, selection",event
+손해배상액을 산정한다.,"compensation, calculation, assessment, liability, evaluation",event
+분쟁이 발생한다.,"conflict, confrontation, disagreement, escalation, tension",event
+문서를 인도한다.,"transfer, delivery, exchange, transaction, communication",event
+본 계약의 조항은 '일반조항'과 '특별조항'으로 구분된다.,"classification, differentiation, regulation, agreement, organization",event
+완전한 합의를 구성한다.,"agreement, consensus, negotiation, resolution, settlement",event
+매도인은 거래종결일에 매매주식의 완전한 소유권을 매수인에게 이전한다.,"ownership transfer, transaction, agreement, contract fulfillment, asset delivery",event
+공개된 것 외 중요 계약이 없다.,"disclosure, transparency, agreement, confirmation, communication",event
+공동비용이 발생한다.,"cost sharing, expense, collaboration, distribution, finance",event
+기한을 엄수한다.,"punctuality, compliance, responsibility, discipline, commitment",event
+"매도인이 대상회사가 발행한 보통주식 12,000,000주를 매수인에게 매도한다.","share transfer, transaction, sale, acquisition, investment, ownership change",event
+기한을 엄수한다,"punctuality, compliance, responsibility, discipline, reliability",event
+영업일이다,"workday, business, transaction, operation, commerce",event
+문서를 작성한다.,"writing, documentation, creation, preparation, composition",event
+회사는 추가적인 중요 부채가 존재하지 않는다.,"disclosure, assurance, finance, transparency, risk management",event
+준거법이 정해진다.,"rulemaking, legislation, regulation, governance, standardization",event
+매도인은 진술과 보증을 한다.,"representation, assurance, disclosure, affirmation, agreement",event
+배상 한도가 매매대금의 25%로 제한된다.,"limitation, compensation, restriction, contract, liability",event
+핵심 임직원이 계속 근무한다.,"retention, stability, continuity, loyalty, commitment",event
+부록이 존재한다.,"addition, supplement, inclusion, extension, attachment",event
+"""적시""의 정의가 다른 조항에는 적용되지 않는다.","interpretation, exception, application, legal definition, regulation",event
+기존 브랜드를 사용한다.,"brand loyalty, consumption, preference, habit, familiarity",event
+제63조가 적용된다.,"regulation, enforcement, compliance, legislation, governance",event
+핵심 임직원의 근무 유지를 위해 노력한다.,"retention, loyalty, motivation, management, workforce, engagement",event
+행정 사항이 있다.,"notification, announcement, communication, administration, information sharing",event
+양 당사자는 본 계약을 체결한다.,"agreement, contract, negotiation, commitment, transaction",event
+일부가 무효이다.,"invalidation, nullification, partiality, legal decision, judgment",event
+공정하게 해석한다.,"judgment, interpretation, fairness, evaluation, decision-making",event
+"하자담보 관련 사항(제29조, 제73조)도 특별조항이다.","contract terms, legal regulation, warranty, liability, agreement",event
+라이선스가 발급된다.,"approval, certification, authorization, recognition, validation",event
+"서면은 문서, 이메일, 기타 서면 형태를 포함한다.","communication, documentation, recordkeeping, correspondence, information exchange",event
+등기 절차가 시작된다.,"legal process, registration, initiation, documentation, procedure",event
+매수인은 이메일로 통지를 받을 수 있다.,"notification, communication, permission, agreement, information exchange",event
+특별조항은 별도의 통지 규정을 따른다.,"notification, regulation, exception, compliance, agreement",event
+본 계약은 해석된다.,"interpretation, agreement, legal process, understanding, clarification",event
+연결재무제표에 포함된다.,"inclusion, consolidation, accounting, integration, reporting",event
+"매매주식의 총 매매가격을 금 일천이백억원(₩120,000,000,000)으로 정한다.","transaction, pricing, agreement, valuation, contract",event
+매매주식의 완전한 소유자가 된다.,"ownership, acquisition, possession, transaction, investment",event
+3개월간 지원한다.,"assistance, support, sponsorship, duration, provision",event
+해당 사건은 서울중앙지방법원에서 심리된다.,"judicial process, legal proceeding, court hearing, litigation, adjudication",event
+법령상 요구 또는 상대방 동의가 있다.,"permission, compliance, consent, authorization, legality",event
+양 당사자는 상호 선의와 신뢰를 바탕으로 한다.,"agreement, trust, cooperation, goodwill, collaboration",event
+계약이 체결된다.,"agreement, commitment, negotiation, partnership, authorization",event
+매수인이 인지한 사항은 진술보증에서 제외된다.,"disclosure, exception, exclusion, acknowledgment, negotiation",event
+계약 당사자가 결정된다.,"agreement, determination, selection, designation, resolution",event
+매수인이 주주로 인정된다.,"recognition, validation, membership, acquisition, ownership",event
+주식이 양도된다.,"transfer, transaction, ownership change, asset movement, investment",event
+계좌 정보를 통지한다.,"notification, communication, information sharing, banking, transaction",event
+비밀정보 보호 의무에서 예외가 발생한다.,"disclosure, exception, confidentiality, information sharing, legal exemption",event
+"""적시""란 별도 정의가 없는 한 3영업일 이내를 의미한다.","deadline, timing, business process, regulation, scheduling",event
+문서가 안전하게 저장된다.,"preservation, security, archiving, protection, storage",event
+운전자본 등의 변동에 따른 대금조정은 별도 합의에 따른다.,"negotiation, agreement, adjustment, settlement, contract",event
+거래종결이 이루어진다.,"agreement, completion, transaction, closure, resolution",event
+종결 확인서를 작성한다.,"completion, documentation, verification, closure, confirmation",event
+시너지를 위해 협력한다.,"collaboration, partnership, teamwork, unity, synergy, cooperation",event
+진술보증 위반에 대한 책임이 발생한다.,"법적책임, 계약위반, 손해배상, 위반행위, 분쟁",event
+종결 장소를 정한다.,"decision, selection, agreement, planning, resolution",event
+제3장 진술 및 보증이 시작된다.,"contract, agreement, declaration, assurance, commitment",event
+계약 당사자가 약속을 한다.,"agreement, commitment, promise, obligation, negotiation",event
+진술 및 보증에 대한 내용이 설명된다.,"explanation, clarification, legal discourse, contract interpretation, statement analysis",event
+매수인은 거래 후 언제든지 정밀 실사를 수행할 수 있다.,"inspection, verification, due diligence, transaction, evaluation",event
+매매대금은 전액 현금으로 지급된다.,"payment, transaction, cash, settlement, agreement",event
+시설을 유지한다.,"maintenance, management, operation, upkeep, preservation",event
+한국어본이 있다.,"translation, localization, language adaptation, multilingual support, accessibility",event
+계약 당사자가 확정된다.,"agreement, confirmation, identification, designation, legal process",event
+매매주식은 어떠한 제한도 없는 상태로 양도된다.,"transfer, transaction, ownership change, exchange, agreement",event
+부동산 관련 계약은 정상적이다.,"transaction, agreement, legality, validation, compliance",event
+2025년 1월 1일에 서명을 한다.,"agreement, commitment, initiation, documentation, ceremony",event
+당사자 간에 매매주식의 매매와 관련한 모든 합의가 이루어진다.,"agreement, transaction, negotiation, settlement, contract",event
+세무 문제가 발생하지 않았다.,"compliance, legality, safety, stability, avoidance",event
+각자가 세금을 부담한다.,"taxation, contribution, fiscal responsibility, duty, payment",event
+매매주식의 양도에 제한이 없다.,"transaction, freedom, transfer, trading, regulation",event
+조항을 보완한다.,"revision, amendment, improvement, modification, update",event
+지적재산권이 필요한 상황이다.,"protection, ownership, authorization, regulation, legal rights",event
+특별조항의 범위는 별도로 정한다.,"agreement, limitation, specification, negotiation, clarification",event
+거래종결일이 발생한다.,"completion, transaction, closure, finalization, agreement",event
+공개된 것 외 중요 부채가 없다.,"disclosure, transparency, assurance, integrity, trust",event
+계약의 해석은 대한민국 법률에 근거를 둔다.,"법률해석, 준거법, 계약관계, 해석기준, 법적분쟁",event
+규제 대응은 매수인의 책임이다.,"compliance, responsibility, risk management, legal obligation, accountability",event
+"매도인, 매수인, 대상회사가 각각 특정된다.","contract, transaction, identification, agreement, parties",event
+감사가 회사의 회계 및 업무를 감사한다.,"inspection, evaluation, verification, oversight, review",event
+진술보증 관련 사항은 특별조항으로 분류된다.,"classification, legal provision, contract, regulation, categorization",event
+권리를 행사하지 않는다.,"abstention, waiver, nonparticipation, inaction, forbearance",event
+인지한 사항이 면책된다.,"exemption, recognition, responsibility, liability, awareness",event
+진술보증이 정확해야 한다.,"accuracy, verification, responsibility, diligence, compliance",event
+"문서, 이메일, 기타 서면 형태로 작성된다","documentation, communication, written form, correspondence, recordkeeping",event
+매수인이 감사를 선임한다.,"appointment, selection, governance, oversight, auditing",event
+운전자본을 조정한다.,"resource management, financial adjustment, optimization, cash flow, efficiency",event
+전환 지원을 3개월간 지원한다.,"support, assistance, aid, transition, adjustment, facilitation",event
+전제조건을 포기할 수 있다.,"sacrifice, concession, compromise, flexibility, adaptation",event
+진술보증이 위반될 경우 손해를 배상한다.,"compensation, liability, breach, indemnification, responsibility",event
+주식 양도가 완료된다,"ownership transfer, transaction, investment, asset redistribution, financial activity",event
+대한민국 법률에 따른다.,"regulation, compliance, governance, jurisdiction, legal authority",event
+매도인은 거래종결일로부터 3년간 경쟁 사업을 영위하지 않는다.,"restriction, agreement, noncompete, business, prohibition",event
+제19조의 적시 정의는 일반조항에만 적용된다.,"interpretation, application, legislation, regulation, legal principle",event
+제106조를 공정하게 해석한다.,"interpretation, judgment, fairness, legal analysis, application",event
+소송이 제기되지 않았다.,"non-litigation, settlement, agreement, resolution, avoidance",event
+요청 정보를 신속히 제공한다.,"information delivery, responsiveness, assistance, support, communication",event
+영업비밀을 보호한다.,"protection, confidentiality, safeguarding, secrecy, restriction",event
+진술보증 위반에 대한 책임이 2년간 유효하다.,"liability, warranty, contract, duration, obligation",event
+서울중앙지방법원이 관할이다.,"jurisdiction, authority, governance, legal process, administration",event
+매수인이 이를 매수한다.,"transaction, acquisition, exchange, agreement, ownership transfer",event
+"""적시""란 용어가 사용될 때 별도 정의가 없으면 3영업일 이내라는 의미가 적용된다.","interpretation, definition, clarification, timing, standardization, regulation",event
+매도인은 다음 사항을 보증한다.,"guarantee, assurance, declaration, obligation, representation",event
+대한민국의 은행이 정상 영업한다,"finance, operation, service, business, transaction",event
+현재 계약 이행 상태를 유지하고 있다.,"maintenance, compliance, stability, continuation, adherence",event
+"매수인이 매도인으로부터 대상회사가 발행한 보통주식 12,000,000주를 매수한다.","acquisition, transaction, investment, share transfer, ownership change, equity purchase",event
+매도인에 대한 통지는 등기우편으로 해야 한다.,"legal notice, communication, documentation, procedure, notification",event
+모든 정보는 최선을 다해 준비되었다.,"preparation, readiness, completion, organization, assurance",event
+대리인이 존재하게 된다.,"representation, delegation, substitution, agency, proxy",event
+거래의 완결이 확인된다.,"confirmation, completion, validation, transaction, agreement",event
+거래의 법적 주체가 명확해진다.,"clarification, identification, regulation, responsibility, transparency",event
+필요 서류를 인도한다.,"delivery, submission, transfer, documentation, exchange",event
+청구권이 소멸한다,"expiration, termination, invalidation, cessation, legal event",event
+각자 비용을 부담한다.,"cost sharing, independence, responsibility, fairness, division",event
+환경 법규를 준수한다.,"regulation, compliance, protection, responsibility, sustainability",event
+공개된 것 외에 중요 부채가 존재하지 않는다.,"disclosure, transparency, declaration, assurance, accountability",event
+본 계약은 대한민국 법률에 따라 해석된다.,"legal interpretation, jurisdiction, governance, regulation, authority",event
+매도인에 대한 통지는 등기우편으로만 유효하다.,"notification, legal procedure, communication, contract enforcement, documentation",event
+법규를 준수한다.,"obeying, compliance, regulation, discipline, order",event
+제70조,"법률, 조항, 규정, 법조문, 법규, 문서",entity
+부채,"채무, 의무, 책임, 부담, 법률용어",entity
+제26조,"법률, 조항, 규정, 조문, 기준, 원칙, 조치",entity
+주식회사 뮤테크놀로지,"company, corporation, organization, business, entity, firm, enterprise",entity
+신속히,"adverb, manner, speed, urgency, action",entity
+진술보증 위반에 대한 책임,"책임, 법률, 계약, 분쟁, 의무",entity
+법규,"규칙, 제도, 기준, 정책, 조항, 규정, 법령, 체계",entity
+법령,"법, 규정, 조항, 기준, 제도, 원칙, 규제",entity
+변경 사항,"변경, 변화, 업데이트, 수정, 조정, 알림, 통지",entity
+2025년 1월 1일,"날짜, 시점, 기준일, 기념일",entity
+상대방 동의,"동의, 허락, 승인, 조건, 필요사항, 합의, 권리",entity
+주체,"주체성, 개념, 철학, 원칙, 이념, 사상, 가치",entity
+완전한 소유자,"권리자, 소유권자, 투자자, 주주, 당사자",entity
+각자,"individual, person, participant, entity, subject",entity
+지적재산권,"권리, 법률, 자산, 보호, 제도, 재산",entity
+종결 확인서,"문서, 증명서, 확인서, 기록, 서류",entity
+구성원,"사람, 집단, 멤버, 인원, 참여자, 일원, 구성체",entity
+기업,"조직, 단체, 경제주체, 법인, 기관, 사업체, 경영체",entity
+모든 정보,"information, data, content, resource, knowledge",entity
+제23조,"법, 조항, 규정, 권리, 조문, 법률",entity
+거래종결,"계약, 절차, 과정, 행위, 단계, 완료, 종료",entity
+제90조,"법률, 조항, 규정, 조문, 법조문, 문서, 기준",entity
+별도의 통지 규정,"규정, 조항, 조건, 조치, 약관, 기준, 법률",entity
+제93조,"law, regulation, statute, article, provision, rule",entity
+보상,"개념, 제도, 행위, 권리, 절차",entity
+서울중앙지방법원,"court, institution, organization, judiciary, authority, tribunal",entity
+법령상 요구 또는 상대방 동의 시,"조건, 상황, 예외, 규정, 허가, 동의, 요건",entity
+제34조,"법률, 조항, 규정, 규칙, 문서, 조문, 조건",entity
+특별조항,"규정, 조항, 조문, 조건, 약관, 법률, 규칙, 원칙",entity
+서면,"문서, 기록, 자료, 증거, 정보",entity
+청구권,"권리, 법률용어, 청구, 법적개념, 요구",entity
+비밀정보 보호의무,"의무, 규정, 원칙, 책임, 법률, 규범, 보호",entity
+선임자,"person, representative, agent, participant, actor",entity
+계좌 정보,"정보, 데이터, 금융, 기록, 항목, 세부사항",entity
+모든 계약,"agreement, contract, document, obligation, commitment, arrangement, legal instrument, transaction",entity
+제19조의 적시 정의,"law, regulation, article, definition, provision, clause, legal concept",entity
+대상회사,"company, organization, corporation, entity, business, issuer",entity
+제46조,"법률, 조항, 규정, 조문, 조치, 기준, 원칙",entity
+매매주식의 완전한 소유권,"권리, 소유권, 법적개념, 거래, 재산",entity
+제51조,"law, regulation, clause, article, legal provision, rule",entity
+주식매도인,"person, participant, seller, party, individual, stakeholder",entity
+필요 서류,"document, paperwork, requirement, form, material",entity
+모든 거래 과정,"process, transaction, procedure, operation, activity, workflow, system",entity
+계약의 일부,"document, agreement, clause, section, attachment, addendum, legal term",entity
+환경,"분야, 개념, 조건, 이슈, 주제, 요소, 체계, 시스템, 영향, 문제",entity
+제94조,"법률, 조항, 규정, 법조문, 조문, 법령",entity
+사회적 책임,"개념, 가치, 의무, 역할, 원칙, 윤리",entity
+진술보증 위반 당사자,"당사자, 계약자, 책임자, 법인, 참여자, 주체",entity
+주식매수인,"사람, 투자자, 당사자, 참여자, 매수자, 계약자",entity
+성실히,"attitude, quality, behavior, value, trait",entity
+불가항력,"law, concept, principle, force majeure, exemption, doctrine",entity
+경영,"management, administration, operation, leadership, business, organization",entity
+문서를 인도한다,"행위, 절차, 과정, 조치, 규정",entity
+불이행한 당사자,"participant, party, individual, legal entity, obligor",entity
+제7조,"law, regulation, clause, article, rule, provision, policy",entity
+감사,"직원, 임원, 직위, 역할, 감독, 관리, 조직",entity
+수신자,"person, participant, receiver, individual, entity, role",entity
+자금,"금융, 자산, 재원, 수단, 자원, 경제",entity
+납부자,"사람, 개인, 주체, 납세자, 참여자",entity
+노동법규,"법, 규정, 기준, 원칙, 제도, 규율",entity
+이사,"직원, 관리자, 임원, 조직원, 인사",entity
+매수인이 인지한 사항,"information, knowledge, awareness, fact, disclosure, condition",entity
+적시,"time, period, deadline, duration, term, interval",entity
+중요 계약,"agreement, contract, document, arrangement, record, obligation",entity
+"보통주식 12,000,000주","stock, share, security, equity, asset, unit",entity
+대리인,"사람, 대표, 역할, 대행, 대리, 중개인, 관계자",entity
+책임,"의무, 부담, 역할, 개념, 원칙, 규정",entity
+비밀정보,"정보, 데이터, 자산, 내용, 기록, 자료, 요소",entity
+운영,"management, administration, operation, process, activity, function",entity
+이전 주체,"participant, party, entity, stakeholder, predecessor",entity
+적절한 보험,"보장, 안전, 제도, 서비스, 정책, 재정관리",entity
+어떠한 제한도 없는 상태,"condition, state, freedom, openness, possibility",entity
+신속한 의사소통,"communication, interaction, efficiency, process, system, function",entity
+제83조,"law, regulation, rule, article, statute, legal provision",entity
+규제 대응,"정책, 관리, 의무, 대응, 절차",entity
+관련 법규,"법, 규정, 규칙, 기준, 조항, 정책, 제도",entity
+고용,"노동, 일자리, 채용, 인력, 근로, 직업, 경제",entity
+단순 주식 양도 방식,"transaction, method, process, procedure, strategy, approach, system",entity
+기한,"기간, 시간, 제한, 마감, 조건, 규정",entity
+수령인,"person, recipient, individual, party, agent",entity
+"일만원(₩10,000)","currency, money, denomination, value, amount, unit",entity
+서명,"문서, 인증, 행위, 절차, 증거, 기록",entity
+거래종결 후의 사항,"procedure, regulation, provision, process, guideline",entity
+다음 사항,"항목, 조건, 조항, 내용, 사항, 규정",entity
+상호 선의와 신뢰,"attitude, principle, relationship, foundation, trust, cooperation",entity
+제25조,"조항, 규정, 법률, 조문, 기준, 원칙",entity
+특별조항의 범위,"범위, 조건, 조항, 규정, 기준, 내용, 한계",entity
+공동비용,"비용, 지출, 분담, 항목, 재정, 회계",entity
+관련 법규 준수,"규정, 기준, 원칙, 의무, 조건, 규제, 조항",entity
+투명하고 공정하게,"principle, value, standard, guideline, ethic",entity
+본 계약,"agreement, contract, document, legal instrument, transaction, regulation",entity
+별도 합의,"agreement, contract, arrangement, negotiation, consensus, legal term",entity
+경쟁 사업,"business, industry, market, enterprise, activity, field",entity
+정밀 실사,"조사, 평가, 절차, 분석, 활동, 과정",entity
+기존 배당,"배당, 권리, 이익, 분배, 금융, 자산",entity
+3영업일 이내,"기간, 시간, 기한, 조건",entity
+매도인,"사람, 역할, 주체, 거래자, 당사자, 참여자",entity
+적시의 정의,"legal concept, interpretation, principle, regulation, doctrine",entity
+매매대금,"금액, 자금, 비용, 거래, 자산, 가치",entity
+거래종결일,"날짜, 시점, 마감일, 기한, 종료, 기준일, 거래",entity
+운전자본 등의 변동,"capital, finance, resource, agreement, transaction, operation",entity
+제106조,"law, clause, regulation, article, statute, provision, rule",entity
+각 당사자,"party, participant, entity, individual, stakeholder",entity
+통지의 구체적 방법,"절차, 규정, 방식, 기준, 조치, 행위, 원칙, 방법",entity
+본 계약의 조항,"조항, 조건, 내용, 규정, 문서, 약관",entity
+대한민국,"country, nation, state, region, society",entity
+직원,"사람, 인력, 인원, 구성원, 근로자, 인재, 인적자원",entity
+"대상회사 발행 보통주식 12,000,000주","stock, shares, equity, security, asset, instrument",entity
+일부 조항,"clause, provision, rule, regulation, article, term",entity
+다른 주체,"subject, stakeholder, participant, agent, party",entity
+서면 합의,"계약, 문서, 약정, 합의서, 기록, 절차",entity
+일반조항,"clause, provision, article, section, term, regulation, rule",entity
+별도,"조건, 규정, 항목, 범위, 조항",entity
+대금조정,"contract, agreement, negotiation, settlement, transaction, adjustment",entity
+제1장,"section, chapter, part, division, unit, document",entity
+공급망,"network, system, logistics, infrastructure, distribution, management",entity
+매도인 지정 계좌,"계좌, 금융상품, 금융계정, 거래수단, 자산",entity
+매매주식의 매매와 관련한 당사자 간의 모든 합의,"계약, 합의, 약정, 문서, 법률관계, 협약, 거래",entity
+지적재산권 보유 주체,"소유자, 권리자, 단체, 기관, 주체, 조직, 당사자",entity
+문서,"텍스트, 기록, 자료, 파일, 정보, 자료형태, 내용",entity
+종결,"event, conclusion, ending, occurrence, process",entity
+브랜드,"category, identity, trademark, concept, value, reputation, symbol",entity
+매도인에 대한 통지,"절차, 요건, 통지, 문서, 법률",entity
+대표이사,"position, executive, leader, representative, officer, authority",entity
+기타 서면 형태,"문서, 기록, 매체, 자료, 형태",entity
+손해배상,"법률, 제도, 보상, 청구, 책임, 권리, 의무",entity
+조항,"규정, 내용, 조건, 조문, 기준, 원칙, 요소, 항목",entity
+공정하게,"adverb, manner, principle, value",entity
+매수인에 대한 통지,"document, notice, communication, message, notification",entity
+청구권 소멸,"법률, 권리, 소멸, 절차, 사건, 법적 개념",entity
+매매대금의 25%,"비율, 제한, 조건, 기준",entity
+한국어본,"language, version, text, translation, document",entity
+제공 주체,"provider, entity, participant, organization, agent",entity
+규제,"제도, 정책, 제한, 통제, 관리, 법률",entity
+정확성,"특성, 품질, 상태, 가치, 기준",entity
+대한민국 법률,"법, 규정, 기준, 제도, 규율, 체계, 기준문서",entity
+주당 매매가격,"price, value, amount, cost, figure, metric",entity
+특별조항 관련 통지,"문서, 통지, 서류, 통보, 행정절차, 법률사항",entity
+진술보증 위반 관련 통지,"통지, 문서, 알림, 법률문서, 계약, 조항, 의무, 조건",entity
+특별한 사정,"condition, circumstance, situation, exception, reason",entity
+시너지,"협력, 효과, 상호작용, 상승, 관계, 동기, 영향",entity
+주식,"자산, 금융상품, 투자수단, 증권, 소유권",entity
+거래 과정,"과정, 절차, 시스템, 활동, 메커니즘, 행위, 단계",entity
+사항,"내용, 정보, 항목, 요소, 조건, 주제",entity
+없음,"개념, 상태, 조건, 상황, 요소, 존재",entity
+적시 통지,"의무, 원칙, 규정, 조건, 통보, 정책, 절차",entity
+제공 정보,"정보, 데이터, 내용, 사실, 자료",entity
+기존 브랜드,"브랜드, 이름, 정체성, 마케팅, 상표",entity
+균분,"method, principle, allocation, distribution, rule",entity
+경영권,"권리, 지위, 통제, 소유, 지배, 책임, 구조, 시스템",entity
+제5장,"chapter, section, part, article, provision",entity
+매매주식,"자산, 금융상품, 투자수단, 거래대상, 소유권, 증권",entity
+추가 조정 없음,"조치, 결정, 규정, 상태, 행위, 상황",entity
+"일천이백억원(₩120,000,000,000)","금액, 자본, 가치, 재산, 투자, 비용, 자산, 예산, 수치",entity
+지적재산권 보유,"법률, 권리, 제도, 보호, 규정",entity
+거래종결 후,"time, stage, process, event, transaction phase, period",entity
+제95조,"law, regulation, article, statute, rule, provision, legal code",entity
+통지,"notice, notification, communication, document, information, message",entity
+이전,"transaction, transfer, change, event, occurrence",entity
+제96조,"law, regulation, article, rule, provision",entity
+대금,"payment, money, funds, transaction, amount, value",entity
+배상 한도,"limit, restriction, condition, policy, regulation, percentage, clause, rule",entity
+최선을 다해,"effort, dedication, commitment, perseverance, attitude",entity
+통지자,"person, participant, notifier, agent, role",entity
+권리 포기,"행위, 선택, 결정, 법률 용어, 상태, 절차",entity
+보험,"제도, 서비스, 금융상품, 보장, 계약, 안전망",entity
+관련 권리 자동 소멸,"법률, 규정, 원칙, 절차, 제도",entity
+권리 불행사,"법률, 개념, 권한, 상태, 행위",entity
+수령자,"사람, 대상, 개인, 참가자, 수취인",entity
+손해 배상,"법률, 책임, 보상, 계약, 손실, 청구",entity
+영업비밀,"정보, 자산, 권리, 비밀, 재산, 보호 대상",entity
+제3장 진술 및 보증,"section, chapter, clause, provision, statement, warranty, document, legal term",entity
+제104조,"law, regulation, statute, article, provision, rule, policy",entity
+권리의무,"법률관계, 법적개념, 의무, 권리, 법원칙",entity
+통지 기한,"기간, 조건, 제한, 규정, 조항, 시간",entity
+인지한 사항,"fact, information, knowledge, awareness, issue, circumstance",entity
+행정,"system, management, governance, operation, process, authority, administration",entity
+제5장 거래종결 후 사항,"chapter, section, regulation, provision, document, rule",entity
+제86조,"law, regulation, article, provision, statute, rule",entity
+상대방,"person, party, counterpart, participant, entity",entity
+제99조,"law, article, clause, provision, regulation, rule, section",entity
+계좌,"금융, 자산, 정보, 기록, 관리, 서비스",entity
+통지를 불이행한 당사자,"party, individual, participant, stakeholder, entity, subject",entity
+다른 언어본,"version, edition, translation, language option, alternative",entity
+우호적 해결,"agreement, resolution, settlement, solution, negotiation, approach, method",entity
+이행 주체,"주체, 당사자, 역할, 참여자, 법적주체",entity
+등기우편,"우편, 서비스, 통신, 전달, 시스템, 방식, 절차",entity
+이메일,"통신, 메시지, 정보, 수단, 기술",entity
+매도 및 매수,"거래, 계약, 행위, 과정, 절차, 활동",entity
+손해배상액,"금액, 손해, 보상, 책임, 법률, 배상",entity
+부록,"section, supplement, attachment, addition, document, component, annex",entity
+기간을 연장할 수 있다,"option, extension, permission, policy, rule, exception",entity
+제75조,"law, regulation, article, provision, rule",entity
+전제조건,"조건, 기준, 요소, 요건, 필요조건, 필수사항",entity
+권리,"자격, 자율성, 법률, 특권, 이익, 책임",entity
+양 당사자,"party, participant, counterpart, entity, stakeholder",entity
+진술보증,"계약, 법률, 보증, 약속, 조항, 조건, 책임, 의무",entity
+배상,"보상, 책임, 법률, 손해, 금전, 규정",entity
+관련 조항,"법률, 규정, 조문, 조항, 기준, 원칙",entity
+제67조,"법, 조항, 규정, 규칙, 조문, 조례",entity
+데이터,"information, value, asset, resource, record, element, input",entity
+관련 권리 행사 불가,"restriction, limitation, condition, legal term, policy",entity
+상태,"condition, situation, phase, stage, status, state",entity
+지명 이사,"position, role, officer, title, authority",entity
+통지 시스템,"시스템, 기술, 도구, 플랫폼, 프로세스, 방법",entity
+요청 정보,"data, information, content, resource, input",entity
+통지 불이행,"의무, 책임, 제한, 조건, 결과",entity
+세금,"비용, 재정, 의무, 부담, 경제, 정책",entity
+서울,"city, capital, location, place, region, metropolis",entity
+거래종결 이후 발생하는 사항,"조건, 사안, 절차, 사항, 조치, 과정, 단계",entity
+본 계약과 관련하여,"계약, 문서, 조항, 조건, 약정, 사항, 내용",entity
+대한민국의 은행이 정상 영업하는 날,"날, 일, 일정, 근무일, 영업일, 시간, 기간, 개념",entity
+주식회사 카파벤처스,"company, corporation, business, organization, entity",entity
+전환 지원,"assistance, support, transition, aid, service, program",entity
+청구인,"person, claimant, participant, applicant, individual",entity
+하자담보 관련 사항,"조항, 규정, 조건, 계약, 법률, 항목",entity
+거래종결일로부터 2년간,"기간, 시간, 기한, 유효기간, 조건, 약정, 법률용어",entity
+계약,"문서, 약정, 법률, 거래, 합의, 절차, 관계, 약속, 조건",entity
+부동산 관련 계약,"contract, agreement, document, transaction, arrangement, legal instrument",entity
+합리적 가정,"추론, 전제, 논리, 기준, 조건",entity
+제37조,"law, regulation, article, legal provision, rule, statute",entity
+수정,"변경, 조정, 행위, 과정, 절차, 합의",entity
+필요시,"condition, requirement, necessity, circumstance, provision",entity
+통상의 영업과정,"operation, business process, management, activity, procedure, transaction, workflow",entity
+시설,"장소, 공간, 기관, 조직, 설비, 구조, 시스템",entity
+환경 법규,"규정, 법률, 정책, 기준, 규범, 제도, 원칙",entity
+계약일로부터 30일 내,"period, deadline, duration, timeframe, term",entity
+제51조에 따라 주식 양도가 완료되는 날,"date, day, event, deadline, milestone, timeline",entity
+자산,"재무, 가치, 소유, 자원, 항목, 경제",entity
+진술보증 위반,"위반, 책임, 법률, 계약, 조항, 조건, 분쟁, 리스크",entity
+모든 라이선스,"license, permission, authorization, certification, regulation, policy",entity
+노동,"노동, 일, 활동, 직업, 근로, 행위, 과정, 생산",entity
+나머지 조항,"clause, provision, term, section, article",entity
+예측,"행위, 과정, 사고, 판단, 분석, 추론",entity
+공개 정보,"정보, 데이터, 자료, 공개, 자산, 문서",entity
+계약 당사자,"사람, 당사자, 참여자, 주체, 법적 주체, 계약자",entity
+모든 권리,"right, entitlement, ownership, authority, legal term, privilege",entity
+거래종결일로부터 3년간,"period, duration, term, timeframe, restriction, condition",entity
+제64조,"법률, 조항, 규정, 조문, 문서, 규칙",entity
+주식회사 람다홀딩스,"company, corporation, business, organization, entity",entity
+개인정보보호법,"law, regulation, legislation, policy, rule, statute",entity
+매수인,"사람, 구매자, 주체, 당사자, 거래자, 참여자",entity
+은행,"기관, 금융, 조직, 서비스, 산업, 사업체",entity
+일부,"부분, 요소, 구성, 집합, 단위, 항목",entity
+이전 상대방,"person, predecessor, participant, stakeholder, entity",entity
+거래 비용,"비용, 경제학, 지출, 개념, 개입, 요소",entity
+핵심 임직원,"구성원, 직원, 인재, 인력, 인사, 인원, 조직",entity
+주주명부,"명부, 기록, 문서, 등록, 자료, 증서",entity
+본 거래,"transaction, exchange, agreement, process, event",entity
+분쟁,"상황, 문제, 갈등, 사건, 이슈, 사안, 관계",entity
+제85조,"law, regulation, article, provision, clause, rule",entity
+운전자본,"자본, 금융, 회계, 재무, 자산, 관리",entity
+영업일,"날, 기간, 일정, 시간, 근무일, 업무일, 평일, 은행일",entity
+완전한 합의,"합의, 결정, 절차, 과정, 원칙, 상태",entity
+연구개발,"활동, 과정, 혁신, 기술, 창조, 발전, 전략, 과학, 관리",entity
+진술보증 관련 사항,"계약, 조항, 조건, 법률, 약정, 규정",entity
+총칙,"chapter, section, regulation, provision, law, rule, guideline, framework",entity
+개인정보보호법 준수,"법률, 규정, 조항, 정책, 준칙, 기준, 원칙, 지침",entity
+등기,"등록, 절차, 법률, 문서, 행위, 시스템, 기록",entity
+재무제표,"자료, 보고서, 문서, 기록, 정보, 데이터",entity
+적극적 지원,"행동, 도움, 지원, 협력, 참여",entity
+불이행,"행위, 상태, 법률개념, 책임, 위반, 결과",entity
+손해를 입은 당사자,"사람, 피해자, 주체, 개인, 당사자, 관계자",entity
+당사자,"participant, party, individual, stakeholder, entity, actor",entity
+연결재무제표,"회계, 재무, 보고서, 문서, 자료, 정보, 기준, 시스템",entity
+인도자,"person, participant, leader, agent, role, individual",entity
+채무,"법률, 금융, 의무, 책임, 계약, 관계, 권리",entity
+완전한 권한,"권리, 소유권, 지위, 상태, 법적 개념",entity
+나머지,"부분, 부분집합, 일부, 잔여, 여분, 개념",entity
+제42조,"article, clause, provision, regulation, rule, legal term",entity
+연결,"relationship, association, link, connection, integration, combination",entity
+제59조,"law, article, regulation, clause, provision, legal document",entity
+노력한다,"effort, action, perseverance, intent, motivation",entity
+효율적인 통지 시스템,"시스템, 메커니즘, 방법, 인프라, 프로세스, 소통, 도구",entity
+중재,"절차, 방법, 제도, 해결, 과정, 시스템",entity
+중요 부채,"채무, 의무, 책임, 재정, 위험, 약점",entity
+작성된다,"creation, composition, generation, documentation, formulation",relation
+책임이 있다,"의무, 담당, 소속, 의존, 부담",relation
+경쟁 사업을 영위하지 않는다,"non-competition, exclusivity, restriction, prohibition, business separation",relation
+인지하다,"realize, become aware, recognize, perceive, notice",relation
+보완된다,"improve, enhance, supplement, reinforce, strengthen",relation
+포함된다,"포함, 소속, 속하다, 일원, 내포",relation
+선임될 수 있다,"be appointed, be selected, be eligible, be nominated, be chosen",relation
+준거법으로 삼는다,"refer to, base on, use as standard, apply as rule, rely on",relation
+양도할 수 없다,"nontransferable, inalienable, unassignable, nondelegable",relation
+발생하면 즉시 통지한다,"immediate notification, real-time alert, instant reporting, prompt communication, immediate response",relation
+납부되었다,"paid, settled, processed, completed, fulfilled",relation
+근무를 유지하도록,"continue employment, retain position, maintain work, sustain job",relation
+기재된다,"record, document, state, enter, note",relation
+유지되고 있다,"continue, persist, remain, last, endure",relation
+의미한다,"signify, represent, indicate, denote, express, stand for",relation
+규정하다,"define, set rules, specify, determine, prescribe",relation
+준비되었다,"be ready, be prepared, be set, be equipped, be organized",relation
+양도된다,"transfer, hand over, assign, pass on, convey",relation
+송금된다,"transfer, remit, send funds, move money, wire",relation
+준수하다,"follow, comply, obey, adhere, conform",relation
+체결한다,"make agreement, establish contract, formalize deal, sign pact, conclude arrangement",relation
+이후,"after, following, subsequent to, next, succession",relation
+필요하다,"require, demand, necessitate, call for, depend on",relation
+매도하다,"sell, dispose of, transfer ownership, relinquish, trade",relation
+이행되고 있다,"progressing, being carried out, proceeding, underway, being implemented",relation
+전액 현금으로 지급된다,"full payment, cash transaction, monetary settlement",relation
+다한다,"fulfill, accomplish, complete, carry out, perform",relation
+유지된다,"지속, 보존, 상태유지, 계속됨, 존속",relation
+기초한다,"base on, rely on, depend on, be founded on, be supported by",relation
+부담한다,"take responsibility, bear cost, assume obligation, shoulder duty",relation
+따른다,"follow, obey, comply, adhere, conform",relation
+정보를 제공한다,"communicate, disclose, share, inform, convey",relation
+고용이 승계된다,"employment transfer, job succession, workforce continuity, labor inheritance, staff transition",relation
+소유하다,"possess, have, own, control, hold",relation
+불이행 시,"failure event, breach, noncompliance, default, violation",relation
+is participated by,"be engaged by, be attended by, be joined by, be involved by, be taken part by",relation
+실패 시,"if unsuccessful, on failure, when not achieved, upon failing",relation
+대상회사이다,"be subject to, be target of, be chosen entity, be selected company",relation
+지명하다,"appoint, designate, assign, select, nominate",relation
+감사를 선임한다,"appoint auditor, select overseer, assign inspector, designate reviewer",relation
+확보하다,"gain, secure, obtain, acquire, ensure",relation
+관련되다,"연관성, 관계, 연결, 연계, 상관성",relation
+연구개발을 계속한다,"sustain innovation, pursue advancement, maintain progress, continue improvement, ongoing development",relation
+구분된다,"differentiate, distinguish, separate, classify, identify",relation
+제한된다,"confined, bounded, constrained, restricted",relation
+엄격히 해석된다,"strict interpretation, narrow reading, precise definition, limited understanding, literal analysis",relation
+이루어진다,"consist of, be formed by, be made up of, be composed of, comprise",relation
+있으면,"existence, presence, availability, possession, being",relation
+정확해야 한다,"be precise, be accurate, ensure correctness, maintain exactness, uphold fidelity",relation
+우선한다,"take precedence, come before, be prioritized, override, have priority",relation
+포기될 수 있다,"abandonment, relinquishment, withdrawal, surrender, give up",relation
+정한다,"determine, decide, designate, assign, establish",relation
+보호한다,"지킨다, 방어한다, 안전하게 한다, 지지한다, 유지한다",relation
+매수인이다,"buy, acquire, obtain, receive, purchase",relation
+제공된다,"공급, 지원, 전달, 배분, 분배",relation
+이전된다,"이동, 전달, 변환, 전이, 전송",relation
+양호한 상태이다,"be well, be healthy, be stable, be in good condition, be sound",relation
+등기에 협력한다,"assist registration, support documentation, facilitate process, contribute action, help completion",relation
+이전에,"earlier than, prior to, before, preceding",relation
+일어난다,"발생하다, 생기다, 일어나다, 일시적 상태, 변화",relation
+구축하다,"build, establish, create, form, set up, develop",relation
+때문에,"cause, reason, due to, result of, basis for",relation
+구성한다,"form, make up, build, compose, constitute, create",relation
+귀속된다,"belong to, assigned to, attributed to, affiliated with, associated with",relation
+이행한다,"carry out, perform, execute, fulfill, accomplish",relation
+대표이사가 서명한다,"authorize, endorse, approve, validate, confirm",relation
+해결에 협력한다,"assist, collaborate, contribute, support, work together",relation
+노동법규를 준수한다,"follow rules, obey regulations, comply with standards, adhere to guidelines",relation
+진술하고 보증한다,"assert, declare, warrant, affirm, guarantee",relation
+공개된 것 외에 중요 부채가 없다,"financial disclosure, transparency, liability status, debt declaration",relation
+제반 사항을 규정하다,"set rules, define conditions, establish guidelines, specify requirements, outline provisions",relation
+무효여도,"invalidity, nullification, ineffectiveness, unenforceability",relation
+의미하지 않는다,"exclude, not signify, lack meaning, not represent, have no implication",relation
+협력한다,"work together, collaborate, cooperate, join forces, partner",relation
+지급한다,"provide, give, allocate, distribute, offer",relation
+가지고 있다,"own, possess, contain, hold, have",relation
+매도인이다,"sell, transfer ownership, assign rights, provide goods",relation
+적용된다,"적용성, 관여, 영향, 반영, 해당",relation
+상계할 수 있다,"offset, counterbalance, compensate, neutralize, adjust",relation
+매수하다,"acquire, purchase, obtain, secure, invest in",relation
+총 매매가격은,"price, value, amount, cost, sum",relation
+이전한다,"move, relocate, transfer, change location, shift",relation
+공개된 것 외에는 존재하지 않다,"limited existence, disclosed only, not present otherwise, exclusive to public, restricted presence",relation
+진행된다,"take place, occur, happen, be conducted, unfold",relation
+초래한다,"cause, lead to, bring about, result in, generate",relation
+요구한다,"request, need, necessitate, call for, demand",relation
+유효하려면 필요하다,"requirement, prerequisite, necessary condition, dependency, qualification",relation
+사용한다,"utilize, employ, make use of, apply, exploit",relation
+청구된다,"요구된다, 부과된다, 징수된다, 요청된다",relation
+해석된다,"be understood as, be interpreted as, be regarded as, be considered as, be seen as",relation
+보유한다,"possess, have, own, retain, hold",relation
+위반될 경우,"breach, violation, noncompliance, infraction, contravention",relation
+포함한다,"contain, encompass, consist of, comprise, incorporate",relation
+결과로,"lead to, result from, outcome of, consequence of, produce",relation
+적용하다,"implement, utilize, put into practice, employ, use",relation
+이다,"be, exist as, represent, serve as, function as",relation
+보장하다,"확실히 하다, 책임지다, 담보하다, 보호하다, 지키다",relation
+취득된다,"obtain, acquire, receive, gain, secure",relation
+경영을 지원한다,"assist management, support operations, facilitate leadership, aid administration",relation
+장소가,"location, place, setting, site, area, venue",relation
+발생하면,"trigger, result, occur, happen, initiate, arise",relation
+이전,"transfer, move, shift, handover, transition",relation
+금액은,"monetary value, amount, sum, price, cost",relation
+수행할 수 있다,"가능하다, 실행, 역량, 성취, 달성",relation
+조정된다,"change, adapt, regulate, modify, control, adjust",relation
+유효하다,"be valid, hold true, apply, be effective, be in force",relation
+중요한 사항 발생 시 통지한다,"notify, inform, alert, communicate, report",relation
+관할이다,"govern, oversee, supervise, manage, administer",relation
+보유하다,"possess, own, have, hold, retain",relation
+반드시 필요하다,"requirement, necessity, essential, indispensability, obligation",relation
+균분된다,"divide, split, distribute, allocate, share",relation
+제외된다,"leave out, omit, exclude, remove, eliminate",relation
+한도를 가진다,"limit, restrict, set boundary, cap, constrain",relation
+가능하다,"be possible, can do, be achievable, be feasible, have potential",relation
+일자가 된다,"become one, unify, merge, integrate, combine",relation
+준비되어야 한다,"be arranged, be set up, be provided, be organized, be equipped",relation
+인도된다,"guide, lead, direct, bring, escort",relation
+사항에 협력한다,"work together, collaborate, assist, support, coordinate",relation
+분류된다,"categorize, classify, group, sort, assign",relation
+동시에,"at the same time, simultaneous, concurrent, synchrony",relation
+규정한다,"define, establish rules, prescribe, determine, set out",relation

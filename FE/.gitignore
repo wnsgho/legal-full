@@ -1,0 +1,31 @@
+# Frontend build outputs
+/build/
+/build/v1/
+/build/v2/
+
+# Cover images
+/cover/
+
+# Node modules (if any at FE level)
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+
+# Log files
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE settings
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp

@@ -1,0 +1,173 @@
+sequenceDiagram
+    participant U as User
+    participant F as Frontend
+    participant A as Auth Service
+    participant C as Contract Service
+    participant O as OCR Service
+    participant AI as AI Analysis Service
+    participant CH as Chat Service
+    participant S as File Storage
+    participant DB as Database
+    participant R as Redis
+    participant M as Metrics Service
+
+    %% User Registration and Login
+    Note over U,M: User Authentication Flow
+    U->>F: 회원가입 요청
+    F->>A: register(userData)
+    A->>DB: INSERT INTO users
+    DB-->>A: user created
+    A->>M: recordUserActivity(userId, "register")
+    A-->>F: AuthResponse with JWT
+    F-->>U: 가입 완료
+
+    U->>F: 로그인 요청
+    F->>A: login(credentials)
+    A->>DB: SELECT user WHERE email
+    DB-->>A: user data
+    A->>A: validatePassword(password, hash)
+    A->>R: SET session:token
+    A->>M: recordUserActivity(userId, "login")
+    A-->>F: AuthResponse with JWT
+    F-->>U: 로그인 성공
+
+    %% Contract Upload Flow
+    Note over U,M: Contract Upload and Analysis Flow
+    U->>F: 파일 드래그 앤 드롭
+    F->>F: validateFile(file)
+    F->>A: validateToken(jwt)
+    A->>R: GET session:token
+    R-->>A: session valid
+    A-->>F: authentication success
+
+    F->>C: uploadContract(file, userId)
+    C->>M: recordAPILatency("upload", startTime)
+    C->>S: uploadFile(fileBuffer, s3Key)
+    S-->>C: upload URL
+    C->>DB: INSERT INTO contracts
+    DB-->>C: contract created
+    C->>M: recordAPILatency("upload", endTime)
+    C-->>F: Contract object
+    F-->>U: 업로드 완료 알림
+
+    %% OCR Processing (for image files)
+    alt 이미지 파일인 경우
+        F->>C: requestOCR(contractId)
+        C->>O: extractText(fileBuffer, fileType)
+        O->>O: preprocessImage(buffer)
+        O->>O: performOCR(processedImage)
+        O->>O: validateOCRResult(ocrText)
+        O-->>C: OCRResult
+        C->>DB: UPDATE contracts SET ocr_text
+        C-->>F: OCR 완료 알림
+    end
+
+    %% AI Analysis Flow
+    U->>F: 분석 시작 버튼 클릭
+    F->>C: startAnalysis(contractId, params)
+    C->>DB: INSERT INTO analysis_results (status: pending)
+    C->>R: SET analysis:status:id "in_progress"
+    C->>AI: analyzeContract(contractText, params)
+    C-->>F: 분석 시작 응답
+
+    AI->>M: recordAnalysisTime(startTime, model)
+    AI->>AI: callGPT4API(contractText, prompt)
+    AI->>AI: identifyRiskClauses(analysisResult)
+    AI->>AI: calculateRiskLevels(clauses)
+    AI->>AI: generateRecommendations(riskClauses)
+
+    alt 고위험 케이스 교차 검증
+        AI->>AI: callClaudeAPI(contractText, prompt)
+        AI->>AI: mergeResults(gpt4Result, claudeResult)
+    end
+
+    AI->>AI: validateLegalTerms(finalResult)
+    AI->>M: recordAnalysisTime(endTime, model)
+    AI-->>C: AnalysisResult
+
+    C->>DB: UPDATE analysis_results SET status='completed'
+    C->>DB: INSERT INTO risk_clauses (bulk insert)
+    C->>R: SET analysis:status:id "completed"
+    C->>R: SET analysis:result:id analysisResult
+    C->>F: WebSocket notification
+    F->>F: updateAnalysisUI(result)
+    F-->>U: 분석 완료 알림
+
+    %% AI Chat Interface Flow
+    Note over U,M: AI Chat Interface Flow
+    U->>F: 채팅 메시지 입력
+    F->>CH: sendMessage(contractId, message, userId)
+    CH->>DB: SELECT contract, analysis_result WHERE id
+    CH->>DB: INSERT INTO chat_messages (user message)
+    CH->>R: GET chat:context:contractId
+    R-->>CH: previous context
+
+    CH->>AI: generateResponse(message, context, contractData)
+    AI->>AI: callGPT4API(chatPrompt, contractContext)
+    AI-->>CH: AI response
+    
+    CH->>DB: UPDATE chat_messages SET response
+    CH->>R: SET chat:context:contractId (updated context)
+    CH->>M: recordUserActivity(userId, "chat")
+    CH-->>F: ChatResponse
+    F-->>U: AI 응답 표시
+
+    %% Contract Comparison Flow
+    Note over U,M: Contract Comparison Flow
+    U->>F: 비교할 두 분석 선택
+    F->>C: compareAnalyses(analysisId1, analysisId2)
+    C->>DB: SELECT analysis_results WHERE id IN (id1, id2)
+    C->>DB: SELECT risk_clauses WHERE analysis_id IN (id1, id2)
+    DB-->>C: analysis data for both contracts
+
+    C->>AI: compareContracts(analysis1, analysis2)
+    AI->>AI: analyzeClauseDifferences(clauses1, clauses2)
+    AI->>AI: calculateRiskChanges(risks1, risks2)
+    AI->>AI: generateComparisonSummary(differences)
+    AI-->>C: ComparisonResult
+
+    C->>DB: INSERT INTO analysis_comparisons
+    C->>R: SET comparison:result:id comparisonResult
+    C-->>F: ComparisonResult
+    F->>F: renderComparisonUI(result)
+    F-->>U: 비교 결과 시각화 표시
+
+    %% Batch Analysis Flow (P2 Feature)
+    Note over U,M: Batch Analysis Flow
+    U->>F: 다중 파일 업로드
+    F->>C: uploadBatchContracts(files[], userId)
+    
+    loop 각 파일별 처리
+        C->>S: uploadFile(file, s3Key)
+        C->>DB: INSERT INTO contracts
+        C->>AI: analyzeContract(contractText, params)
+        AI-->>C: AnalysisResult
+        C->>DB: UPDATE analysis_results
+    end
+    
+    C->>DB: INSERT INTO batch_analysis_summary
+    C-->>F: BatchAnalysisResult
+    F-->>U: 배치 분석 완료
+
+    %% Error Handling and Cleanup
+    Note over U,M: Error Handling
+    alt 분석 실패 시
+        AI-->>C: AnalysisError
+        C->>DB: UPDATE analysis_results SET status='failed'
+        C->>R: SET analysis:status:id "failed"
+        C->>M: recordUserActivity(userId, "analysis_failed")
+        C-->>F: Error notification
+        F-->>U: 분석 실패 알림 및 재시도 옵션
+    end
+
+    alt 세션 만료 시
+        F->>A: refreshToken(refreshToken)
+        A->>DB: SELECT user_sessions WHERE token
+        alt 유효한 리프레시 토큰
+            A->>R: SET new session:token
+            A-->>F: new JWT token
+        else 만료된 토큰
+            A-->>F: authentication required
+            F-->>U: 재로그인 요청
+        end
+    end

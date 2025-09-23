@@ -1,0 +1,19 @@
+# Project-specific folders to exclude
+# These folders contain generated files, backups, or temporary data
+/arc/
+/arc_v2/
+/original/
+/uploads/
+
+# Common development files
+.DS_Store
+Thumbs.db
+*.log
+
+# IDE settings
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp
