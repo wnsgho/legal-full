@@ -1,6 +1,0 @@
-2025-09-19 18:02:03,102 - INFO - Use pytorch device_name: cuda:0
-2025-09-19 18:02:03,102 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
-2025-09-19 18:02:05,765 - INFO - We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
-2025-09-19 18:02:10,893 - INFO - Use pytorch device_name: cuda:0
-2025-09-19 18:02:10,893 - INFO - Load pretrained SentenceTransformer: sentence-transformers/all-MiniLM-L6-v2
-2025-09-19 18:02:12,587 - INFO - We will use 90% of the memory on device 0 for storing the model, and 10% for the buffer to avoid OOM. You can set `max_memory` in to a higher value to use more memory (at your own risk).
