@@ -14,6 +14,7 @@ import {
   TrendingUp,
   Users,
   Clock,
+  Database,
 } from "lucide-react";
 import FileUpload from "@/components/FileUpload";
 import AnalysisProgress from "@/components/AnalysisProgress";
@@ -22,6 +23,7 @@ import ComparisonView from "@/components/ComparisonView";
 import ChatInterface from "@/components/ChatInterface";
 import AnalysisHistory from "@/components/AnalysisHistory";
 import StandaloneRiskAnalysis from "@/components/StandaloneRiskAnalysis";
+import RagRiskAnalysis from "@/components/RagRiskAnalysis";
 import {
   mockContracts,
   mockAnalysisResults,
@@ -418,7 +420,7 @@ const Dashboard: React.FC = () => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs defaultValue="upload" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8">
+          <TabsList className="grid w-full grid-cols-9">
             <TabsTrigger value="upload" className="flex items-center space-x-2">
               <Upload className="h-4 w-4" />
               <span>업로드</span>
@@ -443,6 +445,13 @@ const Dashboard: React.FC = () => {
             >
               <Shield className="h-4 w-4" />
               <span>독립 분석</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="rag-risk"
+              className="flex items-center space-x-2"
+            >
+              <Database className="h-4 w-4" />
+              <span>RAG 분석</span>
             </TabsTrigger>
             <TabsTrigger
               value="comparison"
@@ -750,6 +759,20 @@ const Dashboard: React.FC = () => {
                 toast({
                   title: "독립 위험 분석 완료",
                   description: "계약서 위험 분석이 완료되었습니다.",
+                });
+              }}
+            />
+          </TabsContent>
+
+          <TabsContent value="rag-risk" className="space-y-6">
+            <RagRiskAnalysis
+              onAnalysisComplete={(result) => {
+                // RAG 분석 완료 시 위험 분석 결과에 추가
+                setRiskAnalysisResults((prev) => [result, ...prev]);
+                toast({
+                  title: "RAG 하이브리드 분석 완료",
+                  description:
+                    "하이브리드 검색을 통한 위험 분석이 완료되었습니다.",
                 });
               }}
             />

@@ -11,9 +11,9 @@ import asyncio
 from datetime import datetime
 import logging
 
-from .part_risk_analyzer import SequentialRiskAnalyzer, PartRiskAnalyzer
-from atlas_rag.retriever.vector_retriever import VectorRetriever
-from atlas_rag.llm_generator.llm_generator import LLMGenerator
+# from .part_risk_analyzer import SequentialRiskAnalyzer, PartRiskAnalyzer
+# from atlas_rag.retriever.vector_retriever import VectorRetriever
+# from atlas_rag.llm_generator.llm_generator import LLMGenerator
 
 # API 라우터 설정
 router = APIRouter(prefix="/api/risk-analysis", tags=["risk-analysis"])

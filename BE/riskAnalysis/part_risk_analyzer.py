@@ -11,9 +11,9 @@ from dataclasses import dataclass
 from datetime import datetime
 import logging
 
-# 기존 RAG 시스템 import
-from atlas_rag.retriever.vector_retriever import VectorRetriever
-from atlas_rag.llm_generator.llm_generator import LLMGenerator
+# 기존 RAG 시스템 import (실제 사용 시에만 import)
+# from atlas_rag.retriever.vector_retriever import VectorRetriever
+# from atlas_rag.llm_generator.llm_generator import LLMGenerator
 
 @dataclass
 class PartAnalysisResult:

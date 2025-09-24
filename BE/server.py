@@ -25,7 +25,7 @@ sys.path.append(str(project_root))
 # 위험 분석 모듈 import
 from riskAnalysis.risk_analysis_api import router as risk_analysis_router
 
-from fastapi import FastAPI, HTTPException, BackgroundTasks, UploadFile, File, Form
+from fastapi import FastAPI, HTTPException, BackgroundTasks, UploadFile, File, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -41,6 +41,11 @@ logger = logging.getLogger(__name__)
 
 # .env 파일 로드
 load_dotenv()
+
+# 환경변수 확인
+print(f"🔍 NEO4J_DATABASE: {os.getenv('NEO4J_DATABASE')}")
+print(f"🔍 NEO4J_URI: {os.getenv('NEO4J_URI')}")
+print(f"🔍 NEO4J_USER: {os.getenv('NEO4J_USER')}")
 
 # 전역 변수
 rag_system = None
@@ -235,6 +240,11 @@ def check_and_load_existing_data():
             neo4j_password = os.getenv('NEO4J_PASSWORD', '')
             neo4j_database = os.getenv('NEO4J_DATABASE')
             
+            print(f"🔍 Neo4j 연결 정보:")
+            print(f"   - URI: {neo4j_uri}")
+            print(f"   - USER: {neo4j_user}")
+            print(f"   - DATABASE: {neo4j_database}")
+            
             driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_password))
             
             # Neo4j에서 노드 수 확인
@@ -254,6 +264,11 @@ def check_and_load_existing_data():
                         
                         # RAG 시스템 로드 시도
                         try:
+                            # 환경변수 재확인
+                            print(f"🔍 RAG 시스템 로드 전 환경변수 확인:", flush=True)
+                            print(f"🔍 NEO4J_DATABASE: {os.getenv('NEO4J_DATABASE')}", flush=True)
+                            print(f"🔍 NEO4J_URI: {os.getenv('NEO4J_URI')}", flush=True)
+                            
                             from experiment.run_questions_v3_with_concept import load_enhanced_rag_system
                             enhanced_lkg_retriever, hippo_retriever, llm_generator, neo4j_driver = load_enhanced_rag_system()
                             
@@ -862,7 +877,9 @@ async def get_status():
         status = {
             "rag_system_loaded": rag_system is not None,
             "neo4j_connected": neo4j_connected,  # 실제 연결 테스트 결과
-            "timestamp": datetime.now().isoformat()
+            "timestamp": datetime.now().isoformat(),
+            "neo4j_database": os.getenv('NEO4J_DATABASE'),
+            "neo4j_uri": os.getenv('NEO4J_URI')
         }
         
         return {"success": True, "status": status}
@@ -1707,6 +1724,37 @@ def execute_risk_analysis_sync(file_id: str, pipeline_id: str):
 # 전역 변수 초기화
 risk_analysis_results = {}
 
+@app.get("/risk-analysis/rag-contracts")
+async def get_rag_contracts():
+    """RAG가 구축된 계약서 목록 조회"""
+    try:
+        # 업로드된 파일 중에서 RAG가 구축된 것들만 필터링
+        rag_contracts = []
+        
+        for file_id, file_info in uploaded_files.items():
+            # 파일이 존재하고 RAG 시스템이 로드되어 있는지 확인
+            if os.path.exists(file_info["file_path"]) and rag_system:
+                rag_contracts.append({
+                    "file_id": file_id,
+                    "filename": file_info["filename"],
+                    "uploaded_at": file_info.get("upload_time", file_info.get("uploaded_at", "")),
+                    "file_size": os.path.getsize(file_info["file_path"]),
+                    "file_type": file_info.get("file_type", "unknown")
+                })
+        
+        # 최신순으로 정렬
+        rag_contracts.sort(key=lambda x: x["uploaded_at"], reverse=True)
+        
+        return {
+            "success": True,
+            "data": rag_contracts,
+            "total_count": len(rag_contracts)
+        }
+        
+    except Exception as e:
+        logger.error(f"RAG 계약서 목록 조회 실패: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/risk-analysis/{pipeline_id}")
 async def get_risk_analysis_result(pipeline_id: str):
     """파이프라인 ID로 위험 분석 결과 조회"""
@@ -1746,14 +1794,14 @@ async def analyze_contract_risk(
     contract_name: str = Form("계약서"),
     selected_parts: str = Form("all")  # "all" 또는 "1,2,3" 형태
 ):
-    """독립적인 계약서 위험 분석"""
+    """독립적인 계약서 위험 분석 (RAG 없이 AI 직접 비교 분석)"""
     try:
         print(f"🛡️ 독립적인 위험 분석 시작 - contract_name: {contract_name}")
         logger.info(f"🛡️ 독립적인 위험 분석 시작 - contract_name: {contract_name}")
         
-        # RAG 시스템 확인
-        if not rag_system:
-            raise HTTPException(status_code=500, detail="RAG 시스템이 로드되지 않았습니다.")
+        # LLM 생성기만 필요 (RAG 시스템 불필요)
+        if not rag_system or not rag_system.get("llm_generator"):
+            raise HTTPException(status_code=500, detail="LLM 생성기가 로드되지 않았습니다.")
         
         # 분석할 파트 결정
         if selected_parts == "all":
@@ -1761,24 +1809,17 @@ async def analyze_contract_risk(
         else:
             parts_to_analyze = [int(p.strip()) for p in selected_parts.split(",")]
         
-        # 하이브리드 위험 분석기 초기화
-        from riskAnalysis.hybrid_risk_analyzer import HybridSequentialRiskAnalyzer
+        # 위험 체크리스트 로드
         risk_check_data = load_risk_checklist()
         
-        analyzer = HybridSequentialRiskAnalyzer(
-            risk_check_data,
-            rag_system["enhanced_lkg_retriever"],
-            rag_system["hippo_retriever"],
-            rag_system["llm_generator"],
-            neo4j_driver
-        )
-        
-        # 위험 분석 실행
-        import asyncio
-        analysis_result = asyncio.run(analyzer.analyze_all_parts_with_hybrid(
+        # AI 직접 비교 분석 실행
+        analysis_result = await _analyze_contract_with_ai(
             contract_text, 
-            contract_name
-        ))
+            contract_name, 
+            risk_check_data, 
+            parts_to_analyze,
+            rag_system["llm_generator"]
+        )
         
         # 분석 결과 저장
         analysis_id = f"standalone_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
@@ -1789,82 +1830,163 @@ async def analyze_contract_risk(
             "contract_name": contract_name,
             "analysis_result": analysis_result,
             "created_at": datetime.now().isoformat(),
-            "analysis_type": "standalone"
+            "analysis_type": "standalone_ai_analysis"
         }
         
-        print(f"✅ 독립적인 위험 분석 완료 - analysis_id: {analysis_id}")
-        logger.info(f"✅ 독립적인 위험 분석 완료 - analysis_id: {analysis_id}")
+        print(f"✅ 독립적인 AI 위험 분석 완료 - analysis_id: {analysis_id}")
+        logger.info(f"✅ 독립적인 AI 위험 분석 완료 - analysis_id: {analysis_id}")
         
         return {
             "success": True,
-            "message": "위험 분석이 완료되었습니다.",
+            "message": "AI 직접 비교 분석이 완료되었습니다.",
             "data": {
                 "analysis_id": analysis_id,
-                "analysis_result": analysis_result
+                "analysis_result": analysis_result,
+                "analysis_type": "ai_direct_comparison"
             }
         }
         
     except Exception as e:
-        logger.error(f"독립적인 위험 분석 실패: {e}")
+        logger.error(f"독립적인 AI 위험 분석 실패: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/risk-analysis/analyze-uploaded-file")
-async def analyze_uploaded_file_risk(
-    file_id: str = Form(...),
-    selected_parts: str = Form("all")
-):
-    """업로드된 파일에 대한 독립적인 위험 분석"""
+async def analyze_uploaded_file_risk(request: Request):
+    """업로드된 파일에 대한 하이브리드 위험 분석 (RAG 시스템 필요)"""
     try:
-        print(f"🛡️ 업로드된 파일 위험 분석 시작 - file_id: {file_id}")
-        logger.info(f"🛡️ 업로드된 파일 위험 분석 시작 - file_id: {file_id}")
+        # JSON 요청 데이터 파싱
+        try:
+            request_data = await request.json()
+            print(f"🔍 JSON 요청 데이터: {request_data}", flush=True)
+        except:
+            # Form 데이터로 시도
+            form_data = await request.form()
+            request_data = dict(form_data)
+            print(f"🔍 Form 요청 데이터: {request_data}", flush=True)
+        
+        file_id = request_data.get("file_id")
+        selected_parts = request_data.get("selected_parts", "all")
+        
+        print(f"🔍 파싱된 데이터 - file_id: {file_id}, selected_parts: {selected_parts}", flush=True)
+        
+        # 데이터 타입 확인
+        print(f"🔍 file_id 타입: {type(file_id)}", flush=True)
+        print(f"🔍 selected_parts 타입: {type(selected_parts)}", flush=True)
+        
+        print(f"🛡️ 업로드된 파일 하이브리드 위험 분석 시작 - file_id: {file_id}", flush=True)
+        logger.info(f"🛡️ 업로드된 파일 하이브리드 위험 분석 시작 - file_id: {file_id}")
         
         # 파일 정보 확인
+        print(f"🔍 현재 uploaded_files 키들: {list(uploaded_files.keys())}", flush=True)
+        print(f"🔍 요청된 file_id: {file_id}", flush=True)
+        print(f"🔍 uploaded_files 전체: {uploaded_files}", flush=True)
+        
         if file_id not in uploaded_files:
-            raise HTTPException(status_code=404, detail="파일을 찾을 수 없습니다.")
+            logger.error(f"파일을 찾을 수 없습니다. 요청된 file_id: {file_id}")
+            logger.error(f"현재 uploaded_files 키들: {list(uploaded_files.keys())}")
+            raise HTTPException(status_code=404, detail=f"파일을 찾을 수 없습니다. file_id: {file_id}")
         
         file_info = uploaded_files[file_id]
-        file_path = file_info["file_path"]
+        print(f"🔍 file_info type: {type(file_info)}", flush=True)
+        print(f"🔍 file_info: {file_info}", flush=True)
         
-        # 계약서 내용 읽기
-        contract_text = ""
-        with open(file_path, 'r', encoding='utf-8') as f:
-            if file_path.endswith('.json'):
-                json_data = json.load(f)
-                if isinstance(json_data, dict) and 'content' in json_data:
-                    contract_text = json_data['content']
-                else:
-                    contract_text = json.dumps(json_data, ensure_ascii=False, indent=2)
-            else:
-                contract_text = f.read()
+        # file_info가 문자열인 경우 처리
+        if isinstance(file_info, str):
+            print(f"🔍 file_info가 문자열입니다. JSON 파싱 시도...", flush=True)
+            import json
+            try:
+                file_info = json.loads(file_info)
+                print(f"🔍 JSON 파싱 후 file_info: {file_info}", flush=True)
+            except:
+                print(f"🔍 JSON 파싱 실패. file_info를 그대로 사용", flush=True)
+        
+        print(f"🔍 file_info 접근 시도 전 - type: {type(file_info)}", flush=True)
+        try:
+            file_path = file_info["file_path"]
+            print(f"🔍 file_path 추출 성공: {file_path}", flush=True)
+        except Exception as e:
+            print(f"🔍 file_path 추출 실패: {e}", flush=True)
+            print(f"🔍 file_info 내용: {file_info}", flush=True)
+            raise
         
         # RAG 시스템 확인
         if not rag_system:
-            raise HTTPException(status_code=500, detail="RAG 시스템이 로드되지 않았습니다.")
+            raise HTTPException(status_code=500, detail="RAG 시스템이 로드되지 않았습니다. 파이프라인을 먼저 실행해주세요.")
+        
+        # 계약서 내용 읽기
+        print(f"🔍 계약서 파일 읽기 시작: {file_path}", flush=True)
+        contract_text = ""
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                if file_path.endswith('.json'):
+                    print(f"🔍 JSON 파일로 인식됨", flush=True)
+                    json_data = json.load(f)
+                    if isinstance(json_data, dict) and 'content' in json_data:
+                        contract_text = json_data['content']
+                        print(f"🔍 JSON content 추출 성공", flush=True)
+                    else:
+                        contract_text = json.dumps(json_data, ensure_ascii=False, indent=2)
+                        print(f"🔍 JSON 전체 내용 사용", flush=True)
+                else:
+                    print(f"🔍 텍스트 파일로 인식됨", flush=True)
+                    contract_text = f.read()
+                    print(f"🔍 텍스트 파일 읽기 성공, 길이: {len(contract_text)}", flush=True)
+        except Exception as e:
+            print(f"🔍 파일 읽기 실패: {e}", flush=True)
+            raise
         
         # 분석할 파트 결정
+        print(f"🔍 분석할 파트 결정 시작", flush=True)
         if selected_parts == "all":
             parts_to_analyze = list(range(1, 11))  # 1-10 파트
+            print(f"🔍 전체 파트 분석: {parts_to_analyze}", flush=True)
         else:
             parts_to_analyze = [int(p.strip()) for p in selected_parts.split(",")]
+            print(f"🔍 선택된 파트 분석: {parts_to_analyze}", flush=True)
         
         # 하이브리드 위험 분석기 초기화
-        from riskAnalysis.hybrid_risk_analyzer import HybridSequentialRiskAnalyzer
-        risk_check_data = load_risk_checklist()
+        print(f"🔍 하이브리드 위험 분석기 초기화 시작", flush=True)
+        try:
+            from riskAnalysis.hybrid_risk_analyzer import HybridSequentialRiskAnalyzer
+            print(f"🔍 HybridSequentialRiskAnalyzer import 성공", flush=True)
+            
+            # 올바른 위험 체크 데이터 로드 (JSON 파일)
+            import json
+            with open("riskAnalysis/checkList/riskCheck.json", "r", encoding="utf-8") as f:
+                risk_check_data = json.load(f)
+            print(f"🔍 risk_check_data 로드 성공", flush=True)
+            print(f"🔍 risk_check_data 타입: {type(risk_check_data)}", flush=True)
+            print(f"🔍 analysisParts 존재: {'analysisParts' in risk_check_data}", flush=True)
+            
+            print(f"🔍 RAG 시스템 구성 요소 확인", flush=True)
+            print(f"🔍 enhanced_lkg_retriever: {type(rag_system.get('enhanced_lkg_retriever'))}", flush=True)
+            print(f"🔍 hippo_retriever: {type(rag_system.get('hippo_retriever'))}", flush=True)
+            print(f"🔍 llm_generator: {type(rag_system.get('llm_generator'))}", flush=True)
+            print(f"🔍 neo4j_driver: {type(neo4j_driver)}", flush=True)
+            
+            analyzer = HybridSequentialRiskAnalyzer(
+                risk_check_data,
+                rag_system["enhanced_lkg_retriever"],
+                rag_system["hippo_retriever"],
+                rag_system["llm_generator"],
+                neo4j_driver
+            )
+            print(f"🔍 HybridSequentialRiskAnalyzer 생성 성공", flush=True)
+        except Exception as e:
+            print(f"🔍 하이브리드 위험 분석기 초기화 실패: {e}", flush=True)
+            raise
         
-        analyzer = HybridSequentialRiskAnalyzer(
-            risk_check_data,
-            rag_system["enhanced_lkg_retriever"],
-            rag_system["hippo_retriever"],
-            rag_system["llm_generator"],
-            neo4j_driver
-        )
-        
-        # 위험 분석 실행
-        import asyncio
-        analysis_result = asyncio.run(analyzer.analyze_all_parts_with_hybrid(
-            contract_text, 
-            file_info["filename"]
-        ))
+        # 하이브리드 위험 분석 실행
+        print(f"🔍 하이브리드 위험 분석 실행 시작", flush=True)
+        try:
+            analysis_result = await analyzer.analyze_all_parts_with_hybrid(
+                contract_text, 
+                file_info["filename"]
+            )
+            print(f"🔍 하이브리드 위험 분석 실행 성공", flush=True)
+        except Exception as e:
+            print(f"🔍 하이브리드 위험 분석 실행 실패: {e}", flush=True)
+            raise
         
         # 분석 결과 저장
         analysis_id = f"file_{file_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
@@ -1875,24 +1997,170 @@ async def analyze_uploaded_file_risk(
             "contract_name": file_info["filename"],
             "analysis_result": analysis_result,
             "created_at": datetime.now().isoformat(),
-            "analysis_type": "file_analysis"
+            "analysis_type": "file_hybrid_analysis"
         }
         
-        print(f"✅ 업로드된 파일 위험 분석 완료 - analysis_id: {analysis_id}")
-        logger.info(f"✅ 업로드된 파일 위험 분석 완료 - analysis_id: {analysis_id}")
+        print(f"✅ 업로드된 파일 하이브리드 위험 분석 완료 - analysis_id: {analysis_id}")
+        logger.info(f"✅ 업로드된 파일 하이브리드 위험 분석 완료 - analysis_id: {analysis_id}")
         
         return {
             "success": True,
-            "message": "위험 분석이 완료되었습니다.",
+            "message": "하이브리드 위험 분석이 완료되었습니다.",
             "data": {
                 "analysis_id": analysis_id,
-                "analysis_result": analysis_result
+                "analysis_result": analysis_result,
+                "hybrid_search_enabled": True,
+                "rag_system_used": True
             }
         }
         
     except Exception as e:
-        logger.error(f"업로드된 파일 위험 분석 실패: {e}")
+        logger.error(f"업로드된 파일 하이브리드 위험 분석 실패: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+# AI 직접 비교 분석 함수
+async def _analyze_contract_with_ai(contract_text: str, contract_name: str, risk_check_data: dict, parts_to_analyze: list, llm_generator):
+    """AI가 계약서 내용과 riskCheck를 직접 비교하여 분석"""
+    import time
+    start_time = time.time()
+    
+    part_results = []
+    
+    for part_number in parts_to_analyze:
+        # 파트 데이터 추출
+        part_data = next((p for p in risk_check_data["analysisParts"] if p["partNumber"] == part_number), None)
+        if not part_data:
+            continue
+            
+        print(f"📋 Part {part_number} 분석 중: {part_data['partTitle']}")
+        
+        # AI 직접 비교 분석
+        part_result = await _analyze_part_with_ai(
+            part_data, contract_text, llm_generator
+        )
+        
+        part_results.append(part_result)
+        
+        # Rate limit 고려한 지연
+        await asyncio.sleep(1.0)
+    
+    # 전체 분석 결과 통합
+    total_time = time.time() - start_time
+    overall_risk_score = sum(r["risk_score"] for r in part_results) / len(part_results) if part_results else 0.0
+    
+    return {
+        "contract_name": contract_name,
+        "analysis_date": datetime.now().isoformat(),
+        "total_analysis_time": total_time,
+        "overall_risk_score": overall_risk_score,
+        "overall_risk_level": _determine_risk_level(overall_risk_score),
+        "part_results": part_results,
+        "summary": _generate_analysis_summary(part_results)
+    }
+
+async def _analyze_part_with_ai(part_data: dict, contract_text: str, llm_generator):
+    """AI가 특정 파트를 직접 분석"""
+    try:
+        # AI 분석 프롬프트 구성
+        analysis_prompt = f"""
+계약서 내용을 분석하여 다음 위험 요소들을 평가해주세요:
+
+**분석 파트**: {part_data['partTitle']}
+**핵심 질문**: {part_data['coreQuestion']}
+**주요 위험 패턴**: {part_data['topRiskPattern']}
+
+**체크리스트**:
+{chr(10).join([f"- {item}" for item in part_data['deepDiveChecklist']])}
+
+**계약서 내용**:
+{contract_text[:2000]}...
+
+각 체크리스트 항목에 대해 다음을 평가해주세요:
+1. 해당 항목이 계약서에 포함되어 있는가?
+2. 포함되어 있다면 위험도는 얼마인가? (1-5점)
+3. 구체적인 문제점이나 우려사항은 무엇인가?
+
+JSON 형태로 응답해주세요:
+{{
+    "part_title": "{part_data['partTitle']}",
+    "risk_score": 0-5,
+    "risk_level": "LOW/MEDIUM/HIGH/CRITICAL",
+    "checklist_results": [
+        {{
+            "item": "체크리스트 항목",
+            "found": true/false,
+            "risk_score": 1-5,
+            "issues": ["구체적인 문제점들"]
+        }}
+    ],
+    "recommendations": ["권고사항들"]
+}}
+"""
+        
+        # AI 분석 실행
+        response = await llm_generator.generate_response(analysis_prompt)
+        
+        # JSON 파싱 시도
+        try:
+            import json
+            result = json.loads(response)
+        except:
+            # JSON 파싱 실패 시 기본 구조 생성
+            result = {
+                "part_title": part_data['partTitle'],
+                "risk_score": 2.0,
+                "risk_level": "MEDIUM",
+                "checklist_results": [],
+                "recommendations": ["AI 분석 결과를 파싱할 수 없습니다."]
+            }
+        
+        return {
+            "part_number": part_data['partNumber'],
+            "part_title": part_data['partTitle'],
+            "risk_score": result.get("risk_score", 2.0),
+            "risk_level": result.get("risk_level", "MEDIUM"),
+            "checklist_results": result.get("checklist_results", []),
+            "recommendations": result.get("recommendations", []),
+            "analysis_time": 0.0
+        }
+        
+    except Exception as e:
+        print(f"❌ Part {part_data['partNumber']} AI 분석 실패: {e}")
+        return {
+            "part_number": part_data['partNumber'],
+            "part_title": part_data['partTitle'],
+            "risk_score": 0.0,
+            "risk_level": "UNKNOWN",
+            "checklist_results": [],
+            "recommendations": [f"분석 실패: {str(e)}"],
+            "analysis_time": 0.0
+        }
+
+def _determine_risk_level(risk_score: float) -> str:
+    """위험도 점수에 따른 레벨 결정"""
+    if risk_score >= 4.0:
+        return "CRITICAL"
+    elif risk_score >= 3.0:
+        return "HIGH"
+    elif risk_score >= 2.0:
+        return "MEDIUM"
+    else:
+        return "LOW"
+
+def _generate_analysis_summary(part_results: list) -> dict:
+    """분석 요약 생성"""
+    total_parts = len(part_results)
+    high_risk_parts = len([r for r in part_results if r["risk_level"] in ["HIGH", "CRITICAL"]])
+    critical_issues = [r["part_title"] for r in part_results if r["risk_level"] == "CRITICAL"]
+    
+    return {
+        "total_parts_analyzed": total_parts,
+        "high_risk_parts": high_risk_parts,
+        "critical_issues": critical_issues
+    }
+
+# 중복 API 제거 - analyze-uploaded-file과 동일한 기능
+# @app.post("/risk-analysis/analyze-rag-contract") - 제거됨
 
 if __name__ == "__main__":
     import uvicorn

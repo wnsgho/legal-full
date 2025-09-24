@@ -1,26 +1,39 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Shield, FileText, AlertTriangle, CheckCircle } from "lucide-react";
+import {
+  Shield,
+  Database,
+  Search,
+  FileText,
+  AlertTriangle,
+  CheckCircle,
+} from "lucide-react";
 import { api } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
 
-interface StandaloneRiskAnalysisProps {
+interface RagContract {
+  file_id: string;
+  filename: string;
+  uploaded_at: string;
+  file_size: number;
+  file_type: string;
+}
+
+interface RagRiskAnalysisProps {
   onAnalysisComplete?: (result: any) => void;
 }
 
-const StandaloneRiskAnalysis: React.FC<StandaloneRiskAnalysisProps> = ({
+const RagRiskAnalysis: React.FC<RagRiskAnalysisProps> = ({
   onAnalysisComplete,
 }) => {
-  const [contractText, setContractText] = useState("");
-  const [contractName, setContractName] = useState("");
+  const [ragContracts, setRagContracts] = useState<RagContract[]>([]);
+  const [selectedContract, setSelectedContract] = useState<string>("");
   const [selectedParts, setSelectedParts] = useState("all");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
+  const [isLoadingContracts, setIsLoadingContracts] = useState(false);
   const { toast } = useToast();
 
   const partOptions = [
@@ -37,11 +50,43 @@ const StandaloneRiskAnalysis: React.FC<StandaloneRiskAnalysisProps> = ({
     { value: "10", label: "10. 분쟁 해결 및 계약 해석 원칙" },
   ];
 
-  const handleAnalyze = async () => {
-    if (!contractText.trim()) {
+  // RAG 계약서 목록 로드
+  const fetchRagContracts = async () => {
+    setIsLoadingContracts(true);
+    try {
+      const response = await api.getRagContracts();
+      if (response.success) {
+        setRagContracts(response.data);
+        if (response.data.length > 0 && !selectedContract) {
+          setSelectedContract(response.data[0].file_id);
+        }
+      } else {
+        throw new Error(response.message || "RAG 계약서 목록 조회 실패");
+      }
+    } catch (error) {
+      console.error("RAG 계약서 목록 조회 실패:", error);
       toast({
-        title: "입력 오류",
-        description: "계약서 내용을 입력해주세요.",
+        title: "조회 실패",
+        description:
+          error instanceof Error
+            ? error.message
+            : "RAG 계약서 목록을 불러올 수 없습니다.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoadingContracts(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchRagContracts();
+  }, []);
+
+  const handleAnalyze = async () => {
+    if (!selectedContract) {
+      toast({
+        title: "선택 오류",
+        description: "분석할 계약서를 선택해주세요.",
         variant: "destructive",
       });
       return;
@@ -49,9 +94,8 @@ const StandaloneRiskAnalysis: React.FC<StandaloneRiskAnalysisProps> = ({
 
     setIsAnalyzing(true);
     try {
-      const response = await api.analyzeContractRisk(
-        contractText,
-        contractName || "계약서",
+      const response = await api.analyzeUploadedFileRisk(
+        selectedContract,
         selectedParts
       );
 
@@ -59,40 +103,24 @@ const StandaloneRiskAnalysis: React.FC<StandaloneRiskAnalysisProps> = ({
         setAnalysisResult(response.data.analysis_result);
         onAnalysisComplete?.(response.data);
         toast({
-          title: "AI 직접 분석 완료",
-          description:
-            "AI가 계약서 내용과 체크리스트를 직접 비교하여 분석했습니다.",
+          title: "RAG 위험 분석 완료",
+          description: "하이브리드 검색을 통한 위험 분석이 완료되었습니다.",
         });
       } else {
         throw new Error(response.message || "분석 실패");
       }
     } catch (error) {
-      console.error("위험 분석 실패:", error);
+      console.error("RAG 위험 분석 실패:", error);
       toast({
         title: "분석 실패",
         description:
           error instanceof Error
             ? error.message
-            : "위험 분석 중 오류가 발생했습니다.",
+            : "RAG 위험 분석 중 오류가 발생했습니다.",
         variant: "destructive",
       });
     } finally {
       setIsAnalyzing(false);
-    }
-  };
-
-  const getRiskLevelColor = (level: string) => {
-    switch (level) {
-      case "CRITICAL":
-        return "bg-red-500";
-      case "HIGH":
-        return "bg-orange-500";
-      case "MEDIUM":
-        return "bg-yellow-500";
-      case "LOW":
-        return "bg-green-500";
-      default:
-        return "bg-gray-500";
     }
   };
 
@@ -108,45 +136,92 @@ const StandaloneRiskAnalysis: React.FC<StandaloneRiskAnalysisProps> = ({
     }
   };
 
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return "0 Bytes";
+    const k = 1024;
+    const sizes = ["Bytes", "KB", "MB", "GB"];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
+
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <Shield className="h-5 w-5" />
-            <span>AI 직접 비교 분석</span>
+            <Database className="h-5 w-5" />
+            <span>RAG 기반 하이브리드 위험 분석</span>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          {/* RAG 계약서 선택 */}
           <div>
-            <Label htmlFor="contract-name">계약서명</Label>
-            <Input
-              id="contract-name"
-              value={contractName}
-              onChange={(e) => setContractName(e.target.value)}
-              placeholder="계약서명을 입력하세요"
-              className="mt-1"
-            />
+            <label className="block text-sm font-medium mb-2">
+              RAG 구축된 계약서 선택
+            </label>
+            {isLoadingContracts ? (
+              <div className="p-4 text-center text-gray-500">
+                RAG 계약서 목록을 불러오는 중...
+              </div>
+            ) : ragContracts.length === 0 ? (
+              <div className="p-4 text-center text-gray-500 border rounded-lg">
+                <Database className="h-8 w-8 mx-auto mb-2 text-gray-400" />
+                <p>RAG가 구축된 계약서가 없습니다.</p>
+                <p className="text-sm">
+                  파일을 업로드하고 파이프라인을 실행해주세요.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-2 max-h-60 overflow-y-auto">
+                {ragContracts.map((contract) => (
+                  <div
+                    key={contract.file_id}
+                    className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                      selectedContract === contract.file_id
+                        ? "border-blue-500 bg-blue-50"
+                        : "border-gray-200 hover:border-gray-300"
+                    }`}
+                    onClick={() => setSelectedContract(contract.file_id)}
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <div className="font-medium text-sm">
+                          {contract.filename}
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">
+                          {formatFileSize(contract.file_size)} •{" "}
+                          {formatDate(contract.uploaded_at)}
+                        </div>
+                      </div>
+                      {selectedContract === contract.file_id && (
+                        <CheckCircle className="h-5 w-5 text-blue-500" />
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
+          {/* 분석 파트 선택 */}
           <div>
-            <Label htmlFor="contract-text">계약서 내용</Label>
-            <Textarea
-              id="contract-text"
-              value={contractText}
-              onChange={(e) => setContractText(e.target.value)}
-              placeholder="계약서 내용을 입력하세요..."
-              className="mt-1 min-h-[200px]"
-            />
-          </div>
-
-          <div>
-            <Label htmlFor="selected-parts">분석할 파트 선택</Label>
+            <label className="block text-sm font-medium mb-2">
+              분석할 파트 선택
+            </label>
             <select
-              id="selected-parts"
               value={selectedParts}
               onChange={(e) => setSelectedParts(e.target.value)}
-              className="mt-1 w-full p-2 border border-gray-300 rounded-md"
+              className="w-full p-2 border border-gray-300 rounded-md"
             >
               {partOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -156,22 +231,54 @@ const StandaloneRiskAnalysis: React.FC<StandaloneRiskAnalysisProps> = ({
             </select>
           </div>
 
+          {/* 분석 시작 버튼 */}
           <Button
             onClick={handleAnalyze}
-            disabled={isAnalyzing || !contractText.trim()}
+            disabled={
+              isAnalyzing || !selectedContract || ragContracts.length === 0
+            }
             className="w-full"
           >
-            {isAnalyzing ? "AI 분석 중..." : "AI 직접 분석 시작"}
+            {isAnalyzing ? (
+              <div className="flex items-center space-x-2">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                <span>하이브리드 분석 중...</span>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <Search className="h-4 w-4" />
+                <span>RAG 하이브리드 위험 분석 시작</span>
+              </div>
+            )}
           </Button>
+
+          {/* RAG 시스템 정보 */}
+          {ragContracts.length > 0 && (
+            <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center space-x-2 text-green-700">
+                <CheckCircle className="h-4 w-4" />
+                <span className="text-sm font-medium">
+                  RAG 시스템이 활성화되어 하이브리드 검색이 가능합니다
+                </span>
+              </div>
+              <p className="text-xs text-green-600 mt-1">
+                • Concept extraction • Neo4j 검색 • HiPPO-RAG2 • Re-ranking
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
 
+      {/* 분석 결과 */}
       {analysisResult && (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center space-x-2">
               <FileText className="h-5 w-5" />
-              <span>분석 결과</span>
+              <span>하이브리드 분석 결과</span>
+              <Badge variant="outline" className="ml-auto">
+                RAG 하이브리드
+              </Badge>
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -271,4 +378,4 @@ const StandaloneRiskAnalysis: React.FC<StandaloneRiskAnalysisProps> = ({
   );
 };
 
-export default StandaloneRiskAnalysis;
+export default RagRiskAnalysis;

@@ -123,15 +123,25 @@ class HybridRiskAnalyzer:
                         topN=15  # 파트별로 적절한 수량
                     )
                     
+                    print(f"🔍 search_result 타입: {type(search_result)}", flush=True)
+                    print(f"🔍 search_result 내용: {search_result}", flush=True)
+                    
                     if search_result:
                         if len(search_result) == 2:
                             sorted_context, context_ids = search_result
+                            print(f"🔍 sorted_context 타입: {type(sorted_context)}", flush=True)
+                            print(f"🔍 context_ids 타입: {type(context_ids)}", flush=True)
                             if sorted_context:
+                                print(f"🔍 sorted_context 처리 시작", flush=True)
                                 if isinstance(sorted_context, str):
+                                    print(f"🔍 sorted_context가 문자열", flush=True)
                                     hybrid_results["relevant_clauses"].append(sorted_context)
                                 else:
+                                    print(f"🔍 sorted_context가 리스트, 길이: {len(sorted_context)}", flush=True)
+                                    print(f"🔍 sorted_context 첫 번째 요소: {sorted_context[0] if sorted_context else 'None'}", flush=True)
                                     hybrid_results["relevant_clauses"].extend(sorted_context)
                         else:
+                            print(f"🔍 search_result 길이가 2가 아님: {len(search_result)}", flush=True)
                             hybrid_results["relevant_clauses"].append(search_result)
                             
                 except Exception as e:
@@ -149,8 +159,18 @@ class HybridRiskAnalyzer:
     
     async def _analyze_checklist_with_hybrid_results(self, part_data: Dict, hybrid_results: Dict, contract_text: str) -> List[Dict[str, Any]]:
         """하이브리드 검색 결과를 활용한 체크리스트 분석"""
+        print(f"🔍 _analyze_checklist_with_hybrid_results 시작", flush=True)
+        print(f"🔍 hybrid_results 타입: {type(hybrid_results)}", flush=True)
+        print(f"🔍 hybrid_results 내용: {hybrid_results}", flush=True)
+        
         checklist_results = []
-        relevant_clauses = hybrid_results.get("relevant_clauses", [])
+        try:
+            relevant_clauses = hybrid_results.get("relevant_clauses", [])
+            print(f"🔍 relevant_clauses 타입: {type(relevant_clauses)}", flush=True)
+            print(f"🔍 relevant_clauses 길이: {len(relevant_clauses) if isinstance(relevant_clauses, list) else 'Not a list'}", flush=True)
+        except Exception as e:
+            print(f"🔍 relevant_clauses 접근 실패: {e}", flush=True)
+            raise
         
         for i, checklist_item in enumerate(part_data.get("deepDiveChecklist", [])):
             # Rate limit 고려한 지연
@@ -172,10 +192,11 @@ class HybridRiskAnalyzer:
         prompt = self._create_hybrid_analysis_prompt(checklist_item, relevant_clauses, part_data, hybrid_results)
         
         try:
-            # LLM을 통한 분석
-            analysis_result = await self.llm_generator.generate(
-                prompt=prompt,
-                max_tokens=500,
+            # LLM을 통한 분석 - 문자열 프롬프트를 메시지 배열로 변환
+            messages = [{"role": "user", "content": prompt}]
+            analysis_result = self.llm_generator.generate_response(
+                messages,
+                max_new_tokens=500,
                 temperature=0.1
             )
             
@@ -239,12 +260,28 @@ JSON 형식으로 응답해주세요:
     
     def _parse_analysis_result(self, analysis_result: str, checklist_item: str) -> Dict[str, Any]:
         """분석 결과 파싱"""
+        print(f"🔍 _parse_analysis_result 시작", flush=True)
+        print(f"🔍 analysis_result 타입: {type(analysis_result)}", flush=True)
+        print(f"🔍 analysis_result 내용: {analysis_result}", flush=True)
+        print(f"🔍 checklist_item: {checklist_item}", flush=True)
+        
         try:
-            # JSON 파싱 시도
-            result = json.loads(analysis_result)
+            # JSON 파싱 시도 - ```json으로 감싸진 경우 처리
+            json_text = analysis_result.strip()
+            if json_text.startswith('```json'):
+                # ```json으로 시작하는 경우 JSON 부분만 추출
+                json_text = json_text[7:]  # ```json 제거
+                if json_text.endswith('```'):
+                    json_text = json_text[:-3]  # 끝의 ``` 제거
+                json_text = json_text.strip()
+            
+            result = json.loads(json_text)
+            print(f"🔍 JSON 파싱 성공: {result}", flush=True)
             result["item"] = checklist_item
             return result
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as e:
+            print(f"🔍 JSON 파싱 실패: {e}", flush=True)
+            print(f"🔍 원본 텍스트: {analysis_result}", flush=True)
             # JSON 파싱 실패 시 기본값 반환
             return {
                 "item": checklist_item,
@@ -253,6 +290,9 @@ JSON 형식으로 응답해주세요:
                 "analysis": analysis_result,
                 "recommendation": "수동 검토 필요"
             }
+        except Exception as e:
+            print(f"🔍 _parse_analysis_result 예외: {e}", flush=True)
+            raise
     
     def _calculate_risk_score(self, checklist_results: List[Dict[str, Any]]) -> float:
         """전체 위험도 점수 계산"""
@@ -306,12 +346,35 @@ class HybridSequentialRiskAnalyzer:
     
     async def analyze_all_parts_with_hybrid(self, contract_text: str, contract_name: str = "계약서") -> Dict[str, Any]:
         """하이브리드 리트리버를 사용한 모든 파트 직렬 분석"""
+        print(f"🔍 analyze_all_parts_with_hybrid 시작", flush=True)
+        print(f"🔍 contract_text 타입: {type(contract_text)}", flush=True)
+        print(f"🔍 contract_name: {contract_name}", flush=True)
+        print(f"🔍 risk_check_data 타입: {type(self.risk_check_data)}", flush=True)
+        
         start_time = time.time()
         results = []
         
+        try:
+            print(f"🔍 analysisParts 접근 시도", flush=True)
+            analysis_parts = self.risk_check_data["analysisParts"]
+            print(f"🔍 analysisParts 타입: {type(analysis_parts)}", flush=True)
+            print(f"🔍 analysisParts 길이: {len(analysis_parts)}", flush=True)
+        except Exception as e:
+            print(f"🔍 analysisParts 접근 실패: {e}", flush=True)
+            raise
+        
         # 파트별 순차 분석
-        for part in self.risk_check_data["analysisParts"]:
-            part_number = part["partNumber"]
+        for i, part in enumerate(analysis_parts):
+            print(f"🔍 파트 {i} 처리 시작", flush=True)
+            print(f"🔍 part 타입: {type(part)}", flush=True)
+            print(f"🔍 part 내용: {part}", flush=True)
+            
+            try:
+                part_number = part["partNumber"]
+                print(f"🔍 part_number: {part_number}", flush=True)
+            except Exception as e:
+                print(f"🔍 part_number 접근 실패: {e}", flush=True)
+                raise
             
             logging.info(f"Part {part_number} 하이브리드 분석 시작: {part['partTitle']}")
             

@@ -263,6 +263,29 @@ class ApiClient {
   async getStatus(): Promise<ApiResponse<{ status: SystemStatus }>> {
     return this.request<{ status: SystemStatus }>("/status");
   }
+
+  // HTTP 메서드 헬퍼들
+  async get<T>(endpoint: string): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { method: "GET" });
+  }
+
+  async post<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, {
+      method: "POST",
+      body: data ? JSON.stringify(data) : undefined,
+    });
+  }
+
+  async put<T>(endpoint: string, data?: any): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, {
+      method: "PUT",
+      body: data ? JSON.stringify(data) : undefined,
+    });
+  }
+
+  async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
+    return this.request<T>(endpoint, { method: "DELETE" });
+  }
 }
 
 // API 클라이언트 인스턴스 생성
@@ -334,4 +357,10 @@ export const api = {
       file_id: fileId,
       selected_parts: selectedParts || "all",
     }),
+
+  // RAG 기반 위험 분석
+  getRagContracts: () => apiClient.get("/risk-analysis/rag-contracts"),
+
+  // analyzeRagContractRisk는 analyzeUploadedFileRisk와 동일하므로 제거
+  // analyzeUploadedFileRisk가 하이브리드 검색을 사용합니다
 };
