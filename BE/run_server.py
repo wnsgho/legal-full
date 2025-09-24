@@ -22,6 +22,15 @@ sys.path.append(str(project_root))
 
 def main():
     """서버 실행"""
+    # .env 파일 로드
+    from dotenv import load_dotenv
+    load_dotenv()
+    
+    # 환경변수 확인
+    print(f"🔍 NEO4J_DATABASE: {os.getenv('NEO4J_DATABASE')}")
+    print(f"🔍 NEO4J_URI: {os.getenv('NEO4J_URI')}")
+    print(f"🔍 NEO4J_USER: {os.getenv('NEO4J_USER')}")
+    
     # 환경변수에서 설정 읽기
     host = os.getenv('SERVER_HOST', '0.0.0.0')
     port = int(os.getenv('SERVER_PORT', 8000))

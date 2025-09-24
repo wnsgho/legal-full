@@ -350,7 +350,9 @@ def search_by_concept_matching(question, concepts, enhanced_lkg_retriever, neo4j
     
     try:
         # Neo4j에서 concept_list가 있는 노드들을 검색
-        with neo4j_driver.session() as session:
+        database_name = os.getenv('NEO4J_DATABASE', 'neo4j')
+        print(f"🔍 Concept 매칭 검색에서 사용할 데이터베이스: {database_name}", flush=True)
+        with neo4j_driver.session(database=database_name) as session:
             # Concept 매칭 쿼리
             concept_query = """
             MATCH (n:Node)
@@ -425,7 +427,10 @@ def search_text_nodes_by_content(question, concepts, neo4j_driver, topN=15):
     print("🔍 Text 노드 내용 검색 시작...")
     
     try:
-        with neo4j_driver.session() as session:
+        # 환경변수에서 데이터베이스 이름 가져오기
+        database_name = os.getenv('NEO4J_DATABASE', 'neo4j')
+        print(f"🔍 Text 노드 내용 검색에서 사용할 데이터베이스: {database_name}", flush=True)
+        with neo4j_driver.session(database=database_name) as session:
             all_matched_texts = []
             
             # 각 concept에 대해 Text 노드에서 검색
@@ -575,7 +580,9 @@ def rerank_results_by_concept_similarity(content, context_ids, concepts, neo4j_d
     
     try:
         # Neo4j에서 각 노드의 concept_list 가져오기
-        with neo4j_driver.session() as session:
+        database_name = os.getenv('NEO4J_DATABASE', 'neo4j')
+        print(f"🔍 Concept 재순위화에서 사용할 데이터베이스: {database_name}", flush=True)
+        with neo4j_driver.session(database=database_name) as session:
             node_concepts = {}
             
             for context_id in context_ids:

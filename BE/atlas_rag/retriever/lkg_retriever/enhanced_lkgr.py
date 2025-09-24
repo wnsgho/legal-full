@@ -36,7 +36,11 @@ class EnhancedLargeKGRetriever(LargeKGRetriever):
                         sampling_area, logger, **kwargs)
         
         # 데이터베이스 이름 설정
+        print(f"🔍 EnhancedLargeKGRetriever kwargs: {kwargs}", flush=True)
+        print(f"🔍 database 키 존재: {'database' in kwargs}", flush=True)
+        print(f"🔍 database 값: {kwargs.get('database', 'NOT_FOUND')}", flush=True)
         self.database_name = kwargs.get('database', 'neo4j')
+        print(f"🔍 self.database_name 설정: {self.database_name}", flush=True)
         
         # 조항 검색 관련 설정
         self.clause_patterns = [
@@ -48,22 +52,7 @@ class EnhancedLargeKGRetriever(LargeKGRetriever):
             r'비밀유지',
             r'계약해지',
             r'손해배상',
-            r'지적재산권',
-            r'유지보수',
-            r'대가',
-            r'책임',
-            r'효력',
-            r'분쟁',
-            r'거래종결',
-            r'배당',
-            r'차입',
-            r'매도인',
-            r'매수인',
-            r'계약',
-            r'가격',
-            r'조정',
-            r'운전자본',
-            r'부채'
+
         ]
         
         # 연결된 노드 검색 설정
