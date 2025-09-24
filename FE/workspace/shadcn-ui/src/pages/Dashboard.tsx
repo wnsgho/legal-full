@@ -21,6 +21,7 @@ import RiskClauses from "@/components/RiskClauses";
 import ComparisonView from "@/components/ComparisonView";
 import ChatInterface from "@/components/ChatInterface";
 import AnalysisHistory from "@/components/AnalysisHistory";
+import StandaloneRiskAnalysis from "@/components/StandaloneRiskAnalysis";
 import {
   mockContracts,
   mockAnalysisResults,
@@ -63,6 +64,7 @@ const Dashboard: React.FC = () => {
     rag_system_loaded: boolean;
     neo4j_connected: boolean;
   } | null>(null);
+  const [riskAnalysisResults, setRiskAnalysisResults] = useState<any[]>([]);
   const { toast } = useToast();
 
   // 시스템 상태 확인
@@ -139,6 +141,43 @@ const Dashboard: React.FC = () => {
     setCurrentAnalysis(undefined);
     setCurrentPipelineId(undefined);
   };
+
+  // 위험 분석 결과 조회
+  const fetchRiskAnalysisResults = async () => {
+    try {
+      const response = await api.getAllRiskAnalysisResults();
+      if (response.success) {
+        setRiskAnalysisResults(response.data);
+      }
+    } catch (error) {
+      console.error("위험 분석 결과 조회 실패:", error);
+    }
+  };
+
+  // 파이프라인 완료 시 위험 분석 결과 조회
+  useEffect(() => {
+    if (currentPipelineId) {
+      const checkRiskAnalysis = async () => {
+        try {
+          const response = await api.getRiskAnalysisResult(currentPipelineId);
+          if (response.success) {
+            setRiskAnalysisResults((prev) => [response.data, ...prev]);
+            toast({
+              title: "위험 분석 완료",
+              description: "계약서 위험 분석이 완료되었습니다.",
+            });
+          }
+        } catch (error) {
+          // 위험 분석 결과가 아직 없는 경우 (정상)
+          console.log("위험 분석 결과 아직 없음");
+        }
+      };
+
+      // 5초마다 위험 분석 결과 확인
+      const interval = setInterval(checkRiskAnalysis, 5000);
+      return () => clearInterval(interval);
+    }
+  }, [currentPipelineId, toast]);
 
   // Mock handlers
   const handleFileUpload = (files: File[]) => {
@@ -379,7 +418,7 @@ const Dashboard: React.FC = () => {
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Tabs defaultValue="upload" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="upload" className="flex items-center space-x-2">
               <Upload className="h-4 w-4" />
               <span>업로드</span>
@@ -390,6 +429,20 @@ const Dashboard: React.FC = () => {
             >
               <BarChart3 className="h-4 w-4" />
               <span>분석 결과</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="risk-analysis"
+              className="flex items-center space-x-2"
+            >
+              <Shield className="h-4 w-4" />
+              <span>위험 분석</span>
+            </TabsTrigger>
+            <TabsTrigger
+              value="standalone-risk"
+              className="flex items-center space-x-2"
+            >
+              <Shield className="h-4 w-4" />
+              <span>독립 분석</span>
             </TabsTrigger>
             <TabsTrigger
               value="comparison"
@@ -520,6 +573,186 @@ const Dashboard: React.FC = () => {
                 </CardContent>
               </Card>
             )}
+          </TabsContent>
+
+          <TabsContent value="risk-analysis" className="space-y-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">
+                위험 분석 결과
+              </h2>
+              <Button onClick={fetchRiskAnalysisResults} variant="outline">
+                새로고침
+              </Button>
+            </div>
+
+            {riskAnalysisResults.length > 0 ? (
+              <div className="space-y-6">
+                {riskAnalysisResults.map((result, index) => (
+                  <Card key={result.analysis_id || index}>
+                    <CardHeader>
+                      <div className="flex items-center justify-between">
+                        <CardTitle className="text-lg">
+                          {result.contract_name}
+                        </CardTitle>
+                        <Badge variant="outline">
+                          {new Date(result.created_at).toLocaleDateString()}
+                        </Badge>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-red-600">
+                              {result.analysis_result?.overall_risk_score?.toFixed(
+                                1
+                              ) || "N/A"}
+                            </div>
+                            <div className="text-sm text-gray-600">
+                              전체 위험도
+                            </div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-blue-600">
+                              {result.analysis_result?.part_results?.length ||
+                                0}
+                            </div>
+                            <div className="text-sm text-gray-600">
+                              분석 파트
+                            </div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-2xl font-bold text-green-600">
+                              {result.analysis_result?.total_analysis_time?.toFixed(
+                                1
+                              ) || "N/A"}
+                              초
+                            </div>
+                            <div className="text-sm text-gray-600">
+                              분석 시간
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <h4 className="font-semibold">파트별 위험 분석</h4>
+                          {result.analysis_result?.part_results?.map(
+                            (part: any, partIndex: number) => (
+                              <div
+                                key={partIndex}
+                                className="border rounded-lg p-4"
+                              >
+                                <div className="flex items-center justify-between mb-2">
+                                  <h5 className="font-medium">
+                                    {part.part_title}
+                                  </h5>
+                                  <Badge
+                                    variant={
+                                      part.risk_level === "CRITICAL"
+                                        ? "destructive"
+                                        : part.risk_level === "HIGH"
+                                        ? "destructive"
+                                        : part.risk_level === "MEDIUM"
+                                        ? "secondary"
+                                        : "outline"
+                                    }
+                                  >
+                                    {part.risk_level}
+                                  </Badge>
+                                </div>
+                                <div className="text-sm text-gray-600 mb-2">
+                                  위험도: {part.risk_score?.toFixed(1)}/5.0
+                                </div>
+                                {part.recommendations &&
+                                  part.recommendations.length > 0 && (
+                                    <div className="mt-2">
+                                      <h6 className="font-medium text-sm mb-1">
+                                        권고사항:
+                                      </h6>
+                                      <ul className="text-sm text-gray-600 space-y-1">
+                                        {part.recommendations
+                                          .slice(0, 3)
+                                          .map(
+                                            (rec: string, recIndex: number) => (
+                                              <li
+                                                key={recIndex}
+                                                className="flex items-start"
+                                              >
+                                                <span className="mr-2">•</span>
+                                                <span>{rec}</span>
+                                              </li>
+                                            )
+                                          )}
+                                      </ul>
+                                    </div>
+                                  )}
+                              </div>
+                            )
+                          )}
+                        </div>
+
+                        {result.analysis_result?.summary && (
+                          <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                            <h4 className="font-semibold mb-2">분석 요약</h4>
+                            <div className="text-sm text-gray-600">
+                              <p>
+                                총{" "}
+                                {
+                                  result.analysis_result.summary
+                                    .total_parts_analyzed
+                                }
+                                개 파트 분석
+                              </p>
+                              <p>
+                                고위험 파트:{" "}
+                                {result.analysis_result.summary.high_risk_parts}
+                                개
+                              </p>
+                              {result.analysis_result.summary.critical_issues &&
+                                result.analysis_result.summary.critical_issues
+                                  .length > 0 && (
+                                  <p className="text-red-600 font-medium">
+                                    중요 이슈:{" "}
+                                    {result.analysis_result.summary.critical_issues.join(
+                                      ", "
+                                    )}
+                                  </p>
+                                )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <Shield className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+                  <p className="text-lg font-medium mb-2">
+                    위험 분석 결과가 없습니다
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    계약서를 업로드하고 파이프라인을 실행하면 위험 분석이
+                    자동으로 진행됩니다.
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="standalone-risk" className="space-y-6">
+            <StandaloneRiskAnalysis
+              onAnalysisComplete={(result) => {
+                // 독립 분석 완료 시 위험 분석 결과에 추가
+                setRiskAnalysisResults((prev) => [result, ...prev]);
+                toast({
+                  title: "독립 위험 분석 완료",
+                  description: "계약서 위험 분석이 완료되었습니다.",
+                });
+              }}
+            />
           </TabsContent>
 
           <TabsContent value="comparison">
