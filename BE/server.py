@@ -22,6 +22,9 @@ from contextlib import asynccontextmanager
 project_root = Path(__file__).parent
 sys.path.append(str(project_root))
 
+# 위험 분석 모듈 import
+from riskAnalysis.risk_analysis_api import router as risk_analysis_router
+
 from fastapi import FastAPI, HTTPException, BackgroundTasks, UploadFile, File, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse
@@ -320,6 +323,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# 위험 분석 라우터 추가
+app.include_router(risk_analysis_router)
 
 def load_rag_system():
     """RAG 시스템 로드"""
@@ -801,7 +807,7 @@ async def run_pipeline_with_file(
         
         # 백그라운드에서 파이프라인 실행 (마크다운 변환 포함)
         actual_start_step = 0 if start_step == 1 else start_step
-        background_tasks.add_task(execute_pipeline, actual_start_step, keyword, pipeline_id)
+        background_tasks.add_task(execute_pipeline_with_risk_analysis, actual_start_step, keyword, pipeline_id, file_id)
         
         return PipelineResponse(
             success=True,
@@ -1478,6 +1484,415 @@ async def get_openai_answer_with_content(question: str, document_content: str) -
             "answer": "",
             "processing_time": 0
         }
+
+def execute_pipeline_with_risk_analysis(start_step: int, keyword: Optional[str], pipeline_id: str = None, file_id: str = None):
+    """위험 분석이 포함된 파이프라인 실행 함수"""
+    global pipeline_status
+    
+    print(f"🚀 위험 분석 포함 파이프라인 실행 시작 - keyword: {keyword}, start_step: {start_step}, file_id: {file_id}")
+    logger.info(f"🚀 위험 분석 포함 파이프라인 실행 시작 - keyword: {keyword}, start_step: {start_step}, file_id: {file_id}")
+    
+    if pipeline_id:
+        pipeline_status[pipeline_id] = {
+            "status": "running",
+            "progress": 0,
+            "message": "파이프라인 실행 중...",
+            "start_time": datetime.now().isoformat()
+        }
+        print(f"📊 파이프라인 상태 초기화 완료 - ID: {pipeline_id}")
+        logger.info(f"📊 파이프라인 상태 초기화 완료 - ID: {pipeline_id}")
+    
+    try:
+        import subprocess
+        import sys
+        
+        # BE 디렉토리에서 실행
+        be_dir = Path(__file__).parent
+        cmd = [sys.executable, "main_pipeline.py", str(start_step), keyword]
+        
+        print(f"📋 subprocess 명령어: {' '.join(cmd)}")
+        print(f"📂 실행 디렉토리: {be_dir}")
+        logger.info(f"📋 subprocess 명령어: {' '.join(cmd)}")
+        logger.info(f"📂 실행 디렉토리: {be_dir}")
+        
+        # 환경변수 설정
+        env = os.environ.copy()
+        env['PYTHONIOENCODING'] = 'utf-8'
+        env['LANG'] = 'ko_KR.UTF-8'
+        env['LC_ALL'] = 'ko_KR.UTF-8'
+        env['KEYWORD'] = keyword  # keyword 환경변수 설정
+        
+        if pipeline_id:
+            pipeline_status[pipeline_id]["progress"] = 25
+            pipeline_status[pipeline_id]["message"] = "파이프라인 프로세스 시작 중..."
+            print("📊 파이프라인 진행률 업데이트: 25%")
+            logger.info("📊 파이프라인 진행률 업데이트: 25%")
+        
+        # subprocess로 파이프라인 실행
+        result = subprocess.run(
+            cmd,
+            cwd=be_dir,
+            capture_output=True,
+            text=True,
+            encoding='utf-8',
+            errors='ignore',
+            env=env,
+            timeout=3600  # 1시간 타임아웃
+        )
+        
+        print(f"📋 subprocess 결과 코드: {result.returncode}")
+        print(f"📝 stdout: {result.stdout}")
+        print(f"📝 stderr: {result.stderr}")
+        logger.info(f"📋 subprocess 결과 코드: {result.returncode}")
+        logger.info(f"📝 stdout: {result.stdout}")
+        logger.info(f"📝 stderr: {result.stderr}")
+        
+        success = result.returncode == 0
+        
+        if success:
+            print("✅ subprocess 파이프라인 실행 완료")
+            logger.info("✅ subprocess 파이프라인 실행 완료")
+            
+            # 파이프라인 완료 후 RAG 시스템 자동 로드
+            print("🔄 RAG 시스템 자동 로드 중...")
+            logger.info("🔄 RAG 시스템 자동 로드 중...")
+            if check_and_load_existing_data():
+                print("✅ 파이프라인 완료 후 RAG 시스템 로드 성공")
+                logger.info("✅ 파이프라인 완료 후 RAG 시스템 로드 성공")
+                
+                # RAG 시스템 로드 성공 후 위험 분석 실행
+                if file_id and file_id in uploaded_files:
+                    print("🛡️ 위험 분석 시작...")
+                    logger.info("🛡️ 위험 분석 시작...")
+                    
+                    try:
+                        # 위험 분석 실행 (동기적으로 실행)
+                        execute_risk_analysis_sync(file_id, pipeline_id)
+                    except Exception as e:
+                        print(f"⚠️ 위험 분석 실행 실패: {e}")
+                        logger.error(f"⚠️ 위험 분석 실행 실패: {e}")
+            else:
+                print("⚠️ 파이프라인 완료 후 RAG 시스템 로드 실패")
+                logger.warning("⚠️ 파이프라인 완료 후 RAG 시스템 로드 실패")
+            
+            if pipeline_id:
+                pipeline_status[pipeline_id] = {
+                    "status": "completed",
+                    "progress": 100,
+                    "message": "파이프라인 및 위험 분석 실행 완료",
+                    "end_time": datetime.now().isoformat()
+                }
+                print(f"📊 파이프라인 상태 업데이트: 완료 - ID: {pipeline_id}")
+                logger.info(f"📊 파이프라인 상태 업데이트: 완료 - ID: {pipeline_id}")
+        else:
+            print("❌ subprocess 파이프라인 실행 실패")
+            logger.error("❌ subprocess 파이프라인 실행 실패")
+            if pipeline_id:
+                pipeline_status[pipeline_id] = {
+                    "status": "failed",
+                    "progress": 0,
+                    "message": "파이프라인 실행 실패",
+                    "end_time": datetime.now().isoformat()
+                }
+                print(f"📊 파이프라인 상태 업데이트: 실패 - ID: {pipeline_id}")
+                logger.error(f"📊 파이프라인 상태 업데이트: 실패 - ID: {pipeline_id}")
+        
+        return success
+        
+    except subprocess.TimeoutExpired:
+        print("⏰ subprocess 파이프라인 실행 타임아웃")
+        logger.error("⏰ subprocess 파이프라인 실행 타임아웃")
+        
+        if pipeline_id:
+            pipeline_status[pipeline_id] = {
+                "status": "failed",
+                "progress": 0,
+                "message": "파이프라인 실행 타임아웃",
+                "end_time": datetime.now().isoformat()
+            }
+            print(f"📊 파이프라인 상태 업데이트: 타임아웃 - ID: {pipeline_id}")
+            logger.error(f"📊 파이프라인 상태 업데이트: 타임아웃 - ID: {pipeline_id}")
+        
+        return False
+        
+    except Exception as e:
+        print(f"❌ subprocess 파이프라인 실행 중 오류: {e}")
+        print(f"❌ 오류 타입: {type(e).__name__}")
+        import traceback
+        traceback.print_exc()
+        logger.error(f"❌ subprocess 파이프라인 실행 중 오류: {e}")
+        logger.error(f"❌ 오류 타입: {type(e).__name__}")
+        logger.error(traceback.format_exc())
+        
+        if pipeline_id:
+            pipeline_status[pipeline_id] = {
+                "status": "failed",
+                "progress": 0,
+                "message": f"파이프라인 실행 중 오류 발생: {str(e)}",
+                "end_time": datetime.now().isoformat()
+            }
+            print(f"📊 파이프라인 상태 업데이트: 예외 실패 - ID: {pipeline_id}")
+            logger.error(f"📊 파이프라인 상태 업데이트: 예외 실패 - ID: {pipeline_id}")
+        
+        return False
+
+def execute_risk_analysis_sync(file_id: str, pipeline_id: str):
+    """위험 분석 파이프라인 실행 (동기)"""
+    try:
+        print(f"🛡️ 위험 분석 파이프라인 시작 - file_id: {file_id}, pipeline_id: {pipeline_id}")
+        logger.info(f"🛡️ 위험 분석 파이프라인 시작 - file_id: {file_id}, pipeline_id: {pipeline_id}")
+        
+        # 파일 정보 가져오기
+        if file_id not in uploaded_files:
+            raise Exception(f"파일을 찾을 수 없습니다: {file_id}")
+        
+        file_info = uploaded_files[file_id]
+        file_path = file_info["file_path"]
+        
+        # 계약서 내용 읽기
+        contract_text = ""
+        with open(file_path, 'r', encoding='utf-8') as f:
+            if file_path.endswith('.json'):
+                json_data = json.load(f)
+                if isinstance(json_data, dict) and 'content' in json_data:
+                    contract_text = json_data['content']
+                else:
+                    contract_text = json.dumps(json_data, ensure_ascii=False, indent=2)
+            else:
+                contract_text = f.read()
+        
+        # 위험 분석 시작
+        from riskAnalysis.hybrid_risk_analyzer import HybridSequentialRiskAnalyzer
+        
+        # RAG 시스템이 로드되었는지 확인
+        if not rag_system:
+            raise Exception("RAG 시스템이 로드되지 않았습니다.")
+        
+        # 하이브리드 위험 분석기 초기화
+        risk_check_data = load_risk_checklist()
+        analyzer = HybridSequentialRiskAnalyzer(
+            risk_check_data,
+            rag_system["enhanced_lkg_retriever"],
+            rag_system["hippo_retriever"],
+            rag_system["llm_generator"],
+            neo4j_driver
+        )
+        
+        # 위험 분석 실행 (동기적으로 실행)
+        import asyncio
+        analysis_result = asyncio.run(analyzer.analyze_all_parts_with_hybrid(
+            contract_text, 
+            file_info["filename"]
+        ))
+        
+        # 분석 결과 저장
+        analysis_id = f"risk_analysis_{pipeline_id}"
+        risk_analysis_results[analysis_id] = {
+            "analysis_id": analysis_id,
+            "pipeline_id": pipeline_id,
+            "file_id": file_id,
+            "contract_name": file_info["filename"],
+            "analysis_result": analysis_result,
+            "created_at": datetime.now().isoformat()
+        }
+        
+        print(f"✅ 위험 분석 완료 - analysis_id: {analysis_id}")
+        logger.info(f"✅ 위험 분석 완료 - analysis_id: {analysis_id}")
+        
+    except Exception as e:
+        print(f"❌ 위험 분석 실행 실패: {e}")
+        logger.error(f"❌ 위험 분석 실행 실패: {e}")
+        raise e
+
+# 전역 변수 초기화
+risk_analysis_results = {}
+
+@app.get("/risk-analysis/{pipeline_id}")
+async def get_risk_analysis_result(pipeline_id: str):
+    """파이프라인 ID로 위험 분석 결과 조회"""
+    try:
+        analysis_id = f"risk_analysis_{pipeline_id}"
+        
+        if analysis_id not in risk_analysis_results:
+            raise HTTPException(status_code=404, detail="위험 분석 결과를 찾을 수 없습니다.")
+        
+        result = risk_analysis_results[analysis_id]
+        
+        return {
+            "success": True,
+            "data": result
+        }
+        
+    except Exception as e:
+        logger.error(f"위험 분석 결과 조회 실패: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/risk-analysis")
+async def get_all_risk_analysis_results():
+    """모든 위험 분석 결과 조회"""
+    try:
+        return {
+            "success": True,
+            "data": list(risk_analysis_results.values())
+        }
+        
+    except Exception as e:
+        logger.error(f"위험 분석 결과 목록 조회 실패: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/risk-analysis/analyze-contract")
+async def analyze_contract_risk(
+    contract_text: str = Form(...),
+    contract_name: str = Form("계약서"),
+    selected_parts: str = Form("all")  # "all" 또는 "1,2,3" 형태
+):
+    """독립적인 계약서 위험 분석"""
+    try:
+        print(f"🛡️ 독립적인 위험 분석 시작 - contract_name: {contract_name}")
+        logger.info(f"🛡️ 독립적인 위험 분석 시작 - contract_name: {contract_name}")
+        
+        # RAG 시스템 확인
+        if not rag_system:
+            raise HTTPException(status_code=500, detail="RAG 시스템이 로드되지 않았습니다.")
+        
+        # 분석할 파트 결정
+        if selected_parts == "all":
+            parts_to_analyze = list(range(1, 11))  # 1-10 파트
+        else:
+            parts_to_analyze = [int(p.strip()) for p in selected_parts.split(",")]
+        
+        # 하이브리드 위험 분석기 초기화
+        from riskAnalysis.hybrid_risk_analyzer import HybridSequentialRiskAnalyzer
+        risk_check_data = load_risk_checklist()
+        
+        analyzer = HybridSequentialRiskAnalyzer(
+            risk_check_data,
+            rag_system["enhanced_lkg_retriever"],
+            rag_system["hippo_retriever"],
+            rag_system["llm_generator"],
+            neo4j_driver
+        )
+        
+        # 위험 분석 실행
+        import asyncio
+        analysis_result = asyncio.run(analyzer.analyze_all_parts_with_hybrid(
+            contract_text, 
+            contract_name
+        ))
+        
+        # 분석 결과 저장
+        analysis_id = f"standalone_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        risk_analysis_results[analysis_id] = {
+            "analysis_id": analysis_id,
+            "pipeline_id": None,
+            "file_id": None,
+            "contract_name": contract_name,
+            "analysis_result": analysis_result,
+            "created_at": datetime.now().isoformat(),
+            "analysis_type": "standalone"
+        }
+        
+        print(f"✅ 독립적인 위험 분석 완료 - analysis_id: {analysis_id}")
+        logger.info(f"✅ 독립적인 위험 분석 완료 - analysis_id: {analysis_id}")
+        
+        return {
+            "success": True,
+            "message": "위험 분석이 완료되었습니다.",
+            "data": {
+                "analysis_id": analysis_id,
+                "analysis_result": analysis_result
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"독립적인 위험 분석 실패: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/risk-analysis/analyze-uploaded-file")
+async def analyze_uploaded_file_risk(
+    file_id: str = Form(...),
+    selected_parts: str = Form("all")
+):
+    """업로드된 파일에 대한 독립적인 위험 분석"""
+    try:
+        print(f"🛡️ 업로드된 파일 위험 분석 시작 - file_id: {file_id}")
+        logger.info(f"🛡️ 업로드된 파일 위험 분석 시작 - file_id: {file_id}")
+        
+        # 파일 정보 확인
+        if file_id not in uploaded_files:
+            raise HTTPException(status_code=404, detail="파일을 찾을 수 없습니다.")
+        
+        file_info = uploaded_files[file_id]
+        file_path = file_info["file_path"]
+        
+        # 계약서 내용 읽기
+        contract_text = ""
+        with open(file_path, 'r', encoding='utf-8') as f:
+            if file_path.endswith('.json'):
+                json_data = json.load(f)
+                if isinstance(json_data, dict) and 'content' in json_data:
+                    contract_text = json_data['content']
+                else:
+                    contract_text = json.dumps(json_data, ensure_ascii=False, indent=2)
+            else:
+                contract_text = f.read()
+        
+        # RAG 시스템 확인
+        if not rag_system:
+            raise HTTPException(status_code=500, detail="RAG 시스템이 로드되지 않았습니다.")
+        
+        # 분석할 파트 결정
+        if selected_parts == "all":
+            parts_to_analyze = list(range(1, 11))  # 1-10 파트
+        else:
+            parts_to_analyze = [int(p.strip()) for p in selected_parts.split(",")]
+        
+        # 하이브리드 위험 분석기 초기화
+        from riskAnalysis.hybrid_risk_analyzer import HybridSequentialRiskAnalyzer
+        risk_check_data = load_risk_checklist()
+        
+        analyzer = HybridSequentialRiskAnalyzer(
+            risk_check_data,
+            rag_system["enhanced_lkg_retriever"],
+            rag_system["hippo_retriever"],
+            rag_system["llm_generator"],
+            neo4j_driver
+        )
+        
+        # 위험 분석 실행
+        import asyncio
+        analysis_result = asyncio.run(analyzer.analyze_all_parts_with_hybrid(
+            contract_text, 
+            file_info["filename"]
+        ))
+        
+        # 분석 결과 저장
+        analysis_id = f"file_{file_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+        risk_analysis_results[analysis_id] = {
+            "analysis_id": analysis_id,
+            "pipeline_id": None,
+            "file_id": file_id,
+            "contract_name": file_info["filename"],
+            "analysis_result": analysis_result,
+            "created_at": datetime.now().isoformat(),
+            "analysis_type": "file_analysis"
+        }
+        
+        print(f"✅ 업로드된 파일 위험 분석 완료 - analysis_id: {analysis_id}")
+        logger.info(f"✅ 업로드된 파일 위험 분석 완료 - analysis_id: {analysis_id}")
+        
+        return {
+            "success": True,
+            "message": "위험 분석이 완료되었습니다.",
+            "data": {
+                "analysis_id": analysis_id,
+                "analysis_result": analysis_result
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"업로드된 파일 위험 분석 실패: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn

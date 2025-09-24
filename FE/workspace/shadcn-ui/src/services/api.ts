@@ -310,4 +310,28 @@ export const api = {
   getHealth: () => apiClient.getHealth(),
 
   getStatus: () => apiClient.getStatus(),
+
+  // 위험 분석
+  getRiskAnalysisResult: (pipelineId: string) =>
+    apiClient.get(`/risk-analysis/${pipelineId}`),
+
+  getAllRiskAnalysisResults: () => apiClient.get("/risk-analysis"),
+
+  // 독립적인 위험 분석
+  analyzeContractRisk: (
+    contractText: string,
+    contractName: string,
+    selectedParts?: string
+  ) =>
+    apiClient.post("/risk-analysis/analyze-contract", {
+      contract_text: contractText,
+      contract_name: contractName,
+      selected_parts: selectedParts || "all",
+    }),
+
+  analyzeUploadedFileRisk: (fileId: string, selectedParts?: string) =>
+    apiClient.post("/risk-analysis/analyze-uploaded-file", {
+      file_id: fileId,
+      selected_parts: selectedParts || "all",
+    }),
 };
