@@ -101,8 +101,4 @@ npm run dev
    ├─ ATLAS 파이프라인
    ├─ Neo4j (지식그래프)
    └─ OpenAI (LLM)
-```
 
-## 📄 라이선스
-
-- 백엔드 라이선스: `BE/LICENSE` (존재 시 참조)
