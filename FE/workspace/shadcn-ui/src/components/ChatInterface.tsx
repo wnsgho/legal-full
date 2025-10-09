@@ -197,11 +197,59 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
                         <div className="flex-shrink-0 w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
                           <Bot className="h-4 w-4 text-gray-600" />
                         </div>
-                        <div className="bg-gray-100 rounded-lg px-4 py-2">
-                          <p className="text-sm text-gray-800 leading-relaxed">
-                            {message.response}
-                          </p>
-                          <p className="text-xs text-gray-500 mt-1">
+                        <div className="bg-gray-100 rounded-lg px-4 py-2 w-full">
+                          {(() => {
+                            const response = message.response;
+                            const thoughtMatch = response.match(
+                              /Thought:\s*(.*?)(?=Answer:|$)/s
+                            );
+                            const answerMatch = response.match(
+                              /Answer:\s*(.*?)(?=Thought:|$)/s
+                            );
+
+                            if (thoughtMatch && answerMatch) {
+                              const thought = thoughtMatch[1].trim();
+                              const answer = answerMatch[1].trim();
+
+                              return (
+                                <div className="space-y-3">
+                                  {/* Answer 부분 - 위에 표시 */}
+                                  <div className="bg-green-50 border border-green-200 rounded-lg p-3">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                                      <span className="text-sm font-semibold text-green-800">
+                                        답변
+                                      </span>
+                                    </div>
+                                    <p className="text-sm text-green-800 leading-relaxed">
+                                      {answer}
+                                    </p>
+                                  </div>
+
+                                  {/* Thought 부분 - 아래에 표시 */}
+                                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                                    <div className="flex items-center gap-2 mb-2">
+                                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                                      <span className="text-sm font-semibold text-blue-800">
+                                        사고 과정
+                                      </span>
+                                    </div>
+                                    <p className="text-sm text-blue-800 leading-relaxed">
+                                      {thought}
+                                    </p>
+                                  </div>
+                                </div>
+                              );
+                            } else {
+                              // 기존 형식이 아닌 경우 그대로 표시
+                              return (
+                                <p className="text-sm text-gray-800 leading-relaxed">
+                                  {response}
+                                </p>
+                              );
+                            }
+                          })()}
+                          <p className="text-xs text-gray-500 mt-2">
                             {formatTime(message.createdAt)}
                           </p>
                         </div>

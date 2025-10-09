@@ -38,7 +38,7 @@ cp env.example .env
 # OpenAI API 설정
 OPENAI_API_KEY=your_openai_api_key_here
 OPENAI_BASE_URL=https://api.openai.com/v1
-DEFAULT_MODEL=gpt-4o-mini
+DEFAULT_MODEL=gpt-4.1-mini
 
 # Neo4j 데이터베이스 설정
 NEO4J_URI=neo4j://127.0.0.1:7687
@@ -180,17 +180,3 @@ BE/
 ├── main_pipeline.py      # ATLAS 파이프라인
 └── README_SERVER.md      # 이 파일
 ```
-
-## 📝 라이선스
-
-MIT License
-
-## 🤝 기여
-
-버그 리포트나 기능 제안은 이슈로 등록해주세요.
-
-## 📞 지원
-
-문제가 발생하면 로그를 확인하고 이슈로 등록해주세요.
-
-

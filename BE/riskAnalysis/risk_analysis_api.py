@@ -40,6 +40,7 @@ class PartAnalysisResponse(BaseModel):
     risk_score: float
     risk_level: str
     checklist_results: List[Dict[str, Any]]
+    relevant_clauses: List[str]
     recommendations: List[str]
     analysis_time: float
 
@@ -154,6 +155,7 @@ async def get_part_analysis(analysis_id: str, part_number: int):
         risk_score=result["risk_score"],
         risk_level=result["risk_level"],
         checklist_results=result["checklist_results"],
+        relevant_clauses=result.get("relevant_clauses", []),
         recommendations=result["recommendations"],
         analysis_time=result["analysis_time"]
     )
@@ -180,6 +182,7 @@ async def get_full_analysis_report(analysis_id: str):
             risk_score=result["risk_score"],
             risk_level=result["risk_level"],
             checklist_results=result["checklist_results"],
+            relevant_clauses=result.get("relevant_clauses", []),
             recommendations=result["recommendations"],
             analysis_time=result["analysis_time"]
         ))

@@ -20,6 +20,7 @@ class HybridPartAnalysisResult:
     risk_level: str
     checklist_results: List[Dict[str, Any]]
     relevant_clauses: List[str]
+    risk_clauses: List[str]  # 실제 위험으로 판단된 조항들
     hybrid_search_results: Dict[str, Any]  # 하이브리드 검색 상세 결과
     recommendations: List[str]
     analysis_time: float
@@ -63,6 +64,9 @@ class HybridRiskAnalyzer:
         
         analysis_time = time.time() - start_time
         
+        # 위험 조항 추출
+        risk_clauses = self._extract_risk_clauses(checklist_results, hybrid_results.get("relevant_clauses", []))
+        
         return HybridPartAnalysisResult(
             part_number=part_number,
             part_title=part_data["partTitle"],
@@ -70,10 +74,35 @@ class HybridRiskAnalyzer:
             risk_level=risk_level,
             checklist_results=checklist_results,
             relevant_clauses=hybrid_results.get("relevant_clauses", []),
+            risk_clauses=risk_clauses,
             hybrid_search_results=hybrid_results,
             recommendations=recommendations,
             analysis_time=analysis_time
         )
+    
+    def _extract_risk_clauses(self, checklist_results: List[Dict], relevant_clauses: List[str]) -> List[str]:
+        """체크리스트 결과에서 위험으로 판단된 조항들을 추출"""
+        risk_clauses = []
+        
+        for result in checklist_results:
+            # 위험도가 높은 항목들 (3점 이상)에서 관련 조항 추출
+            if result.get("risk_score", 0) >= 3:
+                # 분석 내용에서 조항 번호나 특정 조항을 찾아서 추출
+                analysis = result.get("analysis", "")
+                item = result.get("item", "")
+                
+                # 분석 내용에서 조항 번호 패턴 찾기 (예: "제19조", "제39조" 등)
+                import re
+                clause_patterns = re.findall(r'제\d+조', analysis)
+                
+                # 관련 조항에서 해당 조항들 찾기
+                for clause in relevant_clauses:
+                    for pattern in clause_patterns:
+                        if pattern in clause:
+                            if clause not in risk_clauses:
+                                risk_clauses.append(clause)
+        
+        return risk_clauses
     
     def _get_part_data(self, part_number: int) -> Optional[Dict]:
         """특정 파트의 데이터 추출"""
@@ -409,6 +438,83 @@ class HybridSequentialRiskAnalyzer:
         
         return {
             "contract_name": contract_name,
+            "analysis_date": datetime.now().isoformat(),
+            "total_analysis_time": total_time,
+            "overall_risk_score": overall_risk_score,
+            "overall_risk_level": self.analyzer._determine_risk_level(overall_risk_score),
+            "part_results": [self._serialize_hybrid_part_result(r) for r in results],
+            "summary": self._generate_hybrid_summary(results)
+        }
+    
+    async def analyze_selected_parts_with_hybrid(self, contract_text: str, contract_name: str, parts_to_analyze: List[int]) -> Dict[str, Any]:
+        """하이브리드 리트리버를 사용한 선택된 파트 직렬 분석"""
+        print(f"🔍 analyze_selected_parts_with_hybrid 시작 - 선택된 파트: {parts_to_analyze}", flush=True)
+        
+        start_time = time.time()
+        results = []
+        
+        try:
+            analysis_parts = self.risk_check_data["analysisParts"]
+            print(f"🔍 analysisParts 길이: {len(analysis_parts)}", flush=True)
+        except Exception as e:
+            print(f"🔍 analysisParts 접근 실패: {e}", flush=True)
+            raise
+        
+        # 선택된 파트만 순차 분석
+        for i, part_number in enumerate(parts_to_analyze):
+            print(f"🔍 선택된 파트 {part_number} 처리 시작", flush=True)
+            
+            # 해당 파트 데이터 찾기
+            part_data = None
+            for part in analysis_parts:
+                if part["partNumber"] == part_number:
+                    part_data = part
+                    break
+            
+            if not part_data:
+                print(f"🔍 파트 {part_number} 데이터를 찾을 수 없음", flush=True)
+                continue
+            
+            logging.info(f"Part {part_number} 하이브리드 분석 시작: {part_data['partTitle']}")
+            
+            try:
+                # 파트별 하이브리드 분석 수행
+                part_result = await self.analyzer.analyze_part_with_hybrid_retrieval(part_number, contract_text)
+                results.append(part_result)
+                
+                logging.info(f"Part {part_number} 하이브리드 분석 완료 - 위험도: {part_result.risk_level}")
+                
+                # Rate limit 고려한 지연
+                await asyncio.sleep(self.analyzer.rate_limit_delay)
+                
+            except Exception as e:
+                logging.error(f"Part {part_number} 하이브리드 분석 실패: {e}")
+                # 실패한 파트에 대한 기본 결과 생성
+                results.append(HybridPartAnalysisResult(
+                    part_number=part_number,
+                    part_title=part_data["partTitle"],
+                    risk_score=0.0,
+                    risk_level="UNKNOWN",
+                    checklist_results=[],
+                    relevant_clauses=[],
+                    hybrid_search_results={"error": str(e)},
+                    recommendations=[f"하이브리드 분석 실패: {str(e)}"],
+                    analysis_time=0.0
+                ))
+        
+        # 전체 분석 결과 통합
+        total_time = time.time() - start_time
+        if results:
+            overall_risk_score = sum(r.risk_score for r in results) / len(results)
+        else:
+            overall_risk_score = 0.0
+        
+        print(f"🔍 선택된 파트 분석 완료 - 전체 위험도: {overall_risk_score}", flush=True)
+        
+        return {
+            "contract_name": contract_name,
+            "analysis_type": "hybrid_selected_parts_analysis",
+            "selected_parts": parts_to_analyze,
             "analysis_date": datetime.now().isoformat(),
             "total_analysis_time": total_time,
             "overall_risk_score": overall_risk_score,

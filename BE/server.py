@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-AutoSchemaKG 백엔드 서버
-FastAPI를 사용한 현대적인 REST API 서버
-"""
+
 
 import os
 import sys
@@ -13,6 +10,7 @@ import shutil
 import uuid
 import time
 import requests
+import asyncio
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, List, Dict, Any
@@ -53,8 +51,8 @@ neo4j_driver = None
 pipeline_status = {}  # 파이프라인 실행 상태 관리
 uploaded_files = {}   # 업로드된 파일 관리
 
-# 업로드 디렉토리 설정
-UPLOAD_DIR = Path(__file__).parent.parent / "uploads"
+# 업로드 디렉토리 설정 (프로젝트 루트의 uploads 폴더)
+UPLOAD_DIR = Path(__file__).parent.parent.parent / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 # Pydantic 모델들
@@ -71,6 +69,8 @@ class ChatRequest(BaseModel):
     question: str
     max_tokens: int = 8192
     temperature: float = 0.5
+    chat_mode: str = "rag"  # "rag" 또는 "openai"
+    file_id: str = None  # 파일 ID (선택사항)
 
 class ChatResponse(BaseModel):
     success: bool
@@ -385,27 +385,57 @@ async def health_check():
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
-    """챗봇 질문 처리"""
+    """챗봇 질문 처리 - 두 가지 방식 지원 (RAG vs OpenAI 기본)"""
     start_time = datetime.now()
-    
+
+    try:
+        # 쿼리 파라미터나 헤더에서 채팅 방식을 결정 (기본값: rag)
+        chat_mode = "rag"  # 기본값은 RAG 시스템
+
+        # 요청 본문에 chat_mode가 있으면 사용
+        if hasattr(request, 'chat_mode'):
+            chat_mode = request.chat_mode
+
+        if chat_mode == "rag":
+            # RAG 시스템 방식
+            return await chat_rag(request, start_time)
+        elif chat_mode == "openai":
+            # OpenAI 기본 방식
+            return await chat_openai_basic(request, start_time)
+        else:
+            raise HTTPException(status_code=400, detail="지원하지 않는 채팅 모드입니다.")
+
+    except Exception as e:
+        logger.error(f"챗봇 처리 실패: {e}")
+        processing_time = (datetime.now() - start_time).total_seconds()
+
+        return ChatResponse(
+            success=False,
+            answer=f"오류가 발생했습니다: {str(e)}",
+            context_count=0,
+            processing_time=processing_time
+        )
+
+async def chat_rag(request: ChatRequest, start_time: datetime) -> ChatResponse:
+    """RAG 시스템을 사용한 채팅"""
     try:
         # RAG 시스템이 로드되지 않은 경우 로드 시도
         if rag_system is None:
             if not load_rag_system():
                 raise HTTPException(status_code=500, detail="RAG 시스템을 로드할 수 없습니다.")
-        
+
         # 질문 처리
         from experiment.run_questions_v3_with_concept import concept_enhanced_hybrid_retrieve
-        
+
         # Concept 활용 하이브리드 검색 실행
         search_result = concept_enhanced_hybrid_retrieve(
-            request.question, 
-            rag_system["enhanced_lkg_retriever"], 
+            request.question,
+            rag_system["enhanced_lkg_retriever"],
             rag_system["hippo_retriever"],
             rag_system["llm_generator"],
             neo4j_driver
         )
-        
+
         # 검색 결과 처리
         if search_result and len(search_result) == 2:
             sorted_context, context_ids = search_result
@@ -413,11 +443,11 @@ async def chat(request: ChatRequest):
         else:
             sorted_context = search_result if search_result else None
             context_count = 0
-        
+
         if sorted_context:
             # 위험조항 체크리스트 로드
             risk_checklist = load_risk_checklist()
-            
+
             # 시스템 프롬프트 설정
             system_instruction = (
                 "당신은 대한민국의 고급 계약서 분석 전문가입니다. 추출된 정보와 질문을 꼼꼼히 분석하고 답변해야 합니다. "
@@ -428,37 +458,78 @@ async def chat(request: ChatRequest):
                 f"=== 계약서 위험조항 체크리스트 ===\n{risk_checklist}\n"
                 "위 체크리스트를 참고하여 계약서의 잠재적 위험요소를 종합적으로 분석하세요."
             )
-            
+
             messages = [
                 {"role": "system", "content": system_instruction},
                 {"role": "user", "content": f"{sorted_context}\n\n{request.question}"},
             ]
-            
+
             result = rag_system["llm_generator"].generate_response(
-                messages, 
-                max_new_tokens=request.max_tokens, 
+                messages,
+                max_new_tokens=request.max_tokens,
                 temperature=request.temperature,
                 validate_function=None
             )
         else:
             result = "관련 컨텍스트를 찾을 수 없어 답변을 생성할 수 없습니다."
-        
+
         processing_time = (datetime.now() - start_time).total_seconds()
-        
+
         return ChatResponse(
             success=True,
             answer=result if result else "답변을 생성할 수 없습니다.",
             context_count=context_count,
             processing_time=processing_time
         )
-        
+
     except Exception as e:
-        logger.error(f"챗봇 처리 실패: {e}")
+        logger.error(f"RAG 채팅 처리 실패: {e}")
         processing_time = (datetime.now() - start_time).total_seconds()
-        
+
         return ChatResponse(
             success=False,
-            answer=f"오류가 발생했습니다: {str(e)}",
+            answer=f"RAG 채팅 오류: {str(e)}",
+            context_count=0,
+            processing_time=processing_time
+        )
+
+async def chat_openai_basic(request: ChatRequest, start_time: datetime) -> ChatResponse:
+    """간단한 OpenAI 기본 채팅"""
+    try:
+        # 간단한 OpenAI 채팅 스크립트 실행
+        from experiment.simple_openai_chat import SimpleOpenAIChat
+
+        # 기본적으로 최근 파일 사용 (file_id가 지정되지 않은 경우)
+        file_id = getattr(request, 'file_id', None)
+
+        # OpenAI 채팅 실행
+        chat_instance = SimpleOpenAIChat()
+        result = chat_instance.chat(request.question, file_id)
+
+        processing_time = (datetime.now() - start_time).total_seconds()
+
+        if result.get("success", False):
+            return ChatResponse(
+                success=True,
+                answer=result["answer"],
+                context_count=0,  # OpenAI 기본은 컨텍스트 카운트 없음
+                processing_time=processing_time
+            )
+        else:
+            return ChatResponse(
+                success=False,
+                answer=f"OpenAI 채팅 오류: {result.get('error', '알 수 없는 오류')}",
+                context_count=0,
+                processing_time=processing_time
+            )
+
+    except Exception as e:
+        logger.error(f"OpenAI 기본 채팅 처리 실패: {e}")
+        processing_time = (datetime.now() - start_time).total_seconds()
+
+        return ChatResponse(
+            success=False,
+            answer=f"OpenAI 기본 채팅 오류: {str(e)}",
             context_count=0,
             processing_time=processing_time
         )
@@ -822,7 +893,7 @@ async def run_pipeline_with_file(
         
         # 백그라운드에서 파이프라인 실행 (마크다운 변환 포함)
         actual_start_step = 0 if start_step == 1 else start_step
-        background_tasks.add_task(execute_pipeline_with_risk_analysis, actual_start_step, keyword, pipeline_id, file_id)
+        background_tasks.add_task(execute_pipeline, actual_start_step, keyword, pipeline_id)
         
         return PipelineResponse(
             success=True,
@@ -888,20 +959,134 @@ async def get_status():
         logger.error(f"상태 조회 실패: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/api/neo4j/stats")
+async def get_neo4j_stats(request: dict):
+    """Neo4j 데이터베이스 통계 정보 조회"""
+    try:
+        # 요청에서 연결 정보 추출
+        server_url = request.get("serverUrl", "neo4j://127.0.0.1:7687")
+        username = request.get("username", "neo4j")
+        password = request.get("password", "")
+        database = request.get("database", "contract3")
+        
+        if not password:
+            raise HTTPException(status_code=400, detail="Neo4j 비밀번호가 필요합니다.")
+        
+        # Neo4j 드라이버 생성
+        from neo4j import GraphDatabase
+        driver = GraphDatabase.driver(server_url, auth=(username, password))
+        
+        try:
+            with driver.session(database=database) as session:
+                # 노드 수 조회
+                node_result = session.run("MATCH (n) RETURN count(n) as nodeCount")
+                node_count = node_result.single()["nodeCount"]
+                
+                # 관계 수 조회
+                relationship_result = session.run("MATCH ()-[r]->() RETURN count(r) as relationshipCount")
+                relationship_count = relationship_result.single()["relationshipCount"]
+                
+                logger.info(f"Neo4j 통계 - 노드: {node_count}, 관계: {relationship_count}")
+                
+                return {
+                    "success": True,
+                    "nodeCount": node_count,
+                    "relationshipCount": relationship_count,
+                    "database": database
+                }
+                
+        finally:
+            driver.close()
+            
+    except Exception as e:
+        logger.error(f"Neo4j 통계 조회 실패: {e}")
+        raise HTTPException(status_code=500, detail=f"통계 조회 실패: {str(e)}")
+
+@app.post("/api/neo4j/graph-data")
+async def get_neo4j_graph_data(request: dict):
+    """Neo4j 그래프 데이터 조회 (노드와 관계)"""
+    try:
+        # 요청에서 연결 정보 추출
+        server_url = request.get("serverUrl", "neo4j://127.0.0.1:7687")
+        username = request.get("username", "neo4j")
+        password = request.get("password", "")
+        database = request.get("database", "contract3")
+        
+        if not password:
+            raise HTTPException(status_code=400, detail="Neo4j 비밀번호가 필요합니다.")
+
+        # 요청에서 limit 파라미터 추출 (기본값 1000, 최대 5000)
+        request_limit = int(request.get("limit", 1000))
+        request_limit = max(100, min(request_limit, 5000))  # 100-5000 범위로 제한
+
+        # Neo4j 드라이버 생성
+        from neo4j import GraphDatabase
+        driver = GraphDatabase.driver(server_url, auth=(username, password))
+
+        try:
+            with driver.session(database=database) as session:
+                # 노드 데이터 조회 (요청 limit만큼 가져옴)
+                node_result = session.run("MATCH (n) RETURN n LIMIT $limit", limit=request_limit)
+                nodes = []
+                for record in node_result:
+                    node = record["n"]
+                    nodes.append({
+                        "id": node.id,
+                        "labels": list(node.labels),
+                        "properties": dict(node)
+                    })
+
+                # 관계 데이터 조회 (더 적은 수로 제한)
+                relationship_result = session.run("MATCH ()-[r]->() RETURN r LIMIT $limit", limit=request_limit)
+                relationships = []
+                for record in relationship_result:
+                    rel = record["r"]
+                    relationships.append({
+                        "id": rel.id,
+                        "type": rel.type,
+                        "start_node": rel.start_node.id,
+                        "end_node": rel.end_node.id,
+                        "properties": dict(rel)
+                    })
+                
+                logger.info(f"Neo4j 그래프 데이터 - 노드: {len(nodes)}, 관계: {len(relationships)}, 요청 limit: {request_limit}")
+
+                return {
+                    "success": True,
+                    "nodes": nodes,
+                    "relationships": relationships,
+                    "database": database,
+                    "limit_used": request_limit,
+                    "node_count": len(nodes),
+                    "relationship_count": len(relationships)
+                }
+                
+        finally:
+            driver.close()
+            
+    except Exception as e:
+        logger.error(f"Neo4j 그래프 데이터 조회 실패: {e}")
+        raise HTTPException(status_code=500, detail=f"그래프 데이터 조회 실패: {str(e)}")
+
 @app.get("/files")
 async def list_uploaded_files():
     """업로드된 파일 목록 조회"""
     try:
         files = []
+        logger.info(f"현재 uploaded_files에 등록된 파일 수: {len(uploaded_files)}")
+        logger.info(f"uploaded_files 키들: {list(uploaded_files.keys())}")
+        
         for file_id, file_info in uploaded_files.items():
+            logger.info(f"파일 정보 - ID: {file_id}, 파일명: {file_info.get('filename', 'N/A')}")
             files.append({
                 "file_id": file_id,
                 "filename": file_info["filename"],
                 "upload_time": file_info["upload_time"],
-                "file_size": file_info["file_size"]
+                "file_size": file_info["file_size"],
+                "file_path": file_info.get("file_path", "")
             })
         
-        return {"success": True, "files": files}
+        return {"success": True, "data": files}
         
     except Exception as e:
         logger.error(f"파일 목록 조회 실패: {e}")
@@ -1076,7 +1261,11 @@ async def get_api_docs():
             "list_files": "GET /files - 업로드된 파일 목록 조회",
             "delete_file": "DELETE /files/{file_id} - 업로드된 파일 삭제",
             "chat_history": "GET /chat/history - 챗봇 대화 기록 조회",
-            "clear_history": "DELETE /chat/history - 챗봇 대화 기록 삭제"
+            "clear_history": "DELETE /chat/history - 챗봇 대화 기록 삭제",
+            "risk_analysis": "POST /risk-analysis/analyze-contract - 독립적인 계약서 위험 분석",
+            "risk_analysis_file": "POST /risk-analysis/analyze-uploaded-file - 업로드된 파일의 하이브리드 위험 분석",
+            "risk_analysis_gpt": "POST /risk-analysis/analyze-gpt-only - GPT 전용 위험 분석",
+            "risk_analysis_results": "GET /risk-analysis/saved - 저장된 위험 분석 결과 조회"
         },
         "swagger_ui": "/docs",
         "redoc": "/redoc"
@@ -1246,21 +1435,16 @@ async def get_openai_answer(question: str, document_id: str) -> Dict[str, Any]:
 
 질문: {question}
 
-답변 시 다음 사항을 고려해주세요:
-1. 계약서의 구체적인 조항을 인용하여 답변
-2. 법적 관점에서 정확하고 상세한 분석 제공
-3. 독소조항이나 위험 요소가 있다면 명확히 지적
-4. 답변 근거가 되는 조항 번호나 내용을 구체적으로 제시
 """
         
         response = client.chat.completions.create(
-            model="gpt-4.1",
+            model="gpt-4.1-mini",
             messages=[
-                {"role": "system", "content": "당신은 계약서 분석 전문가입니다. 주어진 계약서를 바탕으로 정확하고 상세한 분석을 제공해주세요."},
+
                 {"role": "user", "content": prompt}
             ],
-            max_tokens=2000,
-            temperature=0.1
+            max_tokens=8192,
+            temperature=1.0
         )
         
         processing_time = time.time() - start_time
@@ -1270,7 +1454,7 @@ async def get_openai_answer(question: str, document_id: str) -> Dict[str, Any]:
             "success": True,
             "answer": answer,
             "processing_time": processing_time,
-            "model": "gpt-4o",
+            "model": "gpt-4.1-mini",
             "tokens_used": response.usage.total_tokens if response.usage else 0
         }
         
@@ -1502,227 +1686,56 @@ async def get_openai_answer_with_content(question: str, document_content: str) -
             "processing_time": 0
         }
 
-def execute_pipeline_with_risk_analysis(start_step: int, keyword: Optional[str], pipeline_id: str = None, file_id: str = None):
-    """위험 분석이 포함된 파이프라인 실행 함수"""
-    global pipeline_status
-    
-    print(f"🚀 위험 분석 포함 파이프라인 실행 시작 - keyword: {keyword}, start_step: {start_step}, file_id: {file_id}")
-    logger.info(f"🚀 위험 분석 포함 파이프라인 실행 시작 - keyword: {keyword}, start_step: {start_step}, file_id: {file_id}")
-    
-    if pipeline_id:
-        pipeline_status[pipeline_id] = {
-            "status": "running",
-            "progress": 0,
-            "message": "파이프라인 실행 중...",
-            "start_time": datetime.now().isoformat()
-        }
-        print(f"📊 파이프라인 상태 초기화 완료 - ID: {pipeline_id}")
-        logger.info(f"📊 파이프라인 상태 초기화 완료 - ID: {pipeline_id}")
-    
-    try:
-        import subprocess
-        import sys
-        
-        # BE 디렉토리에서 실행
-        be_dir = Path(__file__).parent
-        cmd = [sys.executable, "main_pipeline.py", str(start_step), keyword]
-        
-        print(f"📋 subprocess 명령어: {' '.join(cmd)}")
-        print(f"📂 실행 디렉토리: {be_dir}")
-        logger.info(f"📋 subprocess 명령어: {' '.join(cmd)}")
-        logger.info(f"📂 실행 디렉토리: {be_dir}")
-        
-        # 환경변수 설정
-        env = os.environ.copy()
-        env['PYTHONIOENCODING'] = 'utf-8'
-        env['LANG'] = 'ko_KR.UTF-8'
-        env['LC_ALL'] = 'ko_KR.UTF-8'
-        env['KEYWORD'] = keyword  # keyword 환경변수 설정
-        
-        if pipeline_id:
-            pipeline_status[pipeline_id]["progress"] = 25
-            pipeline_status[pipeline_id]["message"] = "파이프라인 프로세스 시작 중..."
-            print("📊 파이프라인 진행률 업데이트: 25%")
-            logger.info("📊 파이프라인 진행률 업데이트: 25%")
-        
-        # subprocess로 파이프라인 실행
-        result = subprocess.run(
-            cmd,
-            cwd=be_dir,
-            capture_output=True,
-            text=True,
-            encoding='utf-8',
-            errors='ignore',
-            env=env,
-            timeout=3600  # 1시간 타임아웃
-        )
-        
-        print(f"📋 subprocess 결과 코드: {result.returncode}")
-        print(f"📝 stdout: {result.stdout}")
-        print(f"📝 stderr: {result.stderr}")
-        logger.info(f"📋 subprocess 결과 코드: {result.returncode}")
-        logger.info(f"📝 stdout: {result.stdout}")
-        logger.info(f"📝 stderr: {result.stderr}")
-        
-        success = result.returncode == 0
-        
-        if success:
-            print("✅ subprocess 파이프라인 실행 완료")
-            logger.info("✅ subprocess 파이프라인 실행 완료")
-            
-            # 파이프라인 완료 후 RAG 시스템 자동 로드
-            print("🔄 RAG 시스템 자동 로드 중...")
-            logger.info("🔄 RAG 시스템 자동 로드 중...")
-            if check_and_load_existing_data():
-                print("✅ 파이프라인 완료 후 RAG 시스템 로드 성공")
-                logger.info("✅ 파이프라인 완료 후 RAG 시스템 로드 성공")
-                
-                # RAG 시스템 로드 성공 후 위험 분석 실행
-                if file_id and file_id in uploaded_files:
-                    print("🛡️ 위험 분석 시작...")
-                    logger.info("🛡️ 위험 분석 시작...")
-                    
-                    try:
-                        # 위험 분석 실행 (동기적으로 실행)
-                        execute_risk_analysis_sync(file_id, pipeline_id)
-                    except Exception as e:
-                        print(f"⚠️ 위험 분석 실행 실패: {e}")
-                        logger.error(f"⚠️ 위험 분석 실행 실패: {e}")
-            else:
-                print("⚠️ 파이프라인 완료 후 RAG 시스템 로드 실패")
-                logger.warning("⚠️ 파이프라인 완료 후 RAG 시스템 로드 실패")
-            
-            if pipeline_id:
-                pipeline_status[pipeline_id] = {
-                    "status": "completed",
-                    "progress": 100,
-                    "message": "파이프라인 및 위험 분석 실행 완료",
-                    "end_time": datetime.now().isoformat()
-                }
-                print(f"📊 파이프라인 상태 업데이트: 완료 - ID: {pipeline_id}")
-                logger.info(f"📊 파이프라인 상태 업데이트: 완료 - ID: {pipeline_id}")
-        else:
-            print("❌ subprocess 파이프라인 실행 실패")
-            logger.error("❌ subprocess 파이프라인 실행 실패")
-            if pipeline_id:
-                pipeline_status[pipeline_id] = {
-                    "status": "failed",
-                    "progress": 0,
-                    "message": "파이프라인 실행 실패",
-                    "end_time": datetime.now().isoformat()
-                }
-                print(f"📊 파이프라인 상태 업데이트: 실패 - ID: {pipeline_id}")
-                logger.error(f"📊 파이프라인 상태 업데이트: 실패 - ID: {pipeline_id}")
-        
-        return success
-        
-    except subprocess.TimeoutExpired:
-        print("⏰ subprocess 파이프라인 실행 타임아웃")
-        logger.error("⏰ subprocess 파이프라인 실행 타임아웃")
-        
-        if pipeline_id:
-            pipeline_status[pipeline_id] = {
-                "status": "failed",
-                "progress": 0,
-                "message": "파이프라인 실행 타임아웃",
-                "end_time": datetime.now().isoformat()
-            }
-            print(f"📊 파이프라인 상태 업데이트: 타임아웃 - ID: {pipeline_id}")
-            logger.error(f"📊 파이프라인 상태 업데이트: 타임아웃 - ID: {pipeline_id}")
-        
-        return False
-        
-    except Exception as e:
-        print(f"❌ subprocess 파이프라인 실행 중 오류: {e}")
-        print(f"❌ 오류 타입: {type(e).__name__}")
-        import traceback
-        traceback.print_exc()
-        logger.error(f"❌ subprocess 파이프라인 실행 중 오류: {e}")
-        logger.error(f"❌ 오류 타입: {type(e).__name__}")
-        logger.error(traceback.format_exc())
-        
-        if pipeline_id:
-            pipeline_status[pipeline_id] = {
-                "status": "failed",
-                "progress": 0,
-                "message": f"파이프라인 실행 중 오류 발생: {str(e)}",
-                "end_time": datetime.now().isoformat()
-            }
-            print(f"📊 파이프라인 상태 업데이트: 예외 실패 - ID: {pipeline_id}")
-            logger.error(f"📊 파이프라인 상태 업데이트: 예외 실패 - ID: {pipeline_id}")
-        
-        return False
 
-def execute_risk_analysis_sync(file_id: str, pipeline_id: str):
-    """위험 분석 파이프라인 실행 (동기)"""
-    try:
-        print(f"🛡️ 위험 분석 파이프라인 시작 - file_id: {file_id}, pipeline_id: {pipeline_id}")
-        logger.info(f"🛡️ 위험 분석 파이프라인 시작 - file_id: {file_id}, pipeline_id: {pipeline_id}")
-        
-        # 파일 정보 가져오기
-        if file_id not in uploaded_files:
-            raise Exception(f"파일을 찾을 수 없습니다: {file_id}")
-        
-        file_info = uploaded_files[file_id]
-        file_path = file_info["file_path"]
-        
-        # 계약서 내용 읽기
-        contract_text = ""
-        with open(file_path, 'r', encoding='utf-8') as f:
-            if file_path.endswith('.json'):
-                json_data = json.load(f)
-                if isinstance(json_data, dict) and 'content' in json_data:
-                    contract_text = json_data['content']
-                else:
-                    contract_text = json.dumps(json_data, ensure_ascii=False, indent=2)
-            else:
-                contract_text = f.read()
-        
-        # 위험 분석 시작
-        from riskAnalysis.hybrid_risk_analyzer import HybridSequentialRiskAnalyzer
-        
-        # RAG 시스템이 로드되었는지 확인
-        if not rag_system:
-            raise Exception("RAG 시스템이 로드되지 않았습니다.")
-        
-        # 하이브리드 위험 분석기 초기화
-        risk_check_data = load_risk_checklist()
-        analyzer = HybridSequentialRiskAnalyzer(
-            risk_check_data,
-            rag_system["enhanced_lkg_retriever"],
-            rag_system["hippo_retriever"],
-            rag_system["llm_generator"],
-            neo4j_driver
-        )
-        
-        # 위험 분석 실행 (동기적으로 실행)
-        import asyncio
-        analysis_result = asyncio.run(analyzer.analyze_all_parts_with_hybrid(
-            contract_text, 
-            file_info["filename"]
-        ))
-        
-        # 분석 결과 저장
-        analysis_id = f"risk_analysis_{pipeline_id}"
-        risk_analysis_results[analysis_id] = {
-            "analysis_id": analysis_id,
-            "pipeline_id": pipeline_id,
-            "file_id": file_id,
-            "contract_name": file_info["filename"],
-            "analysis_result": analysis_result,
-            "created_at": datetime.now().isoformat()
-        }
-        
-        print(f"✅ 위험 분석 완료 - analysis_id: {analysis_id}")
-        logger.info(f"✅ 위험 분석 완료 - analysis_id: {analysis_id}")
-        
-    except Exception as e:
-        print(f"❌ 위험 분석 실행 실패: {e}")
-        logger.error(f"❌ 위험 분석 실행 실패: {e}")
-        raise e
 
 # 전역 변수 초기화
-risk_analysis_results = {}
+risk_analysis_results = {}  # 위험 분석 결과 저장용 (별도 API로 실행)
+
+# 서버 시작 시 기존 파일들을 uploaded_files에 등록
+async def initialize_uploaded_files():
+    """서버 시작 시 uploads 폴더의 기존 파일들을 uploaded_files에 등록"""
+    try:
+        uploads_dir = Path("uploads")
+        if uploads_dir.exists():
+            logger.info(f"uploads 폴더 스캔 시작: {uploads_dir}")
+            for file_path in uploads_dir.glob("*"):
+                if file_path.is_file():
+                    # 파일명에서 UUID 추출 시도
+                    filename = file_path.name
+                    if "_" in filename:
+                        # 파일명이 "uuid_filename" 형태인 경우
+                        parts = filename.split("_", 1)
+                        if len(parts) == 2:
+                            file_id = parts[0]
+                            original_filename = parts[1]
+                        else:
+                            # UUID가 아닌 경우 파일명을 그대로 사용
+                            file_id = str(uuid.uuid4())
+                            original_filename = filename
+                    else:
+                        # UUID가 없는 경우 새로 생성
+                        file_id = str(uuid.uuid4())
+                        original_filename = filename
+                    
+                    # 파일 정보 등록
+                    uploaded_files[file_id] = {
+                        "filename": original_filename,
+                        "file_path": str(file_path),
+                        "upload_time": datetime.fromtimestamp(file_path.stat().st_mtime).isoformat(),
+                        "file_size": file_path.stat().st_size
+                    }
+                    logger.info(f"기존 파일 등록: {file_id} -> {original_filename}")
+            
+            logger.info(f"총 {len(uploaded_files)}개 파일이 uploaded_files에 등록됨")
+        else:
+            logger.info("uploads 폴더가 존재하지 않음")
+    except Exception as e:
+        logger.error(f"기존 파일 등록 실패: {e}")
+
+# 서버 시작 시 기존 파일들 등록
+@app.on_event("startup")
+async def startup_event():
+    await initialize_uploaded_files()
 
 @app.get("/risk-analysis/rag-contracts")
 async def get_rag_contracts():
@@ -1755,6 +1768,119 @@ async def get_rag_contracts():
         logger.error(f"RAG 계약서 목록 조회 실패: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/files/{file_id}/content")
+async def get_file_content(file_id: str):
+    """업로드된 파일의 내용 조회"""
+    try:
+        if file_id not in uploaded_files:
+            raise HTTPException(status_code=404, detail="파일을 찾을 수 없습니다.")
+        
+        file_info = uploaded_files[file_id]
+        file_path = file_info["file_path"]
+        
+        if not os.path.exists(file_path):
+            raise HTTPException(status_code=404, detail="파일이 존재하지 않습니다.")
+        
+        # 파일 내용 읽기
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+        except UnicodeDecodeError:
+            # UTF-8로 읽기 실패 시 다른 인코딩 시도
+            try:
+                with open(file_path, 'r', encoding='cp949') as f:
+                    content = f.read()
+            except UnicodeDecodeError:
+                with open(file_path, 'r', encoding='latin-1') as f:
+                    content = f.read()
+        
+        return {
+            "success": True,
+            "data": {
+                "file_id": file_id,
+                "filename": file_info["filename"],
+                "content": content,
+                "file_size": len(content),
+                "upload_time": file_info.get("upload_time", "")
+            }
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"파일 내용 조회 실패: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/risk-analysis/saved")
+async def get_saved_risk_analysis_results():
+    """저장된 위험 분석 결과 조회"""
+    try:
+        import json
+        import os
+        
+        # 직접 JSON 파일 경로 설정
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        data_dir = os.path.join(current_dir, "riskAnalysis", "data")
+        results_file = os.path.join(data_dir, "risk_analysis_results.json")
+        
+        print(f"🔍 저장된 위험 분석 결과 조회 시작", flush=True)
+        print(f"🔍 results_file 경로: {results_file}", flush=True)
+        print(f"🔍 results_file 존재 여부: {os.path.exists(results_file)}", flush=True)
+        
+        if not os.path.exists(results_file):
+            print(f"🔍 results_file이 존재하지 않음", flush=True)
+            return {
+                "success": True,
+                "data": {
+                    "results": [],
+                    "total_count": 0
+                }
+            }
+        
+        # JSON 파일 직접 읽기
+        with open(results_file, 'r', encoding='utf-8') as f:
+            all_results = json.load(f)
+        
+        print(f"🔍 로드된 결과 개수: {len(all_results)}", flush=True)
+        
+        if not all_results:
+            print(f"🔍 저장된 분석 결과가 없음", flush=True)
+            return {
+                "success": True,
+                "data": {
+                    "results": [],
+                    "total_count": 0
+                }
+            }
+        
+        # 최신순으로 정렬
+        results_list = list(all_results.values())
+        results_list.sort(
+            key=lambda x: x.get('created_at', ''), 
+            reverse=True
+        )
+        
+        print(f"🔍 정렬된 결과 개수: {len(results_list)}", flush=True)
+        
+        return {
+            "success": True,
+            "data": {
+                "results": results_list,
+                "total_count": len(results_list)
+            }
+        }
+    except Exception as e:
+        print(f"🔍 저장된 위험 분석 결과 조회 실패: {e}", flush=True)
+        logger.error(f"저장된 위험 분석 결과 조회 실패: {e}")
+        return {
+            "success": False,
+            "error": str(e),
+            "data": {
+                "results": [],
+                "total_count": 0
+            }
+        }
+
 @app.get("/risk-analysis/{pipeline_id}")
 async def get_risk_analysis_result(pipeline_id: str):
     """파이프라인 ID로 위험 분석 결과 조회"""
@@ -1762,6 +1888,7 @@ async def get_risk_analysis_result(pipeline_id: str):
         analysis_id = f"risk_analysis_{pipeline_id}"
         
         if analysis_id not in risk_analysis_results:
+            # 404 오류는 정상적인 상황이므로 로깅하지 않음
             raise HTTPException(status_code=404, detail="위험 분석 결과를 찾을 수 없습니다.")
         
         result = risk_analysis_results[analysis_id]
@@ -1771,6 +1898,9 @@ async def get_risk_analysis_result(pipeline_id: str):
             "data": result
         }
         
+    except HTTPException:
+        # HTTPException은 다시 raise (404는 정상)
+        raise
     except Exception as e:
         logger.error(f"위험 분석 결과 조회 실패: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -1786,6 +1916,60 @@ async def get_all_risk_analysis_results():
         
     except Exception as e:
         logger.error(f"위험 분석 결과 목록 조회 실패: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/risk-analysis/saved/{file_id}")
+async def get_saved_risk_analysis_by_file(file_id: str):
+    """특정 파일의 저장된 위험 분석 결과 조회"""
+    try:
+        import json
+        from pathlib import Path
+        
+        print(f"🔍 특정 파일의 저장된 위험 분석 결과 조회 시작 - file_id: {file_id}", flush=True)
+        
+        # data 폴더에서 직접 JSON 파일 읽기
+        data_dir = Path(__file__).parent / "riskAnalysis" / "data"
+        results_file = data_dir / "risk_analysis_results.json"
+        
+        if not results_file.exists():
+            print(f"🔍 results_file이 존재하지 않음", flush=True)
+            return {
+                "success": True,
+                "data": {
+                    "results": [],
+                    "total_count": 0
+                }
+            }
+        
+        # JSON 파일 직접 읽기
+        with open(results_file, 'r', encoding='utf-8') as f:
+            all_results = json.load(f)
+        
+        # 해당 파일의 모든 분석 결과 조회
+        file_results = []
+        
+        for result_id, result in all_results.items():
+            if result.get('file_id') == file_id:
+                file_results.append(result)
+        
+        print(f"🔍 해당 파일의 분석 결과 개수: {len(file_results)}", flush=True)
+        
+        # 최신순으로 정렬
+        file_results.sort(
+            key=lambda x: x.get('created_at', ''), 
+            reverse=True
+        )
+        
+        return {
+            "success": True,
+            "data": {
+                "results": file_results,
+                "total_count": len(file_results)
+            }
+        }
+    except Exception as e:
+        print(f"🔍 특정 파일의 저장된 위험 분석 결과 조회 실패: {e}", flush=True)
+        logger.error(f"파일별 저장된 위험 분석 결과 조회 실패: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/risk-analysis/analyze-contract")
@@ -1979,19 +2163,33 @@ async def analyze_uploaded_file_risk(request: Request):
         # 하이브리드 위험 분석 실행
         print(f"🔍 하이브리드 위험 분석 실행 시작", flush=True)
         try:
-            analysis_result = await analyzer.analyze_all_parts_with_hybrid(
-                contract_text, 
-                file_info["filename"]
-            )
-            print(f"🔍 하이브리드 위험 분석 실행 성공", flush=True)
+            if selected_parts == "all":
+                # 전체 파트 분석
+                analysis_result = await analyzer.analyze_all_parts_with_hybrid(
+                    contract_text, 
+                    file_info["filename"]
+                )
+                print(f"🔍 전체 파트 하이브리드 위험 분석 실행 성공", flush=True)
+            else:
+                # 선택된 파트만 분석
+                analysis_result = await analyzer.analyze_selected_parts_with_hybrid(
+                    contract_text, 
+                    file_info["filename"],
+                    parts_to_analyze
+                )
+                print(f"🔍 선택된 파트 하이브리드 위험 분석 실행 성공: {parts_to_analyze}", flush=True)
         except Exception as e:
             print(f"🔍 하이브리드 위험 분석 실행 실패: {e}", flush=True)
             raise
         
         # 분석 결과 저장
         analysis_id = f"file_{file_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-        risk_analysis_results[analysis_id] = {
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        file_based_id = f"{file_info['filename']}_{timestamp}"
+        
+        result_data = {
             "analysis_id": analysis_id,
+            "file_based_id": file_based_id,
             "pipeline_id": None,
             "file_id": file_id,
             "contract_name": file_info["filename"],
@@ -1999,6 +2197,19 @@ async def analyze_uploaded_file_risk(request: Request):
             "created_at": datetime.now().isoformat(),
             "analysis_type": "file_hybrid_analysis"
         }
+        
+        # 메모리에 저장
+        risk_analysis_results[analysis_id] = result_data
+        
+        # 영구 저장 (파일) - 파일명 기반으로 저장
+        from riskAnalysis.data_persistence import data_manager
+        save_success = data_manager.save_analysis_result(file_based_id, result_data)
+        if save_success:
+            print(f"✅ 분석 결과 영구 저장 완료: {file_based_id}")
+            logger.info(f"✅ 분석 결과 영구 저장 완료: {file_based_id}")
+        else:
+            print(f"❌ 분석 결과 영구 저장 실패: {file_based_id}")
+            logger.error(f"❌ 분석 결과 영구 저장 실패: {file_based_id}")
         
         print(f"✅ 업로드된 파일 하이브리드 위험 분석 완료 - analysis_id: {analysis_id}")
         logger.info(f"✅ 업로드된 파일 하이브리드 위험 분석 완료 - analysis_id: {analysis_id}")
@@ -2159,6 +2370,318 @@ def _generate_analysis_summary(part_results: list) -> dict:
         "critical_issues": critical_issues
     }
 
+async def get_file_content_by_id(file_id: str) -> str:
+    """파일 ID로 파일 내용을 가져오는 함수"""
+    try:
+        if file_id not in uploaded_files:
+            logger.error(f"파일을 찾을 수 없습니다. file_id: {file_id}")
+            return None
+        
+        file_info = uploaded_files[file_id]
+        file_path = file_info["file_path"]
+        
+        if not os.path.exists(file_path):
+            logger.error(f"파일이 존재하지 않습니다. path: {file_path}")
+            return None
+        
+        # 파일 내용 읽기
+        try:
+            with open(file_path, 'r', encoding='utf-8') as f:
+                content = f.read()
+        except UnicodeDecodeError:
+            # UTF-8로 읽기 실패 시 다른 인코딩 시도
+            try:
+                with open(file_path, 'r', encoding='cp949') as f:
+                    content = f.read()
+            except UnicodeDecodeError:
+                with open(file_path, 'r', encoding='latin-1') as f:
+                    content = f.read()
+        
+        return content
+        
+    except Exception as e:
+        logger.error(f"파일 내용 조회 실패: {e}")
+        return None
+
+async def save_gpt_analysis_result(gpt_result: dict):
+    """GPT 분석 결과를 저장하는 함수"""
+    try:
+        from riskAnalysis.data_persistence import RiskAnalysisDataManager
+        
+        # 데이터 매니저 초기화
+        data_manager = RiskAnalysisDataManager()
+        
+        # 분석 ID 생성
+        analysis_id = gpt_result.get("analysis_id", f"gpt_{datetime.now().strftime('%Y%m%d_%H%M%S')}")
+        
+        # 결과 저장
+        success = data_manager.save_analysis_result(analysis_id, gpt_result)
+        
+        if success:
+            logger.info(f"GPT 분석 결과 저장 완료: {analysis_id}")
+        else:
+            logger.error(f"GPT 분석 결과 저장 실패: {analysis_id}")
+            
+        return success
+        
+    except Exception as e:
+        logger.error(f"GPT 분석 결과 저장 중 오류: {e}")
+        return False
+
+# GPT 전용 위험 분석 API
+@app.post("/risk-analysis/analyze-gpt-only")
+async def analyze_gpt_only(request: dict):
+    """GPT만을 사용한 위험 분석"""
+    try:
+        file_id = request.get("file_id")
+        if not file_id:
+            return {"success": False, "error": "file_id가 필요합니다"}
+        
+        # 파일 내용 조회
+        file_content = await get_file_content_by_id(file_id)
+        if not file_content:
+            return {"success": False, "error": "파일을 찾을 수 없습니다"}
+        
+        # SimpleGPTRiskAnalyzer import 및 사용
+        from riskAnalysis.simple_gpt_risk_analyzer import SimpleGPTRiskAnalyzer
+        
+        # GPT 분석기 초기화
+        analyzer = SimpleGPTRiskAnalyzer()
+        
+        # 계약서 분석
+        result = analyzer.analyze_contract(
+            contract_text=file_content,
+            contract_name=f"contract_{file_id}"
+        )
+        
+        # 결과를 하이브리드 분석과 동일한 형식으로 변환
+        gpt_result = {
+            "analysis_id": f"gpt_{file_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+            "file_id": file_id,
+            "contract_name": f"GPT 분석 - {file_id}",
+            "created_at": datetime.now().isoformat(),
+            "analysis_type": "gpt_only",
+            "analysis_result": {
+                "overall_risk_score": 3.5,  # GPT 결과에서 추출하거나 기본값
+                "part_results": [
+                    {
+                        "part_title": "GPT 전체 분석",
+                        "risk_level": "MEDIUM",
+                        "risk_score": 3.5,
+                        "risk_clauses": ["GPT 분석에서 발견된 위험 조항들"],
+                        "recommendations": ["GPT 분석 권고사항"],
+                        "analysis_content": result.get("analysis_result", "")
+                    }
+                ],
+                "total_analysis_time": result.get("analysis_time", 0),
+                "summary": {
+                    "total_parts_analyzed": 1,
+                    "high_risk_parts": 0,
+                    "critical_issues": [],
+                    "gpt_analysis": result.get("analysis_result", "")
+                }
+            }
+        }
+        
+        # 결과 저장
+        await save_gpt_analysis_result(gpt_result)
+        
+        return {
+            "success": True,
+            "data": gpt_result,
+            "message": "GPT 전용 분석이 완료되었습니다"
+        }
+        
+    except Exception as e:
+        logger.error(f"GPT 분석 실패: {str(e)}")
+        return {"success": False, "error": f"GPT 분석 실패: {str(e)}"}
+
+async def save_gpt_analysis_result(result: dict):
+    """GPT 분석 결과 저장"""
+    try:
+        # GPT 분석 결과를 별도 파일에 저장
+        gpt_results_file = "riskAnalysis/data/gpt_analysis_results.json"
+        
+        # 기존 결과 로드
+        if os.path.exists(gpt_results_file):
+            with open(gpt_results_file, 'r', encoding='utf-8') as f:
+                existing_results = json.load(f)
+        else:
+            existing_results = []
+        
+        # 새 결과 추가
+        existing_results.append(result)
+        
+        # 파일 저장
+        with open(gpt_results_file, 'w', encoding='utf-8') as f:
+            json.dump(existing_results, f, ensure_ascii=False, indent=2)
+        
+        logger.info(f"GPT 분석 결과 저장 완료: {result['analysis_id']}")
+        
+    except Exception as e:
+        logger.error(f"GPT 분석 결과 저장 실패: {str(e)}")
+
+@app.get("/risk-analysis/gpt-results")
+async def get_gpt_analysis_results():
+    """GPT 분석 결과 조회"""
+    try:
+        gpt_results_file = "riskAnalysis/data/gpt_analysis_results.json"
+        
+        if os.path.exists(gpt_results_file):
+            with open(gpt_results_file, 'r', encoding='utf-8') as f:
+                results = json.load(f)
+        else:
+            results = []
+        
+        return {
+            "success": True,
+            "data": {"results": results}
+        }
+        
+    except Exception as e:
+        logger.error(f"GPT 분석 결과 조회 실패: {str(e)}")
+        return {"success": False, "error": f"GPT 분석 결과 조회 실패: {str(e)}"}
+
+# OpenAI 기본 채팅 API
+@app.post("/chat/openai-basic")
+async def openai_basic_chat(request: ChatRequest):
+    """OpenAI 기본 형식 채팅 (RAG 없이)"""
+    try:
+        if not request.question.strip():
+            return {
+                "success": False,
+                "message": "질문을 입력해주세요."
+            }
+        
+        # OpenAI API 호출
+        import openai
+        from openai import OpenAI
+        
+        # OpenAI 클라이언트 초기화
+        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        
+        # 업로드된 계약서 내용 가져오기
+        contract_content = ""
+        if uploaded_files:
+            # 가장 최근 업로드된 파일의 내용 가져오기
+            latest_file_id = max(uploaded_files.keys())
+            file_info = uploaded_files[latest_file_id]
+            file_path = UPLOAD_DIR / file_info['filename']
+            
+            if file_path.exists():
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        contract_content = f.read()
+                    logger.info(f"계약서 내용 로드 성공: {file_info['filename']} ({len(contract_content)} 문자)")
+                except Exception as e:
+                    logger.error(f"계약서 내용 로드 실패: {str(e)}")
+                    contract_content = ""
+        
+        # 메시지 구성 (시스템 프롬프트 없이 바로 질문과 계약서 내용 전달)
+        if contract_content:
+            messages = [
+                {"role": "user", "content": f"다음은 분석할 계약서 내용입니다:\n\n{contract_content}\n\n이 계약서에 대해 다음 질문에 답변해주세요: {request.question}"}
+            ]
+        else:
+            messages = [
+                {"role": "user", "content": request.question}
+            ]
+        
+        # OpenAI API 호출
+        response = client.chat.completions.create(
+            model="gpt-4.1-mini",
+            messages=messages,
+            max_tokens=request.max_tokens,
+            temperature=request.temperature
+        )
+        
+        answer = response.choices[0].message.content
+        
+        return {
+            "success": True,
+            "answer": answer,
+            "context_count": 0,  # RAG를 사용하지 않으므로 0
+            "processing_time": 0.0,
+            "model": "gpt-4.1-mini",
+            "method": "openai_basic"
+        }
+        
+    except Exception as e:
+        logger.error(f"OpenAI 기본 채팅 실패: {str(e)}")
+        return {
+            "success": False,
+            "message": f"OpenAI 기본 채팅 실패: {str(e)}"
+        }
+
+# 특정 계약서를 위한 OpenAI 기본 채팅 API
+@app.post("/chat/openai-basic/{file_id}")
+async def openai_basic_chat_with_file(file_id: str, request: ChatRequest):
+    """특정 계약서를 위한 OpenAI 기본 형식 채팅"""
+    try:
+        if not request.question.strip():
+            return {
+                "success": False,
+                "message": "질문을 입력해주세요."
+            }
+        
+        # OpenAI API 호출
+        import openai
+        from openai import OpenAI
+        
+        # OpenAI 클라이언트 초기화
+        client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        
+        # 특정 계약서 내용 가져오기
+        contract_content = ""
+        if file_id in uploaded_files:
+            file_info = uploaded_files[file_id]
+            file_path = UPLOAD_DIR / file_info['filename']
+            
+            if file_path.exists():
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        contract_content = f.read()
+                    logger.info(f"계약서 내용 로드 성공: {file_info['filename']} ({len(contract_content)} 문자)")
+                except Exception as e:
+                    logger.error(f"계약서 내용 로드 실패: {str(e)}")
+                    contract_content = ""
+        else:
+            logger.warning(f"파일 ID {file_id}를 찾을 수 없습니다.")
+        
+        # 시스템 프롬프트 설정"""
+        
+        # 메시지 구성
+        messages = [
+            {"role": "user", "content": f"다음은 분석할 계약서 내용입니다:\n\n{contract_content}\n\n이 계약서에 대해 다음 질문에 답변해주세요: {request.question}"}
+        ]
+        
+        
+        # OpenAI API 호출
+        response = client.chat.completions.create(
+            model="gpt-4.1-mini",
+            messages=messages,
+            max_tokens=request.max_tokens,
+            temperature=request.temperature
+        )
+        
+        answer = response.choices[0].message.content
+        
+        return {
+            "success": True,
+            "answer": answer,
+            "context_count": 0,  # RAG를 사용하지 않으므로 0
+            "processing_time": 0.0,
+            "model": "gpt-4.1-mini",
+            "method": "openai_basic_with_file"
+        }
+        
+    except Exception as e:
+        logger.error(f"OpenAI 기본 채팅 실패: {str(e)}")
+        return {
+            "success": False,
+            "message": f"OpenAI 기본 채팅 실패: {str(e)}"
+        }
+
 # 중복 API 제거 - analyze-uploaded-file과 동일한 기능
 # @app.post("/risk-analysis/analyze-rag-contract") - 제거됨
 
@@ -2173,3 +2696,4 @@ if __name__ == "__main__":
         reload=True,
         log_level="info"
     )
+
