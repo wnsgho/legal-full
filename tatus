@@ -1,0 +1,29 @@
+[1mdiff --git a/.gitignore b/.gitignore[m
+[1mindex a7a506a..50e9fc5 100644[m
+[1m--- a/.gitignore[m
+[1m+++ b/.gitignore[m
+[36m@@ -17,3 +17,23 @@[m [mThumbs.db[m
+ # Temporary files[m
+ *.tmp[m
+ *.temp[m
+[32m+[m
+[32m+[m[32m# 프로젝트별 백업 및 임시 파일들[m
+[32m+[m[32m*.bak[m
+[32m+[m[32m*.backup[m
+[32m+[m[32m*.orig[m
+[32m+[m[32m*.rej[m
+[32m+[m
+[32m+[m[32m# 데이터베이스 덤프 파일들[m
+[32m+[m[32m*.sql[m
+[32m+[m[32m*.dump[m
+[32m+[m
+[32m+[m[32m# 압축 파일들 (개발 중 생성되는 것들)[m
+[32m+[m[32m*.zip[m
+[32m+[m[32m*.tar.gz[m
+[32m+[m[32m*.rar[m
+[32m+[m
+[32m+[m[32m# 임시 스크립트들[m
+[32m+[m[32mtemp_*.py[m
+[32m+[m[32mtest_*.py[m
+[32m+[m[32mdebug_*.py[m
+\ No newline at end of file[m

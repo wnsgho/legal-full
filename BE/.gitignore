@@ -28,11 +28,35 @@ Thumbs.db
 # Evaluation results
 /evaluate_ko/*_result.json
 /evaluate_ko/gemini_results_*.json
+/evaluate_ko/answers/
+/evaluate_ko/*_eval_result.json
+/evaluate_ko/openai_only_results_*.json
+/evaluate_ko/contract*_questions.json
+/evaluate_ko/question_C*.json
 
 
 # Virtual Environments
 .venv/
 venv/
+.env/
+ENV/
+env/
+
+# Neo4j 관련 데이터베이스 파일들
+*.db
+*.sqlite
+*.sqlite3
+data/
+imports/
+
+# API 키나 민감한 설정 파일들
+config.json
+secrets.json
+*.key
+*.pem
+
+# Jupyter 노트북 체크포인트
+.ipynb_checkpoints/
 
 # Temporary files
 *.tmp
@@ -41,6 +65,10 @@ venv/
 # Experiment data and logs
 /experiment/*.log
 /experiment/*.txt
+/experiment/*.json
+
+# Risk analysis data
+/riskAnalysis/data/*.json
 
 # Legacy entries (기존 설정 유지)
 *.ini

@@ -5,6 +5,51 @@ lerna-debug.log*
 # SSR build output
 dist-ssr
 
+# Vite 빌드 출력
+dist/
+
+# Node.js 관련
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# 환경 변수 파일들 (예제 파일 제외)
+.env$
+.env.local$
+.env.development.local$
+.env.test.local$
+.env.production.local$
+
+# 예제 파일은 허용
+!.env.local.example
+!.env.example
+
 # VSCode settings (more specific than parent)
 .vscode/*
 !.vscode/extensions.json
+
+# IDE 설정
+.idea/
+*.swp
+*.swo
+
+# OS 관련
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# 로그 파일들
+*.log
+logs/
+
+# 캐시 파일들
+.cache/
+.parcel-cache/
+.next/
+.nuxt/

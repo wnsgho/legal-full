@@ -11,11 +11,27 @@ from typing import Dict, List, Any, Optional
 class RiskAnalysisDataManager:
     """위험 분석 데이터 관리자"""
     
-    def __init__(self, data_dir: str = "BE/riskAnalysis/data"):
-        self.data_dir = Path(data_dir)
+    def __init__(self, data_dir: str = None):
+        if data_dir is None:
+            # 현재 파일의 디렉토리를 기준으로 data 폴더 설정
+            current_dir = Path(__file__).parent
+            self.data_dir = current_dir / "data"
+            print(f"🔍 data_persistence.py 경로 설정: {self.data_dir}", flush=True)
+            print(f"🔍 data_dir 존재 여부: {self.data_dir.exists()}", flush=True)
+        else:
+            self.data_dir = Path(data_dir)
         self.data_dir.mkdir(exist_ok=True)
         self.results_file = self.data_dir / "risk_analysis_results.json"
         self.metadata_file = self.data_dir / "analysis_metadata.json"
+        print(f"🔍 results_file 경로: {self.results_file}", flush=True)
+        print(f"🔍 results_file 존재 여부: {self.results_file.exists()}", flush=True)
+        
+        # 절대 경로로 변환
+        self.data_dir = self.data_dir.resolve()
+        self.results_file = self.results_file.resolve()
+        self.metadata_file = self.metadata_file.resolve()
+        print(f"🔍 절대 경로 results_file: {self.results_file}", flush=True)
+        print(f"🔍 절대 경로 results_file 존재 여부: {self.results_file.exists()}", flush=True)
     
     def save_analysis_result(self, analysis_id: str, result: Dict[str, Any]) -> bool:
         """분석 결과 저장"""
@@ -50,13 +66,19 @@ class RiskAnalysisDataManager:
     def load_all_results(self) -> Dict[str, Any]:
         """모든 분석 결과 로드"""
         try:
+            print(f"🔍 load_all_results 시작 - results_file: {self.results_file}", flush=True)
+            print(f"🔍 results_file 존재 여부: {self.results_file.exists()}", flush=True)
+            
             if not self.results_file.exists():
+                print(f"🔍 results_file이 존재하지 않음", flush=True)
                 return {}
             
             with open(self.results_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
+                data = json.load(f)
+                print(f"🔍 로드된 데이터 개수: {len(data)}", flush=True)
+                return data
         except Exception as e:
-            print(f"❌ 모든 분석 결과 로드 실패: {e}")
+            print(f"❌ 모든 분석 결과 로드 실패: {e}", flush=True)
             return {}
     
     def delete_analysis_result(self, analysis_id: str) -> bool:

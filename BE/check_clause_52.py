@@ -17,13 +17,6 @@ sys.path.append(str(project_root))
 # .env 파일 로드
 load_dotenv()
 
-# 환경변수가 없으면 기본값 사용
-if not os.getenv('NEO4J_URI'):
-    os.environ['NEO4J_URI'] = 'neo4j://127.0.0.1:7687'
-    os.environ['NEO4J_USER'] = 'neo4j'
-    os.environ['NEO4J_PASSWORD'] = 'password'
-    os.environ['NEO4J_DATABASE'] = 'neo4j'
-
 def check_clause_52():
     """제52조가 데이터베이스에 존재하는지 확인"""
     

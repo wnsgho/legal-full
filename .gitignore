@@ -17,3 +17,23 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+
+# 프로젝트별 백업 및 임시 파일들
+*.bak
+*.backup
+*.orig
+*.rej
+
+# 데이터베이스 덤프 파일들
+*.sql
+*.dump
+
+# 압축 파일들 (개발 중 생성되는 것들)
+*.zip
+*.tar.gz
+*.rar
+
+# 임시 스크립트들
+temp_*.py
+test_*.py
+debug_*.py
