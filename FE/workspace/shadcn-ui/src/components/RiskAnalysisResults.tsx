@@ -176,15 +176,7 @@ const RiskAnalysisResults: React.FC<RiskAnalysisResultsProps> = ({
   }
 
   if (results.length === 0) {
-    return (
-      <div className="text-center p-8">
-        <AlertTriangle className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-gray-900 mb-2">
-          분석 결과가 없습니다
-        </h3>
-        <p className="text-gray-600">아직 위험 분석이 실행되지 않았습니다.</p>
-      </div>
-    );
+    return null; // 아무것도 렌더링하지 않음
   }
 
   return (

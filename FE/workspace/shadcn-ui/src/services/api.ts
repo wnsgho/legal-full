@@ -267,6 +267,7 @@ class ApiService {
     status: string;
     progress: number;
     message: string;
+    data?: any;
   }> {
     const response = await fetch(
       `${this.baseUrl}/pipeline/status/${pipelineId}`
