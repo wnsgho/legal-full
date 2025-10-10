@@ -52,7 +52,7 @@ pipeline_status = {}  # 파이프라인 실행 상태 관리
 uploaded_files = {}   # 업로드된 파일 관리
 
 # 업로드 디렉토리 설정 (프로젝트 루트의 uploads 폴더)
-UPLOAD_DIR = Path(__file__).parent.parent.parent / "uploads"
+UPLOAD_DIR = Path(__file__).parent.parent / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 # Pydantic 모델들
@@ -641,8 +641,10 @@ def execute_pipeline(start_step: int, keyword: Optional[str], pipeline_id: str =
         pipeline_status[pipeline_id] = {
             "status": "running",
             "progress": 0,
-            "message": "파이프라인 실행 중...",
-            "start_time": datetime.now().isoformat()
+            "message": "🚀 파이프라인 실행을 시작했습니다. 계약서를 분석하고 있습니다...",
+            "start_time": datetime.now().isoformat(),
+            "success": None,
+            "rag_system_ready": False
         }
         print(f"📊 파이프라인 상태 초기화 완료 - ID: {pipeline_id}")
         logger.info(f"📊 파이프라인 상태 초기화 완료 - ID: {pipeline_id}")
@@ -670,7 +672,7 @@ def execute_pipeline(start_step: int, keyword: Optional[str], pipeline_id: str =
         
         if pipeline_id:
             pipeline_status[pipeline_id]["progress"] = 25
-            pipeline_status[pipeline_id]["message"] = "파이프라인 프로세스 시작 중..."
+            pipeline_status[pipeline_id]["message"] = "📋 파이프라인 프로세스를 시작하고 있습니다..."
             print("📊 파이프라인 진행률 업데이트: 25%")
             logger.info("📊 파이프라인 진행률 업데이트: 25%")
         
@@ -713,11 +715,16 @@ def execute_pipeline(start_step: int, keyword: Optional[str], pipeline_id: str =
                 pipeline_status[pipeline_id] = {
                     "status": "completed",
                     "progress": 100,
-                    "message": "파이프라인 실행 완료",
-                    "end_time": datetime.now().isoformat()
+                    "message": "✅ 파이프라인 실행이 성공적으로 완료되었습니다. RAG 시스템이 준비되었습니다.",
+                    "end_time": datetime.now().isoformat(),
+                    "success": True,
+                    "rag_system_ready": True,
+                    "completion_time": datetime.now().isoformat()
                 }
                 print(f"📊 파이프라인 상태 업데이트: 완료 - ID: {pipeline_id}")
+                print(f"📊 파이프라인 상태 내용: {pipeline_status[pipeline_id]}")
                 logger.info(f"📊 파이프라인 상태 업데이트: 완료 - ID: {pipeline_id}")
+                logger.info(f"📊 파이프라인 상태 내용: {pipeline_status[pipeline_id]}")
         else:
             print("❌ subprocess 파이프라인 실행 실패")
             logger.error("❌ subprocess 파이프라인 실행 실패")
@@ -725,8 +732,10 @@ def execute_pipeline(start_step: int, keyword: Optional[str], pipeline_id: str =
                 pipeline_status[pipeline_id] = {
                     "status": "failed",
                     "progress": 0,
-                    "message": "파이프라인 실행 실패",
-                    "end_time": datetime.now().isoformat()
+                    "message": "❌ 파이프라인 실행이 실패했습니다. 로그를 확인하고 다시 시도해주세요.",
+                    "end_time": datetime.now().isoformat(),
+                    "success": False,
+                    "rag_system_ready": False
                 }
                 print(f"📊 파이프라인 상태 업데이트: 실패 - ID: {pipeline_id}")
                 logger.error(f"📊 파이프라인 상태 업데이트: 실패 - ID: {pipeline_id}")
@@ -741,8 +750,10 @@ def execute_pipeline(start_step: int, keyword: Optional[str], pipeline_id: str =
             pipeline_status[pipeline_id] = {
                 "status": "failed",
                 "progress": 0,
-                "message": "파이프라인 실행 타임아웃",
-                "end_time": datetime.now().isoformat()
+                "message": "⏰ 파이프라인 실행이 타임아웃되었습니다. 파일이 너무 크거나 복잡할 수 있습니다.",
+                "end_time": datetime.now().isoformat(),
+                "success": False,
+                "rag_system_ready": False
             }
             print(f"📊 파이프라인 상태 업데이트: 타임아웃 - ID: {pipeline_id}")
             logger.error(f"📊 파이프라인 상태 업데이트: 타임아웃 - ID: {pipeline_id}")
@@ -762,8 +773,10 @@ def execute_pipeline(start_step: int, keyword: Optional[str], pipeline_id: str =
             pipeline_status[pipeline_id] = {
                 "status": "failed",
                 "progress": 0,
-                "message": f"파이프라인 실행 오류: {str(e)}",
-                "end_time": datetime.now().isoformat()
+                "message": f"❌ 파이프라인 실행 중 오류가 발생했습니다: {str(e)}",
+                "end_time": datetime.now().isoformat(),
+                "success": False,
+                "rag_system_ready": False
             }
             print(f"📊 파이프라인 상태 업데이트: 오류 - ID: {pipeline_id}")
             logger.error(f"📊 파이프라인 상태 업데이트: 오류 - ID: {pipeline_id}")
@@ -913,19 +926,34 @@ async def run_pipeline_with_file(
 async def get_pipeline_status(pipeline_id: str):
     """파이프라인 실행 상태 조회"""
     try:
+        print(f"🔍 파이프라인 상태 조회 요청 - ID: {pipeline_id}")
+        print(f"🔍 현재 pipeline_status 키들: {list(pipeline_status.keys())}")
+        
         if pipeline_id not in pipeline_status:
+            print(f"❌ 파이프라인을 찾을 수 없음 - ID: {pipeline_id}")
             raise HTTPException(status_code=404, detail="파이프라인을 찾을 수 없습니다.")
         
         status_info = pipeline_status[pipeline_id]
+        print(f"🔍 파이프라인 상태 정보: {status_info}")
+        
+        # 상태 정보에 추가 메타데이터 포함
+        enhanced_status = {
+            **status_info,
+            "pipeline_id": pipeline_id,
+            "timestamp": datetime.now().isoformat(),
+            "rag_system_loaded": rag_system is not None
+        }
         
         return PipelineStatusResponse(
             success=True,
             status=status_info["status"],
             progress=status_info["progress"],
             message=status_info["message"],
-            data=status_info
+            data=enhanced_status
         )
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"파이프라인 상태 조회 실패: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -1772,38 +1800,70 @@ async def get_rag_contracts():
 async def get_file_content(file_id: str):
     """업로드된 파일의 내용 조회"""
     try:
-        if file_id not in uploaded_files:
-            raise HTTPException(status_code=404, detail="파일을 찾을 수 없습니다.")
+        # 먼저 업로드된 파일에서 찾기
+        if file_id in uploaded_files:
+            file_info = uploaded_files[file_id]
+            file_path = file_info["file_path"]
+            
+            if os.path.exists(file_path):
+                # 파일 내용 읽기
+                try:
+                    with open(file_path, 'r', encoding='utf-8') as f:
+                        content = f.read()
+                except UnicodeDecodeError:
+                    # UTF-8로 읽기 실패 시 다른 인코딩 시도
+                    try:
+                        with open(file_path, 'r', encoding='cp949') as f:
+                            content = f.read()
+                    except UnicodeDecodeError:
+                        with open(file_path, 'r', encoding='latin-1') as f:
+                            content = f.read()
+                
+                return {
+                    "success": True,
+                    "data": {
+                        "file_id": file_id,
+                        "filename": file_info["filename"],
+                        "content": content,
+                        "file_size": len(content),
+                        "upload_time": file_info.get("upload_time", "")
+                    }
+                }
         
-        file_info = uploaded_files[file_id]
-        file_path = file_info["file_path"]
+        # 업로드된 파일이 없으면 처리된 파일에서 찾기
+        keyword = f"contract_{file_id}"
+        import_dir = Path(os.getenv('IMPORT_DIRECTORY', 'BE/import'))
+        processed_file_path = import_dir / keyword / f"{keyword}.json"
         
-        if not os.path.exists(file_path):
-            raise HTTPException(status_code=404, detail="파일이 존재하지 않습니다.")
-        
-        # 파일 내용 읽기
-        try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                content = f.read()
-        except UnicodeDecodeError:
-            # UTF-8로 읽기 실패 시 다른 인코딩 시도
+        if processed_file_path.exists():
             try:
-                with open(file_path, 'r', encoding='cp949') as f:
-                    content = f.read()
-            except UnicodeDecodeError:
-                with open(file_path, 'r', encoding='latin-1') as f:
-                    content = f.read()
+                with open(processed_file_path, 'r', encoding='utf-8') as f:
+                    json_data = json.load(f)
+                
+                # JSON 데이터에서 텍스트 추출
+                if isinstance(json_data, list) and len(json_data) > 0:
+                    # ATLAS 형식의 JSON에서 텍스트 추출
+                    content = '\n\n'.join([item.get('text', '') for item in json_data if item.get('text')])
+                elif isinstance(json_data, dict):
+                    # 단일 객체인 경우
+                    content = json_data.get('text', json.dumps(json_data, ensure_ascii=False, indent=2))
+                else:
+                    content = json.dumps(json_data, ensure_ascii=False, indent=2)
+                
+                return {
+                    "success": True,
+                    "data": {
+                        "file_id": file_id,
+                        "filename": f"{keyword}.json",
+                        "content": content,
+                        "file_size": len(content),
+                        "upload_time": datetime.fromtimestamp(processed_file_path.stat().st_mtime).isoformat()
+                    }
+                }
+            except Exception as e:
+                logger.error(f"처리된 파일 읽기 실패: {e}")
         
-        return {
-            "success": True,
-            "data": {
-                "file_id": file_id,
-                "filename": file_info["filename"],
-                "content": content,
-                "file_size": len(content),
-                "upload_time": file_info.get("upload_time", "")
-            }
-        }
+        raise HTTPException(status_code=404, detail="파일을 찾을 수 없습니다.")
         
     except HTTPException:
         raise

@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { Upload, File, X, CheckCircle, AlertCircle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,7 +14,11 @@ interface FileUploadProps {
   uploadedContracts: Contract[];
   isUploading: boolean;
   uploadProgress: number;
-  onPipelineStart?: (pipelineId: string, fileInfo: any) => void;
+  onPipelineStart?: (
+    pipelineId: string,
+    fileInfo: Record<string, unknown>
+  ) => void;
+  onPipelineComplete?: (pipelineId: string, contractId: string) => void;
 }
 
 const FileUpload: React.FC<FileUploadProps> = ({
@@ -23,8 +27,12 @@ const FileUpload: React.FC<FileUploadProps> = ({
   isUploading,
   uploadProgress,
   onPipelineStart,
+  onPipelineComplete,
 }) => {
   const [dragActive, setDragActive] = useState(false);
+  const [activePipelines, setActivePipelines] = useState<Map<string, string>>(
+    new Map()
+  ); // pipelineId -> contractId
   const { toast } = useToast();
 
   const onDrop = useCallback(
@@ -48,6 +56,13 @@ const FileUpload: React.FC<FileUploadProps> = ({
             onPipelineStart(response.data.pipeline_id, response.data.file_info);
           }
 
+          // 활성 파이프라인에 추가 (contractId는 file_id에서 추출)
+          const contractId =
+            response.data.file_info?.file_id || response.data.pipeline_id;
+          setActivePipelines((prev) =>
+            new Map(prev).set(response.data.pipeline_id, contractId)
+          );
+
           // 기존 onFileUpload 콜백도 호출 (UI 업데이트용)
           onFileUpload(acceptedFiles);
         } else {
@@ -67,6 +82,81 @@ const FileUpload: React.FC<FileUploadProps> = ({
     },
     [onFileUpload, onPipelineStart, toast]
   );
+
+  // 활성 파이프라인 상태 모니터링
+  useEffect(() => {
+    if (activePipelines.size === 0) return;
+
+    const pollInterval = setInterval(async () => {
+      for (const [pipelineId, contractId] of activePipelines) {
+        try {
+          const response = await api.getPipelineStatus(pipelineId);
+
+          if (response.success) {
+            if (response.status === "completed") {
+              console.log(
+                `✅ 파이프라인 완료 감지 - ID: ${pipelineId}, Contract: ${contractId}`
+              );
+
+              // 파이프라인 완료 콜백 호출
+              if (onPipelineComplete) {
+                onPipelineComplete(pipelineId, contractId);
+              }
+
+              // 활성 파이프라인에서 제거
+              setActivePipelines((prev) => {
+                const newMap = new Map(prev);
+                newMap.delete(pipelineId);
+                return newMap;
+              });
+
+              toast({
+                title: "✅ 분석 완료",
+                description: "계약서 분석이 완료되었습니다.",
+              });
+            } else if (response.status === "failed") {
+              console.log(`❌ 파이프라인 실패 감지 - ID: ${pipelineId}`);
+
+              // 활성 파이프라인에서 제거
+              setActivePipelines((prev) => {
+                const newMap = new Map(prev);
+                newMap.delete(pipelineId);
+                return newMap;
+              });
+
+              toast({
+                title: "❌ 분석 실패",
+                description: "파이프라인 실행이 실패했습니다.",
+                variant: "destructive",
+              });
+            }
+          }
+        } catch (error) {
+          console.error(
+            `파이프라인 상태 확인 실패 - ID: ${pipelineId}:`,
+            error
+          );
+
+          // 404 오류 시 파이프라인 제거 (서버 재시작 등)
+          if (
+            (error as { response?: { status?: number }; message?: string })
+              ?.response?.status === 404 ||
+            (
+              error as { response?: { status?: number }; message?: string }
+            )?.message?.includes("404")
+          ) {
+            setActivePipelines((prev) => {
+              const newMap = new Map(prev);
+              newMap.delete(pipelineId);
+              return newMap;
+            });
+          }
+        }
+      }
+    }, 2000); // 2초마다 폴링
+
+    return () => clearInterval(pollInterval);
+  }, [activePipelines, onPipelineComplete, toast]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -106,11 +196,11 @@ const FileUpload: React.FC<FileUploadProps> = ({
     } as const;
 
     const labels = {
-      [ContractStatus.COMPLETED]: "완료",
-      [ContractStatus.PROCESSING]: "분석중",
-      [ContractStatus.UPLOADING]: "업로드중",
-      [ContractStatus.UPLOADED]: "업로드됨",
-      [ContractStatus.FAILED]: "실패",
+      [ContractStatus.COMPLETED]: "✅ 완료",
+      [ContractStatus.PROCESSING]: "🔄 분석중",
+      [ContractStatus.UPLOADING]: "📤 업로드중",
+      [ContractStatus.UPLOADED]: "📁 업로드됨",
+      [ContractStatus.FAILED]: "❌ 실패",
     };
 
     return <Badge variant={variants[status]}>{labels[status]}</Badge>;

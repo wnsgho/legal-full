@@ -282,6 +282,7 @@ const Dashboard: React.FC = () => {
     pipelineId: string,
     fileInfo: Record<string, unknown>
   ) => {
+    console.log(`🚀 파이프라인 시작 - ID: ${pipelineId}`, fileInfo);
     setCurrentPipelineId(pipelineId);
     setCurrentAnalysis({
       id: pipelineId,
@@ -304,11 +305,59 @@ const Dashboard: React.FC = () => {
     setContracts((prev) => [newContract, ...prev]);
   };
 
+  // 파이프라인 완료 핸들러
+  const handlePipelineComplete = (pipelineId: string, contractId: string) => {
+    console.log(
+      `✅ 파이프라인 완료 - ID: ${pipelineId}, Contract: ${contractId}`
+    );
+
+    // 계약서 상태를 완료로 업데이트
+    setContracts((prev) =>
+      prev.map((contract) =>
+        contract.id === contractId || contract.id === pipelineId
+          ? { ...contract, status: ContractStatus.COMPLETED }
+          : contract
+      )
+    );
+
+    // 현재 분석 상태 초기화
+    setCurrentAnalysis(undefined);
+    setCurrentPipelineId(undefined);
+
+    // 파일 목록 새로고침
+    loadFiles();
+
+    toast({
+      title: "🎉 파이프라인 완료",
+      description:
+        "계약서 분석이 완료되었습니다. 이제 챗봇을 사용할 수 있습니다.",
+    });
+  };
+
   // 분석 완료 핸들러
   const handleAnalysisComplete = (result: AnalysisResult) => {
+    console.log(`✅ 분석 완료 핸들러 호출됨:`, result);
     setAnalysisResults((prev) => [result, ...prev]);
     setCurrentAnalysis(undefined);
     setCurrentPipelineId(undefined);
+
+    // 계약서 상태를 완료로 업데이트
+    setContracts((prev) =>
+      prev.map((contract) =>
+        contract.id === result.contractId
+          ? { ...contract, status: ContractStatus.COMPLETED }
+          : contract
+      )
+    );
+
+    // 파일 목록 새로고침
+    loadFiles();
+
+    toast({
+      title: "🎉 파이프라인 완료",
+      description:
+        "계약서 분석이 완료되었습니다. 이제 챗봇을 사용할 수 있습니다.",
+    });
   };
 
   // 선택된 계약서 내용 조회
@@ -635,8 +684,10 @@ const Dashboard: React.FC = () => {
           value={activeTab}
           onValueChange={(value) => {
             setActiveTab(value);
-            if (value === "analysis" || value === "risk-analysis") {
+            if (value === "risk-analysis") {
               fetchRiskAnalysisResults();
+            }
+            if (value === "analysis") {
               fetchGptAnalysisResults();
             }
           }}
@@ -688,6 +739,7 @@ const Dashboard: React.FC = () => {
               isUploading={isUploading}
               uploadProgress={uploadProgress}
               onPipelineStart={handlePipelineStart}
+              onPipelineComplete={handlePipelineComplete}
             />
             <ErrorBoundary>
               <div className="h-[1200px] border rounded-lg overflow-hidden">
@@ -744,13 +796,7 @@ const Dashboard: React.FC = () => {
 
             {contracts.length > 0 ? (
               <>
-                {/* 위험 분석 결과 섹션 */}
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold mb-4">위험 분석 결과</h3>
-                  <RiskAnalysisResults fileId={selectedContract} />
-                </div>
-
-                {/* 파트별 위험 조항 섹션 */}
+                {/* 파트별 위험 조항 섹션 - 먼저 표시 */}
                 <div className="mb-6">
                   <h3 className="text-lg font-semibold mb-4">
                     파트별 위험 조항
@@ -763,6 +809,16 @@ const Dashboard: React.FC = () => {
                     showRecommendations={true}
                   />
                 </div>
+
+                {/* 위험 분석 결과 섹션 - 하이브리드 분석 결과가 있을 때만 표시 */}
+                {riskAnalysisResults.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold mb-4">
+                      위험 분석 결과
+                    </h3>
+                    <RiskAnalysisResults fileId={selectedContract} />
+                  </div>
+                )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div>
