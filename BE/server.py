@@ -52,7 +52,7 @@ pipeline_status = {}  # 파이프라인 실행 상태 관리
 uploaded_files = {}   # 업로드된 파일 관리
 
 # 업로드 디렉토리 설정 (프로젝트 루트의 uploads 폴더)
-UPLOAD_DIR = Path(__file__).parent.parent.parent / "uploads"
+UPLOAD_DIR = Path(__file__).parent.parent / "uploads"
 UPLOAD_DIR.mkdir(exist_ok=True)
 
 # Pydantic 모델들

@@ -243,13 +243,78 @@ const Dashboard: React.FC = () => {
     fetchGptAnalysisResults();
   }, [fetchRiskAnalysisResults, fetchGptAnalysisResults]);
 
-  // 현재 파이프라인 상태 확인 (서버 재시작 감지)
+  // 파이프라인 상태 폴링 (파이프라인이 있을 때만)
   useEffect(() => {
     if (!currentPipelineId) return;
 
-    const checkPipelineExists = async () => {
+    let pollInterval: NodeJS.Timeout | null = null;
+
+    const pollPipelineStatus = async () => {
       try {
-        await api.getPipelineStatus(currentPipelineId);
+        const response = await api.getPipelineStatus(currentPipelineId);
+        if (response.success) {
+          // 파이프라인 상태 업데이트
+          setCurrentAnalysis((prev) => ({
+            ...prev!,
+            progress: response.progress,
+            stage: response.message,
+          }));
+
+          // 파이프라인 완료 또는 실패 시 폴링 중단
+          if (response.status === "completed") {
+            console.log("파이프라인 완료됨:", currentPipelineId);
+
+            // 계약서 상태를 COMPLETED로 업데이트
+            setContracts((prev) =>
+              prev.map((contract) =>
+                contract.id === currentPipelineId
+                  ? { ...contract, status: ContractStatus.COMPLETED }
+                  : contract
+              )
+            );
+
+            // 현재 분석 상태 초기화
+            setCurrentAnalysis(undefined);
+            setCurrentPipelineId(undefined);
+
+            // 폴링 중단
+            if (pollInterval) {
+              clearInterval(pollInterval);
+              pollInterval = null;
+            }
+
+            toast({
+              title: "분석 완료",
+              description: "계약서 분석이 완료되었습니다.",
+            });
+          } else if (response.status === "failed") {
+            console.log("파이프라인 실패:", currentPipelineId);
+
+            // 계약서 상태를 FAILED로 업데이트
+            setContracts((prev) =>
+              prev.map((contract) =>
+                contract.id === currentPipelineId
+                  ? { ...contract, status: ContractStatus.FAILED }
+                  : contract
+              )
+            );
+
+            setCurrentAnalysis(undefined);
+            setCurrentPipelineId(undefined);
+
+            // 폴링 중단
+            if (pollInterval) {
+              clearInterval(pollInterval);
+              pollInterval = null;
+            }
+
+            toast({
+              title: "분석 실패",
+              description: "파이프라인 실행 중 오류가 발생했습니다.",
+              variant: "destructive",
+            });
+          }
+        }
       } catch (error: unknown) {
         // 404 오류 시 현재 파이프라인 ID 초기화
         if (
@@ -264,6 +329,13 @@ const Dashboard: React.FC = () => {
           );
           setCurrentPipelineId(undefined);
           setCurrentAnalysis(undefined);
+
+          // 폴링 중단
+          if (pollInterval) {
+            clearInterval(pollInterval);
+            pollInterval = null;
+          }
+
           toast({
             title: "파이프라인 상태 초기화",
             description:
@@ -273,8 +345,17 @@ const Dashboard: React.FC = () => {
       }
     };
 
-    // 컴포넌트 마운트 시 한 번 확인
-    checkPipelineExists();
+    // 즉시 한 번 확인
+    pollPipelineStatus();
+
+    // 3초마다 폴링 (완료되면 자동 중단)
+    pollInterval = setInterval(pollPipelineStatus, 3000);
+
+    return () => {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+      }
+    };
   }, [currentPipelineId, toast]);
 
   // 파이프라인 시작 핸들러
@@ -309,6 +390,15 @@ const Dashboard: React.FC = () => {
     setAnalysisResults((prev) => [result, ...prev]);
     setCurrentAnalysis(undefined);
     setCurrentPipelineId(undefined);
+
+    // 파이프라인이 완료되면 해당 계약서의 상태를 COMPLETED로 업데이트
+    setContracts((prev) =>
+      prev.map((contract) =>
+        contract.id === result.contractId
+          ? { ...contract, status: ContractStatus.COMPLETED }
+          : contract
+      )
+    );
   };
 
   // 선택된 계약서 내용 조회
