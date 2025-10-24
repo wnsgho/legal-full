@@ -2,6 +2,8 @@
 
 지식그래프 기반 RAG 구축을 통한 계약서 위험 분석을 제공하는 Full-stack 프로젝트입니다. 백엔드는 FastAPI + Neo4j, 프런트엔드는 Vite + React + shadcn-ui를 사용합니다.
 
+<img width="1904" height="1793" alt="Image" src="https://github.com/user-attachments/assets/442cd4e7-4193-4743-8fd0-78a1cfd75e69" />
+
 ## 📦 레포지토리 구조
 
 ```
@@ -104,6 +106,9 @@ npm run dev
    ├─ Neo4j (지식그래프)
    └─ OpenAI (LLM)
 ```
+## 🅿️ 파이프라인 개요 
+<img width="3840" height="2126" alt="Image" src="https://github.com/user-attachments/assets/51aa53c4-a17a-4a2f-9536-3064f042c458" />
+
 ## 📒 참고 문헌
 
 - AutoSchemaKG: Autonomous Knowledge Graph Construction through Dynamic Schema Induction from Web-Scale Corpora
