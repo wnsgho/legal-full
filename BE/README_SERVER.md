@@ -180,3 +180,4 @@ BE/
 ├── main_pipeline.py      # ATLAS 파이프라인
 └── README_SERVER.md      # 이 파일
 ```
+<img width="3840" height="2126" alt="Image" src="https://github.com/user-attachments/assets/51aa53c4-a17a-4a2f-9536-3064f042c458" />
