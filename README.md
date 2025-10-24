@@ -103,4 +103,8 @@ npm run dev
    ├─ ATLAS 파이프라인
    ├─ Neo4j (지식그래프)
    └─ OpenAI (LLM)
+```
+## 📒 참고 문헌
 
+- AutoSchemaKG: Autonomous Knowledge Graph Construction through Dynamic Schema Induction from Web-Scale Corpora
+- Automating construction contract review using knowledge graph-enhanced large language models
