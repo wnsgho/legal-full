@@ -24,7 +24,7 @@ sentence_encoder = SentenceEmbedding(sentence_model)
 config = ConfigParser()
 config.read('config.ini')
 # Added support for Azure Foundry. To use it, please do az-login in cmd first.
-model_name = "gpt-4.1"
+model_name = "gpt-4.1-2025-04-14"
 connection = AIProjectClient(
     endpoint=config["urls"]["AZURE_URL"],
     credential=DefaultAzureCredential(),

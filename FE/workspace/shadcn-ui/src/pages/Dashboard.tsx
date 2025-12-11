@@ -77,6 +77,7 @@ const Dashboard: React.FC = () => {
     analysis_id?: string;
     contract_name?: string;
     created_at?: string;
+    analysis_type?: string;
     analysis_result?: {
       overall_risk_score?: number;
       part_results?: Array<{
@@ -92,7 +93,12 @@ const Dashboard: React.FC = () => {
         total_parts_analyzed?: number;
         high_risk_parts?: number;
         critical_issues?: string[];
+        gpt_analysis?: string;
       };
+      // GPT 전용 분석 결과
+      gpt_analysis?: string;
+      model_used?: string;
+      analysis_time?: number;
     };
   }
 
@@ -243,78 +249,13 @@ const Dashboard: React.FC = () => {
     fetchGptAnalysisResults();
   }, [fetchRiskAnalysisResults, fetchGptAnalysisResults]);
 
-  // 파이프라인 상태 폴링 (파이프라인이 있을 때만)
+  // 현재 파이프라인 상태 확인 (서버 재시작 감지)
   useEffect(() => {
     if (!currentPipelineId) return;
 
-    let pollInterval: NodeJS.Timeout | null = null;
-
-    const pollPipelineStatus = async () => {
+    const checkPipelineExists = async () => {
       try {
-        const response = await api.getPipelineStatus(currentPipelineId);
-        if (response.success) {
-          // 파이프라인 상태 업데이트
-          setCurrentAnalysis((prev) => ({
-            ...prev!,
-            progress: response.progress,
-            stage: response.message,
-          }));
-
-          // 파이프라인 완료 또는 실패 시 폴링 중단
-          if (response.status === "completed") {
-            console.log("파이프라인 완료됨:", currentPipelineId);
-
-            // 계약서 상태를 COMPLETED로 업데이트
-            setContracts((prev) =>
-              prev.map((contract) =>
-                contract.id === currentPipelineId
-                  ? { ...contract, status: ContractStatus.COMPLETED }
-                  : contract
-              )
-            );
-
-            // 현재 분석 상태 초기화
-            setCurrentAnalysis(undefined);
-            setCurrentPipelineId(undefined);
-
-            // 폴링 중단
-            if (pollInterval) {
-              clearInterval(pollInterval);
-              pollInterval = null;
-            }
-
-            toast({
-              title: "분석 완료",
-              description: "계약서 분석이 완료되었습니다.",
-            });
-          } else if (response.status === "failed") {
-            console.log("파이프라인 실패:", currentPipelineId);
-
-            // 계약서 상태를 FAILED로 업데이트
-            setContracts((prev) =>
-              prev.map((contract) =>
-                contract.id === currentPipelineId
-                  ? { ...contract, status: ContractStatus.FAILED }
-                  : contract
-              )
-            );
-
-            setCurrentAnalysis(undefined);
-            setCurrentPipelineId(undefined);
-
-            // 폴링 중단
-            if (pollInterval) {
-              clearInterval(pollInterval);
-              pollInterval = null;
-            }
-
-            toast({
-              title: "분석 실패",
-              description: "파이프라인 실행 중 오류가 발생했습니다.",
-              variant: "destructive",
-            });
-          }
-        }
+        await api.getPipelineStatus(currentPipelineId);
       } catch (error: unknown) {
         // 404 오류 시 현재 파이프라인 ID 초기화
         if (
@@ -329,13 +270,6 @@ const Dashboard: React.FC = () => {
           );
           setCurrentPipelineId(undefined);
           setCurrentAnalysis(undefined);
-
-          // 폴링 중단
-          if (pollInterval) {
-            clearInterval(pollInterval);
-            pollInterval = null;
-          }
-
           toast({
             title: "파이프라인 상태 초기화",
             description:
@@ -345,17 +279,8 @@ const Dashboard: React.FC = () => {
       }
     };
 
-    // 즉시 한 번 확인
-    pollPipelineStatus();
-
-    // 3초마다 폴링 (완료되면 자동 중단)
-    pollInterval = setInterval(pollPipelineStatus, 3000);
-
-    return () => {
-      if (pollInterval) {
-        clearInterval(pollInterval);
-      }
-    };
+    // 컴포넌트 마운트 시 한 번 확인
+    checkPipelineExists();
   }, [currentPipelineId, toast]);
 
   // 파이프라인 시작 핸들러
@@ -363,6 +288,7 @@ const Dashboard: React.FC = () => {
     pipelineId: string,
     fileInfo: Record<string, unknown>
   ) => {
+    console.log(`🚀 파이프라인 시작 - ID: ${pipelineId}`, fileInfo);
     setCurrentPipelineId(pipelineId);
     setCurrentAnalysis({
       id: pipelineId,
@@ -385,13 +311,43 @@ const Dashboard: React.FC = () => {
     setContracts((prev) => [newContract, ...prev]);
   };
 
+  // 파이프라인 완료 핸들러
+  const handlePipelineComplete = (pipelineId: string, contractId: string) => {
+    console.log(
+      `✅ 파이프라인 완료 - ID: ${pipelineId}, Contract: ${contractId}`
+    );
+
+    // 계약서 상태를 완료로 업데이트
+    setContracts((prev) =>
+      prev.map((contract) =>
+        contract.id === contractId || contract.id === pipelineId
+          ? { ...contract, status: ContractStatus.COMPLETED }
+          : contract
+      )
+    );
+
+    // 현재 분석 상태 초기화
+    setCurrentAnalysis(undefined);
+    setCurrentPipelineId(undefined);
+
+    // 파일 목록 새로고침
+    loadFiles();
+
+    toast({
+      title: "🎉 파이프라인 완료",
+      description:
+        "계약서 분석이 완료되었습니다. 이제 챗봇을 사용할 수 있습니다.",
+    });
+  };
+
   // 분석 완료 핸들러
   const handleAnalysisComplete = (result: AnalysisResult) => {
+    console.log(`✅ 분석 완료 핸들러 호출됨:`, result);
     setAnalysisResults((prev) => [result, ...prev]);
     setCurrentAnalysis(undefined);
     setCurrentPipelineId(undefined);
 
-    // 파이프라인이 완료되면 해당 계약서의 상태를 COMPLETED로 업데이트
+    // 계약서 상태를 완료로 업데이트
     setContracts((prev) =>
       prev.map((contract) =>
         contract.id === result.contractId
@@ -399,6 +355,15 @@ const Dashboard: React.FC = () => {
           : contract
       )
     );
+
+    // 파일 목록 새로고침
+    loadFiles();
+
+    toast({
+      title: "🎉 파이프라인 완료",
+      description:
+        "계약서 분석이 완료되었습니다. 이제 챗봇을 사용할 수 있습니다.",
+    });
   };
 
   // 선택된 계약서 내용 조회
@@ -725,8 +690,10 @@ const Dashboard: React.FC = () => {
           value={activeTab}
           onValueChange={(value) => {
             setActiveTab(value);
-            if (value === "analysis" || value === "risk-analysis") {
+            if (value === "risk-analysis") {
               fetchRiskAnalysisResults();
+            }
+            if (value === "analysis") {
               fetchGptAnalysisResults();
             }
           }}
@@ -778,6 +745,7 @@ const Dashboard: React.FC = () => {
               isUploading={isUploading}
               uploadProgress={uploadProgress}
               onPipelineStart={handlePipelineStart}
+              onPipelineComplete={handlePipelineComplete}
             />
             <ErrorBoundary>
               <div className="h-[1200px] border rounded-lg overflow-hidden">
@@ -834,13 +802,7 @@ const Dashboard: React.FC = () => {
 
             {contracts.length > 0 ? (
               <>
-                {/* 위험 분석 결과 섹션 */}
-                <div className="mb-6">
-                  <h3 className="text-lg font-semibold mb-4">위험 분석 결과</h3>
-                  <RiskAnalysisResults fileId={selectedContract} />
-                </div>
-
-                {/* 파트별 위험 조항 섹션 */}
+                {/* 파트별 위험 조항 섹션 - 먼저 표시 */}
                 <div className="mb-6">
                   <h3 className="text-lg font-semibold mb-4">
                     파트별 위험 조항
@@ -853,6 +815,16 @@ const Dashboard: React.FC = () => {
                     showRecommendations={true}
                   />
                 </div>
+
+                {/* 위험 분석 결과 섹션 - 하이브리드 분석 결과가 있을 때만 표시 */}
+                {riskAnalysisResults.length > 0 && (
+                  <div className="mb-6">
+                    <h3 className="text-lg font-semibold mb-4">
+                      위험 분석 결과
+                    </h3>
+                    <RiskAnalysisResults fileId={selectedContract} />
+                  </div>
+                )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                   <div>
@@ -977,9 +949,33 @@ const Dashboard: React.FC = () => {
               <h2 className="text-2xl font-bold text-gray-900">
                 위험 분석 결과
               </h2>
-              <Button onClick={fetchRiskAnalysisResults} variant="outline">
-                새로고침
-              </Button>
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <label className="text-sm font-medium text-gray-700">
+                    계약서 선택:
+                  </label>
+                  <select
+                    value={selectedContract}
+                    onChange={(e) => setSelectedContract(e.target.value)}
+                    disabled={contracts.length === 0}
+                    className="px-3 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+                  >
+                    <option value="">
+                      {contracts.length === 0
+                        ? "계약서가 없습니다"
+                        : "계약서를 선택하세요"}
+                    </option>
+                    {contracts.map((contract) => (
+                      <option key={contract.id} value={contract.id}>
+                        {contract.fileName}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <Button onClick={fetchRiskAnalysisResults} variant="outline">
+                  새로고침
+                </Button>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -1215,27 +1211,48 @@ const Dashboard: React.FC = () => {
                         </CardHeader>
                         <CardContent>
                           <div className="space-y-3">
-                            <div className="grid grid-cols-2 gap-3">
+                            {result.analysis_type === "gpt_only" ||
+                            result.analysis_result?.gpt_analysis ? (
+                              // GPT 전용 분석: 분석 시간만 표시
                               <div className="text-center">
-                                <div className="text-xl font-bold text-red-600">
-                                  {result.analysis_result?.overall_risk_score?.toFixed(
+                                <div className="text-xl font-bold text-green-600">
+                                  {result.analysis_result?.analysis_time?.toFixed(
                                     1
-                                  ) || "N/A"}
+                                  ) ||
+                                    result.analysis_result?.total_analysis_time?.toFixed(
+                                      1
+                                    ) ||
+                                    "N/A"}
+                                  초
                                 </div>
                                 <div className="text-xs text-gray-600">
-                                  전체 위험도
+                                  분석 시간
                                 </div>
                               </div>
-                              <div className="text-center">
-                                <div className="text-xl font-bold text-blue-600">
-                                  {result.analysis_result?.part_results
-                                    ?.length || 0}
+                            ) : (
+                              // 일반 분석: 전체 위험도와 분석 파트 표시
+                              <div className="grid grid-cols-2 gap-3">
+                                <div className="text-center">
+                                  <div className="text-xl font-bold text-red-600">
+                                    {result.analysis_result?.overall_risk_score?.toFixed(
+                                      1
+                                    ) || "0.0"}
+                                  </div>
+                                  <div className="text-xs text-gray-600">
+                                    전체 위험도
+                                  </div>
                                 </div>
-                                <div className="text-xs text-gray-600">
-                                  분석 파트
+                                <div className="text-center">
+                                  <div className="text-xl font-bold text-blue-600">
+                                    {result.analysis_result?.part_results
+                                      ?.length || 0}
+                                  </div>
+                                  <div className="text-xs text-gray-600">
+                                    분석 파트
+                                  </div>
                                 </div>
                               </div>
-                            </div>
+                            )}
 
                             <div className="space-y-2">
                               <div className="flex items-center justify-between">
@@ -1253,37 +1270,68 @@ const Dashboard: React.FC = () => {
                                   상세 보기
                                 </Button>
                               </div>
-                              {result.analysis_result?.part_results
-                                ?.slice(0, 2)
-                                .map((part, partIndex: number) => (
-                                  <div
-                                    key={partIndex}
-                                    className="border rounded-lg p-3"
-                                  >
-                                    <div className="flex items-center justify-between mb-2">
-                                      <h5 className="font-medium text-sm">
-                                        {part.part_title}
-                                      </h5>
-                                      <Badge
-                                        variant={
-                                          part.risk_level === "CRITICAL"
-                                            ? "destructive"
-                                            : part.risk_level === "HIGH"
-                                            ? "destructive"
-                                            : part.risk_level === "MEDIUM"
-                                            ? "secondary"
-                                            : "outline"
-                                        }
-                                        className="text-xs"
-                                      >
-                                        {part.risk_level}
-                                      </Badge>
-                                    </div>
-                                    <div className="text-xs text-gray-600 mb-2">
-                                      위험도: {part.risk_score?.toFixed(1)}/5.0
-                                    </div>
+                              {/* GPT 전용 분석 결과 (gpt_analysis가 있는 경우) */}
+                              {result.analysis_result?.gpt_analysis ? (
+                                <div className="border rounded-lg p-3 bg-blue-50">
+                                  <div className="text-xs text-gray-700 whitespace-pre-wrap line-clamp-3">
+                                    {result.analysis_result.gpt_analysis}
                                   </div>
-                                ))}
+                                  {result.analysis_result.model_used && (
+                                    <div className="text-xs text-gray-500 mt-2">
+                                      모델: {result.analysis_result.model_used}
+                                    </div>
+                                  )}
+                                  {result.analysis_result.analysis_time && (
+                                    <div className="text-xs text-gray-500">
+                                      분석 시간:{" "}
+                                      {result.analysis_result.analysis_time.toFixed(
+                                        1
+                                      )}
+                                      초
+                                    </div>
+                                  )}
+                                </div>
+                              ) : result.analysis_result?.part_results &&
+                                result.analysis_result.part_results.length >
+                                  0 ? (
+                                // 기존 파트별 결과 표시
+                                result.analysis_result.part_results
+                                  .slice(0, 2)
+                                  .map((part, partIndex: number) => (
+                                    <div
+                                      key={partIndex}
+                                      className="border rounded-lg p-3"
+                                    >
+                                      <div className="flex items-center justify-between mb-2">
+                                        <h5 className="font-medium text-sm">
+                                          {part.part_title}
+                                        </h5>
+                                        <Badge
+                                          variant={
+                                            part.risk_level === "CRITICAL"
+                                              ? "destructive"
+                                              : part.risk_level === "HIGH"
+                                              ? "destructive"
+                                              : part.risk_level === "MEDIUM"
+                                              ? "secondary"
+                                              : "outline"
+                                          }
+                                          className="text-xs"
+                                        >
+                                          {part.risk_level}
+                                        </Badge>
+                                      </div>
+                                      <div className="text-xs text-gray-600 mb-2">
+                                        위험도: {part.risk_score?.toFixed(1)}
+                                        /5.0
+                                      </div>
+                                    </div>
+                                  ))
+                              ) : (
+                                <div className="text-xs text-gray-500 text-center py-2">
+                                  분석 결과가 없습니다.
+                                </div>
+                              )}
                             </div>
                           </div>
                         </CardContent>
@@ -1297,9 +1345,14 @@ const Dashboard: React.FC = () => {
                       <p className="text-sm font-medium mb-1">
                         GPT 전용 분석 결과가 없습니다
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-gray-500 mb-3">
                         OpenAI GPT만을 사용한 분석 결과가 여기에 표시됩니다.
                       </p>
+                      {!selectedContract && (
+                        <p className="text-xs text-amber-600 mb-3">
+                          ⚠️ 계약서를 선택한 후 분석을 시작할 수 있습니다.
+                        </p>
+                      )}
                       <Button
                         variant="outline"
                         size="sm"
@@ -1448,142 +1501,197 @@ const Dashboard: React.FC = () => {
                         </CardHeader>
                         <CardContent>
                           <div className="space-y-4">
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                              <div className="text-center">
-                                <div className="text-2xl font-bold text-red-600">
-                                  {result.analysis_result?.overall_risk_score?.toFixed(
-                                    1
-                                  ) || "N/A"}
-                                </div>
-                                <div className="text-sm text-gray-600">
-                                  전체 위험도
-                                </div>
-                              </div>
-                              <div className="text-center">
-                                <div className="text-2xl font-bold text-blue-600">
-                                  {result.analysis_result?.part_results
-                                    ?.length || 0}
-                                </div>
-                                <div className="text-sm text-gray-600">
-                                  분석 파트
-                                </div>
-                              </div>
+                            {result.analysis_type === "gpt_only" ||
+                            result.analysis_result?.gpt_analysis ? (
+                              // GPT 전용 분석: 분석 시간만 표시
                               <div className="text-center">
                                 <div className="text-2xl font-bold text-green-600">
-                                  {result.analysis_result?.total_analysis_time?.toFixed(
+                                  {result.analysis_result?.analysis_time?.toFixed(
                                     1
-                                  ) || "N/A"}
+                                  ) ||
+                                    result.analysis_result?.total_analysis_time?.toFixed(
+                                      1
+                                    ) ||
+                                    "N/A"}
                                   초
                                 </div>
                                 <div className="text-sm text-gray-600">
                                   분석 시간
                                 </div>
                               </div>
-                            </div>
+                            ) : (
+                              // 일반 분석: 전체 위험도, 분석 파트, 분석 시간 표시
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="text-center">
+                                  <div className="text-2xl font-bold text-red-600">
+                                    {result.analysis_result?.overall_risk_score?.toFixed(
+                                      1
+                                    ) || "N/A"}
+                                  </div>
+                                  <div className="text-sm text-gray-600">
+                                    전체 위험도
+                                  </div>
+                                </div>
+                                <div className="text-center">
+                                  <div className="text-2xl font-bold text-blue-600">
+                                    {result.analysis_result?.part_results
+                                      ?.length || 0}
+                                  </div>
+                                  <div className="text-sm text-gray-600">
+                                    분석 파트
+                                  </div>
+                                </div>
+                                <div className="text-center">
+                                  <div className="text-2xl font-bold text-green-600">
+                                    {result.analysis_result?.total_analysis_time?.toFixed(
+                                      1
+                                    ) || "N/A"}
+                                    초
+                                  </div>
+                                  <div className="text-sm text-gray-600">
+                                    분석 시간
+                                  </div>
+                                </div>
+                              </div>
+                            )}
 
                             <div className="space-y-3">
                               <h4 className="font-semibold">
                                 GPT 분석 상세 결과
                               </h4>
-                              {result.analysis_result?.part_results?.map(
-                                (part, partIndex: number) => (
-                                  <div
-                                    key={partIndex}
-                                    className="border rounded-lg p-4"
-                                  >
-                                    <div className="flex items-center justify-between mb-2">
-                                      <h5 className="font-medium">
-                                        {part.part_title}
-                                      </h5>
-                                      <Badge
-                                        variant={
-                                          part.risk_level === "CRITICAL"
-                                            ? "destructive"
-                                            : part.risk_level === "HIGH"
-                                            ? "destructive"
-                                            : part.risk_level === "MEDIUM"
-                                            ? "secondary"
-                                            : "outline"
-                                        }
-                                      >
-                                        {part.risk_level}
-                                      </Badge>
-                                    </div>
-                                    <div className="text-sm text-gray-600 mb-2">
-                                      위험도: {part.risk_score?.toFixed(1)}/5.0
-                                    </div>
-                                    {(part.risk_clauses ||
-                                      part.relevant_clauses) &&
-                                      (
-                                        part.risk_clauses ||
-                                        part.relevant_clauses
-                                      ).length > 0 && (
-                                        <div className="mt-2">
-                                          <h6 className="font-medium text-sm mb-1">
-                                            위험 조항:
-                                          </h6>
-                                          <ul className="text-sm text-gray-600 space-y-1">
-                                            {(
-                                              part.risk_clauses ||
-                                              part.relevant_clauses
-                                            ).map(
-                                              (
-                                                clause: string,
-                                                clauseIndex: number
-                                              ) => (
-                                                <li
-                                                  key={clauseIndex}
-                                                  className="flex items-start"
-                                                >
-                                                  <span className="mr-2">
-                                                    •
-                                                  </span>
-                                                  <span>{clause}</span>
-                                                </li>
-                                              )
-                                            )}
-                                          </ul>
-                                        </div>
-                                      )}
-                                    {part.recommendations &&
-                                      part.recommendations.length > 0 && (
-                                        <div className="mt-2">
-                                          <h6 className="font-medium text-sm mb-1">
-                                            권고사항:
-                                          </h6>
-                                          <ul className="text-sm text-gray-600 space-y-1">
-                                            {part.recommendations.map(
-                                              (
-                                                rec: string,
-                                                recIndex: number
-                                              ) => (
-                                                <li
-                                                  key={recIndex}
-                                                  className="flex items-start"
-                                                >
-                                                  <span className="mr-2">
-                                                    •
-                                                  </span>
-                                                  <span>{rec}</span>
-                                                </li>
-                                              )
-                                            )}
-                                          </ul>
-                                        </div>
-                                      )}
-                                    {"analysis_content" in part &&
-                                      part.analysis_content && (
-                                        <div className="mt-3 p-3 bg-gray-50 rounded-lg">
-                                          <h6 className="font-medium text-sm mb-2">
-                                            GPT 분석 내용:
-                                          </h6>
-                                          <div className="text-sm text-gray-700 whitespace-pre-wrap">
-                                            {String(part.analysis_content)}
-                                          </div>
-                                        </div>
-                                      )}
+                              {/* GPT 전용 분석 결과 (gpt_analysis가 있는 경우) */}
+                              {result.analysis_result?.gpt_analysis ? (
+                                <div className="border rounded-lg p-4 bg-blue-50">
+                                  <div className="mb-3">
+                                    {result.analysis_result.model_used && (
+                                      <div className="text-sm text-gray-600 mb-1">
+                                        모델:{" "}
+                                        {result.analysis_result.model_used}
+                                      </div>
+                                    )}
+                                    {result.analysis_result.analysis_time && (
+                                      <div className="text-sm text-gray-600 mb-2">
+                                        분석 시간:{" "}
+                                        {result.analysis_result.analysis_time.toFixed(
+                                          1
+                                        )}
+                                        초
+                                      </div>
+                                    )}
                                   </div>
+                                  <div className="text-sm text-gray-700 whitespace-pre-wrap">
+                                    {result.analysis_result.gpt_analysis}
+                                  </div>
+                                </div>
+                              ) : result.analysis_result?.part_results &&
+                                result.analysis_result.part_results.length >
+                                  0 ? (
+                                // 기존 파트별 결과 표시
+                                result.analysis_result.part_results.map(
+                                  (part, partIndex: number) => (
+                                    <div
+                                      key={partIndex}
+                                      className="border rounded-lg p-4"
+                                    >
+                                      <div className="flex items-center justify-between mb-2">
+                                        <h5 className="font-medium">
+                                          {part.part_title}
+                                        </h5>
+                                        <Badge
+                                          variant={
+                                            part.risk_level === "CRITICAL"
+                                              ? "destructive"
+                                              : part.risk_level === "HIGH"
+                                              ? "destructive"
+                                              : part.risk_level === "MEDIUM"
+                                              ? "secondary"
+                                              : "outline"
+                                          }
+                                        >
+                                          {part.risk_level}
+                                        </Badge>
+                                      </div>
+                                      <div className="text-sm text-gray-600 mb-2">
+                                        위험도: {part.risk_score?.toFixed(1)}
+                                        /5.0
+                                      </div>
+                                      {(part.risk_clauses ||
+                                        part.relevant_clauses) &&
+                                        (
+                                          part.risk_clauses ||
+                                          part.relevant_clauses
+                                        ).length > 0 && (
+                                          <div className="mt-2">
+                                            <h6 className="font-medium text-sm mb-1">
+                                              위험 조항:
+                                            </h6>
+                                            <ul className="text-sm text-gray-600 space-y-1">
+                                              {(
+                                                part.risk_clauses ||
+                                                part.relevant_clauses
+                                              ).map(
+                                                (
+                                                  clause: string,
+                                                  clauseIndex: number
+                                                ) => (
+                                                  <li
+                                                    key={clauseIndex}
+                                                    className="flex items-start"
+                                                  >
+                                                    <span className="mr-2">
+                                                      •
+                                                    </span>
+                                                    <span>{clause}</span>
+                                                  </li>
+                                                )
+                                              )}
+                                            </ul>
+                                          </div>
+                                        )}
+                                      {part.recommendations &&
+                                        part.recommendations.length > 0 && (
+                                          <div className="mt-2">
+                                            <h6 className="font-medium text-sm mb-1">
+                                              권고사항:
+                                            </h6>
+                                            <ul className="text-sm text-gray-600 space-y-1">
+                                              {part.recommendations.map(
+                                                (
+                                                  rec: string,
+                                                  recIndex: number
+                                                ) => (
+                                                  <li
+                                                    key={recIndex}
+                                                    className="flex items-start"
+                                                  >
+                                                    <span className="mr-2">
+                                                      •
+                                                    </span>
+                                                    <span>{rec}</span>
+                                                  </li>
+                                                )
+                                              )}
+                                            </ul>
+                                          </div>
+                                        )}
+                                      {"analysis_content" in part &&
+                                        part.analysis_content && (
+                                          <div className="mt-3 p-3 bg-gray-50 rounded-lg">
+                                            <h6 className="font-medium text-sm mb-2">
+                                              GPT 분석 내용:
+                                            </h6>
+                                            <div className="text-sm text-gray-700 whitespace-pre-wrap">
+                                              {String(part.analysis_content)}
+                                            </div>
+                                          </div>
+                                        )}
+                                    </div>
+                                  )
                                 )
+                              ) : (
+                                <div className="text-sm text-gray-500 text-center py-4">
+                                  분석 결과가 없습니다.
+                                </div>
                               )}
                             </div>
 
@@ -1620,6 +1728,7 @@ const Dashboard: React.FC = () => {
                                         )}
                                       </p>
                                     )}
+                                  {/* summary.gpt_analysis가 있는 경우 (레거시 지원) */}
                                   {"gpt_analysis" in
                                     result.analysis_result.summary &&
                                     result.analysis_result.summary
@@ -1636,6 +1745,19 @@ const Dashboard: React.FC = () => {
                                         </div>
                                       </div>
                                     )}
+                                  {/* analysis_result.gpt_analysis가 있는 경우 (새로운 형식) */}
+                                  {result.analysis_result.gpt_analysis && (
+                                    <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                                      <h5 className="font-medium text-sm mb-2">
+                                        GPT 전체 분석:
+                                      </h5>
+                                      <div className="text-sm text-gray-700 whitespace-pre-wrap">
+                                        {String(
+                                          result.analysis_result.gpt_analysis
+                                        )}
+                                      </div>
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             )}

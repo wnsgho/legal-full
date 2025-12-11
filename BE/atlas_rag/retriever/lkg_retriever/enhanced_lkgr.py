@@ -1158,23 +1158,52 @@ class EnhancedLargeKGRetriever(LargeKGRetriever):
                             if self.verbose and i < 3:
                                 self.logger.info(f"인덱스 {node_index} -> 해시 ID {hash_id[:20]}...")
                             
-                            # Neo4j에서 GDS ID 찾기
+                            # Neo4j에서 GDS ID 찾기 (노드 타입 제한 없이 검색)
                             with self.neo4j_driver.session(database=self.database_name) as session:
+                                # 먼저 Node 타입으로 시도
                                 result = session.run(
-                                    "MATCH (n) WHERE n.id = $hash_id RETURN n.numeric_id as gds_id",
+                                    "MATCH (n:Node) WHERE n.id = $hash_id RETURN id(n) as gds_id, labels(n) as labels, n.name as name",
                                     hash_id=hash_id
                                 )
                                 record = result.single()
+                                
+                                # Node 타입에서 찾지 못하면 모든 타입으로 시도
+                                if not record or record['gds_id'] is None:
+                                    result = session.run(
+                                        "MATCH (n) WHERE n.id = $hash_id RETURN id(n) as gds_id, labels(n) as labels, n.name as name",
+                                        hash_id=hash_id
+                                    )
+                                    record = result.single()
+                                
+                                # 다른 속성 이름도 시도 (name 속성으로 검색)
+                                if not record or record['gds_id'] is None:
+                                    # name 속성으로도 시도 (해시 ID가 name으로 저장된 경우)
+                                    result = session.run(
+                                        "MATCH (n) WHERE n.name = $hash_id RETURN id(n) as gds_id, labels(n) as labels, n.name as name",
+                                        hash_id=hash_id
+                                    )
+                                    record = result.single()
                                 
                                 if record and record['gds_id'] is not None:
                                     gds_id = record['gds_id']
                                     personalization_dict[str(gds_id)] = 1.0
                                     converted_count += 1
                                     if self.verbose and i < 3:
-                                        self.logger.info(f"✅ GDS ID 변환 성공: {gds_id}")
+                                        labels = record.get('labels', [])
+                                        name = record.get('name', 'N/A')
+                                        self.logger.info(f"✅ GDS ID 변환 성공: {gds_id} (타입: {labels}, 이름: {name[:30] if name else 'N/A'})")
                                 else:
                                     if self.verbose:
-                                        self.logger.warning(f"해시 ID {hash_id[:20]}...에 대한 GDS ID를 찾을 수 없음")
+                                        # 디버깅: 비슷한 해시 ID를 가진 노드가 있는지 확인
+                                        debug_result = session.run(
+                                            "MATCH (n) WHERE n.id STARTS WITH $hash_prefix RETURN n.id as id, labels(n) as labels, n.name as name LIMIT 3",
+                                            hash_prefix=hash_id[:10]
+                                        )
+                                        similar_nodes = [r for r in debug_result]
+                                        if similar_nodes:
+                                            self.logger.warning(f"해시 ID {hash_id[:20]}...에 대한 GDS ID를 찾을 수 없음 (비슷한 노드: {[n['id'][:20] for n in similar_nodes]})")
+                                        else:
+                                            self.logger.warning(f"해시 ID {hash_id[:20]}...에 대한 GDS ID를 찾을 수 없음 (Neo4j에 해당 노드가 없을 수 있음)")
                         else:
                             if self.verbose:
                                 self.logger.warning(f"인덱스 {node_index}가 node_list 범위를 벗어남")
@@ -1223,16 +1252,27 @@ class EnhancedLargeKGRetriever(LargeKGRetriever):
                                     numeric_index = int(node_id)
                                     hash_id = self.node_list[numeric_index]
                                     with self.neo4j_driver.session(database=self.database_name) as session:
+                                        # 먼저 Node 타입으로 시도
                                         result = session.run(
-                                            "MATCH (n) WHERE n.id = $hash_id RETURN n.numeric_id as gds_id",
+                                            "MATCH (n:Node) WHERE n.id = $hash_id RETURN id(n) as gds_id, labels(n) as labels",
                                             hash_id=hash_id
                                         )
                                         record = result.single()
+                                        
+                                        # Node 타입에서 찾지 못하면 모든 타입으로 시도
+                                        if not record or record['gds_id'] is None:
+                                            result = session.run(
+                                                "MATCH (n) WHERE n.id = $hash_id RETURN id(n) as gds_id, labels(n) as labels",
+                                                hash_id=hash_id
+                                            )
+                                            record = result.single()
+                                        
                                         if record and record['gds_id'] is not None:
                                             gds_id = record['gds_id']
                                             numeric_personalization_dict[str(gds_id)] = weight
                                             if self.verbose and len(numeric_personalization_dict) <= 3:
-                                                self.logger.info(f"숫자 인덱스 {node_id} -> 해시 ID {hash_id[:20]}... -> GDS ID {gds_id}")
+                                                labels = record.get('labels', [])
+                                                self.logger.info(f"숫자 인덱스 {node_id} -> 해시 ID {hash_id[:20]}... -> GDS ID {gds_id} (타입: {labels})")
                                         else:
                                             if self.verbose:
                                                 self.logger.warning(f"인덱스 {numeric_index}에 대한 GDS ID를 찾을 수 없음")
@@ -1278,179 +1318,124 @@ class EnhancedLargeKGRetriever(LargeKGRetriever):
                     if self.verbose:
                         self.logger.warning("retrieve_topk_nodes 결과 없음 - 일반 검색 사용")
                     content, scores = super().retrieve_passages(query)
-            
-            # 3. PageRank 실행
-            if self.verbose:
-                self.logger.info(f"PageRank 실행 - personalization_dict: {len(personalization_dict)}개 노드")
-            
-            # GDS 그래프 객체 가져오기
-            graph = self.gds_driver.graph.get('largekgrag_graph')
-            
-            # GDS 그래프의 실제 노드 ID 확인
-            try:
-                # GDS 그래프의 모든 노드 정보 가져오기
-                all_nodes = self.gds_driver.graph.nodeProperty.stream(
-                    graph, 
-                    node_property='numeric_id'
-                )
-                
+            else:
+                # 3. PageRank 실행 (personalization_dict가 있는 경우)
                 if self.verbose:
-                    self.logger.info(f"GDS 그래프 총 노드 수: {len(all_nodes)}")
-                    if len(all_nodes) > 0:
-                        self.logger.info(f"GDS 그래프 노드 ID 범위: {all_nodes['nodeId'].min()} ~ {all_nodes['nodeId'].max()}")
+                    self.logger.info(f"PageRank 실행 - personalization_dict: {len(personalization_dict)}개 노드")
                 
-                # GDS 노드 ID와 Neo4j numeric_id 매핑 생성
-                gds_to_numeric = {}
-                for _, row in all_nodes.iterrows():
-                    gds_id = row['nodeId']
-                    numeric_id = row.get('numeric_id')
-                    if numeric_id is not None:
-                        gds_to_numeric[gds_id] = numeric_id
-                
-                if self.verbose:
-                    self.logger.info(f"GDS-Neo4j 매핑 생성: {len(gds_to_numeric)}개")
-                
-                # 매핑이 없으면 직접 Neo4j에서 확인
-                if len(gds_to_numeric) == 0:
-                    if self.verbose:
-                        self.logger.warning("GDS-Neo4j 매핑이 없음 - 직접 Neo4j에서 확인")
-                    
-                    # Neo4j에서 numeric_id가 있는 노드들 확인
-                    with self.neo4j_driver.session(database=self.database_name) as session:
-                        result = session.run("MATCH (n:Node) WHERE n.numeric_id IS NOT NULL RETURN n.numeric_id as numeric_id LIMIT 10")
-                        numeric_ids = [record['numeric_id'] for record in result]
-                        if self.verbose:
-                            self.logger.info(f"Neo4j에서 찾은 numeric_id 예시: {numeric_ids[:5]}")
-                    
-                # GDS 그래프의 실제 노드 ID들을 가져오기
                 try:
-                    # GDS 그래프의 모든 노드 ID 조회
-                    gds_nodes = self.gds_driver.graph.list_nodes(graph)
-                    if gds_nodes:
-                        for i, gds_id in enumerate(gds_nodes):
-                            gds_to_numeric[gds_id] = i  # GDS ID -> 순서 인덱스 매핑
-                    else:
-                        # 대안: GDS 그래프 크기로부터 노드 ID 범위 추정
-                        graph_info = self.gds_driver.graph.get(graph)
-                        node_count = graph_info.get('nodeCount', 0)
-                        for i in range(node_count):
-                            gds_to_numeric[i] = i  # GDS ID = 인덱스
-                except Exception as e:
-                    if self.verbose:
-                        self.logger.warning(f"GDS 노드 ID 조회 실패: {e}")
-                    # 기본 매핑 사용
-                    for i in range(len(personalization_dict)):
-                        gds_to_numeric[i] = i
-            
-                # personalization_dict의 numeric_id를 GDS nodeId로 변환
-                valid_source_nodes = []
-                for node_id in personalization_dict.keys():
-                    numeric_id = int(node_id)
-                    # numeric_id에 해당하는 GDS nodeId 찾기
-                    for gds_id, mapped_numeric_id in gds_to_numeric.items():
-                        if mapped_numeric_id == numeric_id:
-                            valid_source_nodes.append(gds_id)
-                            break
-                
-                if self.verbose:
-                    self.logger.info(f"유효한 sourceNodes: {len(valid_source_nodes)}개 / {len(personalization_dict)}개")
-                
-                if not valid_source_nodes:
-                    if self.verbose:
-                        self.logger.warning("유효한 sourceNodes가 없음 - 일반 검색 사용")
-                    return super().retrieve_passages(query)
-                
-                # GDS PageRank 실행을 위한 노드 ID 변환
-                # sourceNodes는 GDS 내부 노드 ID를 사용
-                source_nodes_gds = valid_source_nodes  # 이미 GDS ID
-                
-                # personalization_dict를 GDS ID로 변환
-                gds_personalization_dict = {}
-                for node_id in personalization_dict.keys():
-                    numeric_id = int(node_id)
-                    # numeric_id에 해당하는 GDS nodeId 찾기
-                    for gds_id, mapped_numeric_id in gds_to_numeric.items():
-                        if mapped_numeric_id == numeric_id:
-                            gds_personalization_dict[gds_id] = personalization_dict[node_id]
-                            break
-                
-                if self.verbose:
-                    self.logger.info(f"GDS personalization_dict: {len(gds_personalization_dict)}개 노드")
-                    self.logger.info(f"sourceNodes: {len(source_nodes_gds)}개 노드")
-                
-                # GDS PageRank 실행 - personalization과 sourceNodes 모두 사용
-                # sourceNodes는 GDS 내부 노드 ID 리스트, personalization은 노드 ID를 키로 하는 딕셔너리
-                pagerank_result = self.gds_driver.pageRank.stream(
-                    graph,
-                    maxIterations=20,
-                    dampingFactor=0.85,
-                    sourceNodes=source_nodes_gds,
-                    personalization=gds_personalization_dict
-                )
-                
-                if self.verbose:
-                    self.logger.info(f"PageRank 결과: {len(pagerank_result)}개 노드")
-                
-                # PageRank 결과를 기반으로 최종 검색
-                if not pagerank_result.empty:
-                    # PageRank 결과에서 상위 노드들의 GDS nodeId 추출
-                    top_gds_nodes = pagerank_result.head(topN)['nodeId'].tolist()
+                    # GDS 그래프 객체 가져오기
+                    graph = self.gds_driver.graph.get('largekgrag_graph')
                     
-                    # GDS nodeId를 numeric_id로 변환
-                    top_numeric_nodes = []
-                    for gds_id in top_gds_nodes:
-                        if gds_id in gds_to_numeric:
-                            top_numeric_nodes.append(gds_to_numeric[gds_id])
+                    # GDS 그래프 정보 확인
+                    if self.verbose:
+                        try:
+                            # graph는 이미 Graph 객체이므로 직접 속성에 접근
+                            node_count = graph.node_count() if hasattr(graph, 'node_count') else 0
+                            self.logger.info(f"GDS 그래프 총 노드 수: {node_count}")
+                        except Exception as e:
+                            if self.verbose:
+                                self.logger.warning(f"GDS 그래프 정보 조회 실패: {e}")
                     
-                    if top_numeric_nodes:
-                        # 이 노드들로부터 텍스트 검색
+                    # personalization_dict의 키는 이미 GDS ID (Neo4j 내부 ID)이므로 그대로 사용
+                    # sourceNodes는 숫자 리스트
+                    valid_source_nodes = []
+                    
+                    for node_id_str, weight in personalization_dict.items():
+                        try:
+                            # node_id는 이미 GDS ID (Neo4j 내부 ID)
+                            node_id = int(node_id_str)
+                            # sourceNodes는 정수 리스트로 유지
+                            valid_source_nodes.append(node_id)
+                        except (ValueError, TypeError) as e:
+                            if self.verbose:
+                                self.logger.warning(f"노드 ID 변환 실패: {node_id_str}, 오류: {e}")
+                            continue
+                    
+                    if self.verbose:
+                        self.logger.info(f"유효한 sourceNodes: {len(valid_source_nodes)}개 / {len(personalization_dict)}개")
+                    
+                    if not valid_source_nodes:
+                        if self.verbose:
+                            self.logger.warning("유효한 sourceNodes가 없음 - 일반 검색 사용")
+                        return super().retrieve_passages(query)
+                    
+                    # sourceNodes는 정수 리스트로 유지
+                    source_nodes_gds = valid_source_nodes
+                    
+                    if self.verbose:
+                        self.logger.info(f"sourceNodes: {len(source_nodes_gds)}개 노드")
+                    
+                    # GDS PageRank 실행 - sourceNodes만 사용 (stream 메서드는 personalization을 지원하지 않음)
+                    # sourceNodes는 정수 리스트
+                    pagerank_result = self.gds_driver.pageRank.stream(
+                        graph,
+                        maxIterations=20,
+                        dampingFactor=0.85,
+                        sourceNodes=source_nodes_gds
+                    )
+                    
+                    if self.verbose:
+                        self.logger.info(f"PageRank 결과: {len(pagerank_result)}개 노드")
+                    
+                    # PageRank 결과를 기반으로 최종 검색
+                    if not pagerank_result.empty:
+                        # PageRank 결과에서 상위 노드들의 GDS nodeId 추출
+                        top_gds_nodes = pagerank_result.head(topN)['nodeId'].tolist()
+                        
+                        # GDS nodeId를 Neo4j 내부 ID로 사용 (이미 GDS ID이므로 그대로 사용)
+                        if top_gds_nodes:
+                            # 이 노드들로부터 텍스트 검색 (GDS ID를 직접 사용)
+                            with self.neo4j_driver.session(database=self.database_name) as session:
+                                query_text = """
+                                UNWIND $nodeIds AS nodeId
+                                MATCH (n) WHERE id(n) = nodeId
+                                MATCH (n)-[:Source]->(t:Text)
+                                RETURN t.text AS text, t.numeric_id AS textId
+                                ORDER BY nodeId
+                                LIMIT $limit
+                                """
+                                result = session.run(query_text, nodeIds=top_gds_nodes, limit=topN)
+                                texts = [record["text"] for record in result if record["text"]]
+                                
+                                if texts:
+                                    if self.verbose:
+                                        self.logger.info(f"PageRank 기반 검색 성공: {len(texts)}개 결과")
+                                    return texts, [f"pagerank_{i}" for i in range(len(texts))]
+                    
+                    if self.verbose:
+                        self.logger.warning("PageRank 기반 검색 실패 - 일반 검색 사용")
+                    
+                    # GDS PageRank 실패 시 대체 방법: personalization_dict의 노드들로 직접 검색
+                    if personalization_dict:
+                        if self.verbose:
+                            self.logger.info("personalization_dict를 사용한 직접 검색 시도")
+                        
+                        # personalization_dict의 노드들로 직접 텍스트 검색 (GDS ID를 직접 사용)
                         with self.neo4j_driver.session(database=self.database_name) as session:
                             query_text = """
                             UNWIND $nodeIds AS nodeId
-                            MATCH (n:Node {numeric_id: nodeId})-[:Source]->(t:Text)
+                            MATCH (n) WHERE id(n) = nodeId
+                            MATCH (n)-[:Source]->(t:Text)
                             RETURN t.text AS text, t.numeric_id AS textId
                             ORDER BY nodeId
+                            LIMIT $limit
                             """
-                            result = session.run(query_text, nodeIds=top_numeric_nodes)
+                            node_ids = [int(node_id) for node_id in personalization_dict.keys()]
+                            result = session.run(query_text, nodeIds=node_ids, limit=self.topN)
                             texts = [record["text"] for record in result if record["text"]]
                             
                             if texts:
                                 if self.verbose:
-                                    self.logger.info(f"PageRank 기반 검색 성공: {len(texts)}개 결과")
-                                return texts, [f"pagerank_{i}" for i in range(len(texts))]
-                
-                if self.verbose:
-                    self.logger.warning("PageRank 기반 검색 실패 - 일반 검색 사용")
-                
-                # GDS PageRank 실패 시 대체 방법: personalization_dict의 노드들로 직접 검색
-                if personalization_dict:
-                    if self.verbose:
-                        self.logger.info("personalization_dict를 사용한 직접 검색 시도")
+                                    self.logger.info(f"직접 검색 성공: {len(texts)}개 결과")
+                                return texts, [f"direct_{i}" for i in range(len(texts))]
                     
-                    # personalization_dict의 노드들로 직접 텍스트 검색
-                    with self.neo4j_driver.session(database=self.database_name) as session:
-                        query_text = """
-                        UNWIND $nodeIds AS nodeId
-                        MATCH (n:Node {numeric_id: nodeId})-[:Source]->(t:Text)
-                        RETURN t.text AS text, t.numeric_id AS textId
-                        ORDER BY nodeId
-                        LIMIT $limit
-                        """
-                        node_ids = [int(node_id) for node_id in personalization_dict.keys()]
-                        result = session.run(query_text, nodeIds=node_ids, limit=self.topN)
-                        texts = [record["text"] for record in result if record["text"]]
-                        
-                        if texts:
-                            if self.verbose:
-                                self.logger.info(f"직접 검색 성공: {len(texts)}개 결과")
-                            return texts, [f"direct_{i}" for i in range(len(texts))]
-                
-                return super().retrieve_passages(query)
-                
-            except Exception as e:
-                if self.verbose:
-                    self.logger.error(f"GDS PageRank 실행 중 오류: {e}")
-                return super().retrieve_passages(query)
+                    return super().retrieve_passages(query)
+                    
+                except Exception as e:
+                    if self.verbose:
+                        self.logger.error(f"GDS PageRank 실행 중 오류: {e}")
+                    return super().retrieve_passages(query)
                 
         except Exception as e:
             if self.verbose:

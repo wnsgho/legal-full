@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+.eggs/
+*.egg-info/
+*.egg
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Git
+.git/
+.gitignore
+
+# Logs
+*.log
+log/
+
+# Temp files
+*.tmp
+*.temp
+.DS_Store
+
+# Test files
+tests/
+*.test.py
+
+# Output directories (will be mounted as volumes)
+output/
+precompute/
+
+# Environment files (use docker-compose environment instead)
+.env
+.env.local
+.env.*.local
+
+# Documentation
+*.md
+!README.md
+

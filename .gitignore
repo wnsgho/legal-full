@@ -5,6 +5,11 @@
 /original/
 /uploads/
 
+# Environment variables (민감한 정보 포함)
+.env
+.env.local
+.env.*.local
+
 # Common development files
 .DS_Store
 Thumbs.db

@@ -32,7 +32,7 @@ def fix_neo4j_with_hash_ids_and_concept_attributes(keyword=None):
         
         # keyword 우선순위: 함수 인수 > 환경변수 > 기본값
         if keyword is None:
-            keyword = os.getenv('KEYWORD', 'contract_v5')
+            keyword = os.getenv('KEYWORD')
         
         print(f"🔗 Neo4j 연결 정보: {neo4j_uri} (데이터베이스: {neo4j_database})")
         print(f"🔑 사용할 키워드: '{keyword}' (길이: {len(keyword)})")

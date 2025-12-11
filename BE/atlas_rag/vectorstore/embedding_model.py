@@ -193,5 +193,34 @@ class SentenceEmbedding(BaseEmbeddingModel):
     def __init__(self,sentence_encoder:SentenceTransformer):
         self.sentence_encoder = sentence_encoder
 
-    def encode(self, query, **kwargs):
-        return self.sentence_encoder.encode(query, **kwargs)
+    def encode(self, query, query_type=None, **kwargs):
+        """
+        Encode the query into embeddings.
+        
+        Args:
+            query: Input text or list of texts.
+            query_type: Type of query (ignored for SentenceTransformer, but kept for compatibility).
+            **kwargs: Additional arguments (e.g., normalize_embeddings).
+        
+        Returns:
+            Embeddings as a NumPy array.
+        """
+        # SentenceTransformer는 query_type을 지원하지 않으므로 제거
+        # normalize_embeddings도 SentenceTransformer의 기본 동작과 다를 수 있으므로 주의
+        normalize_embeddings = kwargs.pop('normalize_embeddings', False)
+        
+        # SentenceTransformer.encode() 호출 (query_type 제외)
+        embeddings = self.sentence_encoder.encode(query, **kwargs)
+        
+        # normalize_embeddings가 True이면 정규화
+        if normalize_embeddings:
+            import torch.nn.functional as F
+            import torch
+            if isinstance(embeddings, torch.Tensor):
+                embeddings = F.normalize(embeddings, p=2, dim=1).detach().cpu().numpy()
+            else:
+                import numpy as np
+                norms = np.linalg.norm(embeddings, axis=1, keepdims=True)
+                embeddings = embeddings / (norms + 1e-8)
+        
+        return embeddings

@@ -7,7 +7,11 @@
 - **파일 업로드**: JSON, TXT, MD 파일 업로드 지원
 - **ATLAS 파이프라인**: 지식그래프 구축 및 임베딩 생성
 - **RAG 시스템**: 하이브리드 검색 기반 질문 답변
-- **위험조항 분석**: 계약서 위험요소 자동 분석
+- **위험조항 분석**:
+  - 하이브리드 리트리버 기반 분석 (Neo4j + Concept + HiPPO-RAG2)
+  - GPT 전용 분석
+  - 10개 파트별 체크리스트 분석
+  - 분석 결과 저장 및 조회
 - **실시간 상태 모니터링**: 파이프라인 실행 상태 추적
 
 ## 📋 요구사항
@@ -38,7 +42,7 @@ cp env.example .env
 # OpenAI API 설정
 OPENAI_API_KEY=your_openai_api_key_here
 OPENAI_BASE_URL=https://api.openai.com/v1
-DEFAULT_MODEL=gpt-4.1-mini
+DEFAULT_MODEL=gpt-4.1-2025-04-14
 
 # Neo4j 데이터베이스 설정
 NEO4J_URI=neo4j://127.0.0.1:7687
@@ -100,6 +104,20 @@ python run_server.py
 - `GET /chat/history` - 챗봇 대화 기록 조회
 - `DELETE /chat/history` - 챗봇 대화 기록 삭제
 
+### 위험 분석 (하이브리드 리트리버 기반)
+
+- `POST /api/risk-analysis/start` - 위험 분석 시작
+- `POST /api/risk-analysis/analyze-uploaded-file` - 업로드된 파일 분석
+- `POST /api/risk-analysis/analyze-gpt-only` - GPT 전용 위험 분석
+- `GET /api/risk-analysis/{analysis_id}/status` - 분석 상태 조회
+- `GET /api/risk-analysis/{analysis_id}/part/{part_number}` - 파트별 결과 조회
+- `GET /api/risk-analysis/{analysis_id}/report` - 전체 리포트 조회
+- `GET /api/risk-analysis/saved` - 저장된 분석 결과 목록
+- `GET /api/risk-analysis/saved/{file_id}` - 특정 파일의 분석 결과 조회
+- `GET /api/risk-analysis/gpt-results` - GPT 분석 결과 목록
+- `GET /api/risk-analysis/rag-contracts` - RAG 구축된 계약서 목록
+- `DELETE /api/risk-analysis/{analysis_id}` - 분석 세션 삭제
+
 ## 🔧 사용 예시
 
 ### 1. 파일 업로드 및 파이프라인 실행
@@ -123,6 +141,36 @@ curl -X POST "http://localhost:8000/chat" \
 ```
 
 ### 3. 위험조항 분석
+
+#### 하이브리드 리트리버 기반 분석 (권장)
+
+```bash
+# 업로드된 파일 분석
+curl -X POST "http://localhost:8000/api/risk-analysis/analyze-uploaded-file" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "file_id": "file_id_here",
+    "selected_parts": "all"
+  }'
+
+# 분석 상태 확인
+curl -X GET "http://localhost:8000/api/risk-analysis/{analysis_id}/status"
+
+# 전체 리포트 조회
+curl -X GET "http://localhost:8000/api/risk-analysis/{analysis_id}/report"
+```
+
+#### GPT 전용 분석
+
+```bash
+curl -X POST "http://localhost:8000/api/risk-analysis/analyze-gpt-only" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "file_id": "file_id_here"
+  }'
+```
+
+#### 기존 분석 API
 
 ```bash
 curl -X POST "http://localhost:8000/analyze-risks" \
@@ -171,13 +219,23 @@ curl -X GET "http://localhost:8000/pipeline/status/{pipeline_id}"
 
 ```
 BE/
-├── server.py              # 메인 서버 파일
-├── run_server.py          # 서버 실행 스크립트
-├── run_server.bat         # Windows 실행 배치 파일
-├── run_server.sh          # Linux/macOS 실행 스크립트
-├── requirements.txt       # Python 의존성
+├── app/                   # FastAPI 애플리케이션
+│   ├── main.py           # 메인 애플리케이션
+│   ├── api/              # API 엔드포인트
+│   ├── core/             # 핵심 설정 (config.py)
+│   ├── services/         # 비즈니스 로직
+│   └── schemas/          # Pydantic 스키마
+├── riskAnalysis/         # 위험 분석 모듈
+│   ├── hybrid_risk_analyzer.py    # 하이브리드 리트리버 기반 분석기
+│   ├── simple_gpt_risk_analyzer.py # GPT 전용 분석기
+│   ├── risk_analysis_api.py       # 위험 분석 API
+│   └── data_persistence.py         # 분석 결과 저장
+├── atlas_rag/            # ATLAS RAG 시스템
+├── run_server.py         # 서버 실행 스크립트
+├── run_server.bat        # Windows 실행 배치 파일
+├── run_server.sh         # Linux/macOS 실행 스크립트
+├── requirements.txt      # Python 의존성
 ├── env.example           # 환경변수 예시
 ├── main_pipeline.py      # ATLAS 파이프라인
 └── README_SERVER.md      # 이 파일
 ```
-<img width="3840" height="2126" alt="Image" src="https://github.com/user-attachments/assets/51aa53c4-a17a-4a2f-9536-3064f042c458" />

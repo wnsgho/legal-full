@@ -1,8 +1,6 @@
 2025 서초 AI 칼리지 리걸케어팀(박재연, 최준호) 프로젝트 입니다.
 
-지식그래프 기반 RAG 구축을 통한 계약서 위험 분석을 제공하는 Full-stack 프로젝트입니다. 백엔드는 FastAPI + Neo4j, 프론트엔드는 Vite + React + shadcn-ui를 사용합니다.
-
-<img width="1904" height="1793" alt="Image" src="https://github.com/user-attachments/assets/442cd4e7-4193-4743-8fd0-78a1cfd75e69" />
+지식그래프 기반 RAG 구축을 통한 계약서 위험 분석을 제공하는 Full-stack 프로젝트입니다. 백엔드는 FastAPI + Neo4j, 프런트엔드는 Vite + React + shadcn-ui를 사용합니다.
 
 ## 📦 레포지토리 구조
 
@@ -18,8 +16,8 @@ AutoSchemaKG-1/
 │       └── README.md           # 위험분석 시스템 설명서
 └── FE/
     └── workspace/
-        └── shadcn-ui/          # 프론트엔드 (Vite + React)
-            └── README.md       # 프론트엔드 전용 설명서
+        └── shadcn-ui/          # 프런트엔드 (Vite + React)
+            └── README.md       # 프런트엔드 전용 설명서
 ```
 
 ## 🚀 빠른 시작
@@ -45,7 +43,7 @@ python run_server.py
 
 - 기본 API 문서: http://localhost:8000/docs (Swagger), http://localhost:8000/redoc
 
-### 2) 프론트 실행
+### 2) 프런트엔드 실행
 
 ```bash
 cd FE/workspace/shadcn-ui
@@ -59,6 +57,7 @@ npm run dev
 ```
 
 - 기본 개발 서버: http://localhost:5173 (Vite 기본 포트)
+- Docker 프론트엔드: http://localhost:3000 (Docker Compose 사용 시)
 
 ## ⚙️ 환경변수
 
@@ -71,29 +70,53 @@ npm run dev
 
 - 파일 업로드 및 파이프라인 실행 (ATLAS 기반 지식그래프 구축/임베딩)
 - 하이브리드 RAG 검색과 질의응답
-- 계약서 위험 조항 분석 (파트별 체크리스트/직렬 처리/결과 통합)
+- 계약서 위험 조항 분석
+  - 하이브리드 리트리버 기반 위험 분석 (Neo4j + Concept + HiPPO-RAG2)
+  - GPT 전용 위험 분석
+  - 파트별 체크리스트 분석 (10개 파트)
+  - 직렬 처리 및 점진적 결과 제공
+  - 분석 결과 저장 및 조회
 - 실시간 상태 모니터링 및 로그
 
 ## 📚 핵심 API (요약)
 
+### 파일 및 파이프라인
+
 - `POST /upload-and-run`: 파일 업로드 후 파이프라인 실행
 - `POST /pipeline/run`: 파이프라인 실행
 - `GET /pipeline/status/{pipeline_id}`: 파이프라인 상태
+
+### 챗봇 및 분석
+
 - `POST /chat`: RAG 기반 Q&A
 - `POST /analyze-risks`: 계약서 위험분석
-- 더 보기: http://localhost:8000/docs
+
+### 위험 분석 (하이브리드 리트리버 기반)
+
+- `POST /api/risk-analysis/start`: 위험 분석 시작
+- `POST /api/risk-analysis/analyze-uploaded-file`: 업로드된 파일 분석
+- `POST /api/risk-analysis/analyze-gpt-only`: GPT 전용 분석
+- `GET /api/risk-analysis/{analysis_id}/status`: 분석 상태 조회
+- `GET /api/risk-analysis/{analysis_id}/part/{part_number}`: 파트별 결과 조회
+- `GET /api/risk-analysis/{analysis_id}/report`: 전체 리포트 조회
+- `GET /api/risk-analysis/saved`: 저장된 분석 결과 목록
+- `GET /api/risk-analysis/rag-contracts`: RAG 구축된 계약서 목록
+
+더 보기: http://localhost:8000/docs
 
 ## 🔗 세부 문서
 
 - 백엔드 전용 가이드: `BE/README_SERVER.md`
 - 위험분석 시스템: `BE/riskAnalysis/README.md`
-- 프론트 가이드: `FE/workspace/shadcn-ui/README.md`
+- 하이브리드 위험분석: `BE/riskAnalysis/README_hybrid.md`
+- Docker 가이드: `DOCKER_README.md`
+- 프런트엔드 가이드: `FE/workspace/shadcn-ui/README.md`
 
 ## 🛠️ 트러블슈팅 (요약)
 
 - Neo4j 연결 오류: Neo4j 실행 여부 및 접속 정보 확인 (`NEO4J_*`).
 - OpenAI 오류: API Key/요금제/사용량 확인.
-- CORS/프록시 이슈: 프론트 개발 서버와 백엔드 포트 확인, 필요 시 프록시 설정.
+- CORS/프록시 이슈: 프런트 개발 서버와 백엔드 포트 확인, 필요 시 프록시 설정.
 - 모델/설정 값 불일치: `.env`의 `DEFAULT_MODEL`이 코드 기본값과 일치하는지 확인.
 
 ## 🏗️ 아키텍처 개요
@@ -104,12 +127,29 @@ npm run dev
 [BE] FastAPI ── RAG/위험분석 서비스 계층
    ├─ ATLAS 파이프라인
    ├─ Neo4j (지식그래프)
+   ├─ 하이브리드 리트리버 (Concept + HiPPO-RAG2)
    └─ OpenAI (LLM)
+
+위험 분석 시스템:
+- HybridRiskAnalyzer: 하이브리드 리트리버 기반 분석
+- SimpleGPTRiskAnalyzer: GPT 전용 분석
+- 10개 파트별 체크리스트 분석
 ```
-## 🅿️ 파이프라인 개요 
-<img width="3840" height="2126" alt="Image" src="https://github.com/user-attachments/assets/51aa53c4-a17a-4a2f-9536-3064f042c458" />
 
-## 📒 참고 문헌
+## 🐳 Docker 사용
 
-- AutoSchemaKG: Autonomous Knowledge Graph Construction through Dynamic Schema Induction from Web-Scale Corpora
-- Automating construction contract review using knowledge graph-enhanced large language models
+Docker Compose를 사용하여 전체 시스템을 실행할 수 있습니다:
+
+```bash
+# 환경변수 설정
+cp env.docker.example .env
+# .env 파일 수정 (OPENAI_API_KEY, NEO4J_PASSWORD 등)
+
+# 서비스 실행
+docker-compose up --build
+
+# 백그라운드 실행
+docker-compose up --build -d
+```
+
+자세한 내용은 `DOCKER_README.md`를 참조하세요.

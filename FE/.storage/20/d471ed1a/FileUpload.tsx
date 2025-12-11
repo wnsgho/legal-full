@@ -165,7 +165,9 @@ const FileUpload: React.FC<FileUploadProps> = ({
                   </div>
                   <div className="flex items-center space-x-2">
                     {getStatusBadge(contract.status)}
-                    {contract.status === ContractStatus.COMPLETED}
+                    {contract.status === ContractStatus.COMPLETED && (
+                      <Button variant="outline" size="sm"></Button>
+                    )}
                   </div>
                 </div>
               ))}

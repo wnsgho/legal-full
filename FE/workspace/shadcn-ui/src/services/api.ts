@@ -1,4 +1,44 @@
-const API_BASE_URL = "http://localhost:8000";
+// 환경 변수에서 API 베이스 URL 가져오기 (Vite는 import.meta.env 사용)
+// 개발 환경에서는 항상 상대 경로를 사용하여 Vite 프록시 활용
+// 프로덕션 환경에서는 환경변수나 절대 경로 사용
+
+// 개발 환경 확인: Vite는 import.meta.env.MODE === 'development' 또는 import.meta.env.DEV 사용
+// 개발 환경에서는 환경변수와 관계없이 항상 상대 경로 사용 (프록시 활용)
+const isDevelopment =
+  import.meta.env.DEV || import.meta.env.MODE === "development";
+
+// API_BASE_URL 결정 로직:
+// 1. 개발 환경: 항상 빈 문자열 (상대 경로) - Vite 프록시 사용
+// 2. 프로덕션 환경:
+//    - VITE_API_BASE_URL이 빈 문자열이거나 설정되지 않았으면 상대 경로 사용 (nginx 프록시)
+//    - VITE_API_BASE_URL이 설정되어 있으면 해당 URL 사용
+const envApiBaseUrl = import.meta.env.VITE_API_BASE_URL;
+export const API_BASE_URL = isDevelopment
+  ? "" // 개발 환경: 항상 빈 문자열 (상대 경로) - 프록시를 통해 백엔드로 전달
+  : envApiBaseUrl && envApiBaseUrl.trim() !== ""
+  ? envApiBaseUrl // 프로덕션: 환경변수가 설정되어 있으면 사용
+  : ""; // 프로덕션: 환경변수가 없거나 빈 문자열이면 상대 경로 사용 (nginx 프록시)
+
+// 디버깅: API_BASE_URL 확인 (개발/프로덕션 모두)
+console.log("[API Config] ==========================================");
+console.log("[API Config] MODE:", import.meta.env.MODE);
+console.log("[API Config] DEV:", import.meta.env.DEV);
+console.log(
+  "[API Config] API_BASE_URL:",
+  API_BASE_URL || "(empty - using relative paths for proxy)"
+);
+console.log(
+  "[API Config] VITE_API_BASE_URL env:",
+  import.meta.env.VITE_API_BASE_URL || "(not set)"
+);
+if (!API_BASE_URL) {
+  console.log(
+    "[API Config] ✅ Using relative paths - proxy will handle requests"
+  );
+} else {
+  console.log("[API Config] ⚠️ Using absolute URL:", API_BASE_URL);
+}
+console.log("[API Config] ==========================================");
 
 export interface ChatMessage {
   id: string;
@@ -65,6 +105,43 @@ class ApiService {
 
   constructor(baseUrl: string = API_BASE_URL) {
     this.baseUrl = baseUrl;
+
+    // 강제 디버깅: baseUrl이 어떻게 설정되었는지 확인
+    console.log("[ApiService] ==========================================");
+    console.log("[ApiService] Constructor called");
+    console.log("[ApiService] API_BASE_URL:", API_BASE_URL);
+    console.log("[ApiService] baseUrl parameter:", baseUrl);
+    console.log("[ApiService] this.baseUrl:", this.baseUrl);
+    console.log("[ApiService] import.meta.env.DEV:", import.meta.env.DEV);
+    console.log("[ApiService] import.meta.env.MODE:", import.meta.env.MODE);
+    console.log("[ApiService] ==========================================");
+
+    // 개발 환경인데 localhost로 설정되어 있으면 경고
+    if (
+      this.baseUrl.includes("localhost") &&
+      (import.meta.env.DEV || import.meta.env.MODE === "development")
+    ) {
+      console.error(
+        "[ApiService] ⚠️ WARNING: Development mode but using localhost URL!"
+      );
+      console.error(
+        "[ApiService] This will cause CORS errors. baseUrl should be empty string."
+      );
+    }
+  }
+
+  // 공통 헤더 생성 (ngrok 브라우저 경고 건너뛰기 포함)
+  // FormData를 사용하는 경우 contentType을 null로 전달
+  private getHeaders(
+    contentType: string | null = "application/json"
+  ): HeadersInit {
+    const headers: HeadersInit = {
+      "ngrok-skip-browser-warning": "69420",
+    };
+    if (contentType) {
+      headers["Content-Type"] = contentType;
+    }
+    return headers;
   }
 
   // RAG 기반 채팅 메시지 전송
@@ -73,11 +150,11 @@ class ApiService {
     fileId?: string,
     chatMode: "rag" | "openai" = "rag"
   ): Promise<ChatResponse> {
-    const response = await fetch(`${this.baseUrl}/chat`, {
+    const url = `${this.baseUrl}/api/chat/`;
+    console.log("[ApiService] sendChatMessage - Request URL:", url);
+    const response = await fetch(url, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: this.getHeaders(),
       body: JSON.stringify({
         question: message,
         max_tokens: 8192,
@@ -112,11 +189,9 @@ class ApiService {
 
   // OpenAI 기본 채팅 메시지 전송
   async sendOpenAIBasicMessage(message: string): Promise<ChatResponse> {
-    const response = await fetch(`${this.baseUrl}/chat/openai-basic`, {
+    const response = await fetch(`${this.baseUrl}/api/chat/openai-basic`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: this.getHeaders(),
       body: JSON.stringify({
         question: message,
         max_tokens: 8192,
@@ -137,12 +212,10 @@ class ApiService {
     message: string
   ): Promise<ChatResponse> {
     const response = await fetch(
-      `${this.baseUrl}/chat/openai-basic/${fileId}`,
+      `${this.baseUrl}/api/chat/openai-basic/${fileId}`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: this.getHeaders(),
         body: JSON.stringify({
           question: message,
           max_tokens: 8192,
@@ -160,8 +233,9 @@ class ApiService {
 
   // 채팅 기록 삭제
   async clearChatHistory(): Promise<{ success: boolean }> {
-    const response = await fetch(`${this.baseUrl}/chat/history`, {
+    const response = await fetch(`${this.baseUrl}/api/chat/history`, {
       method: "DELETE",
+      headers: this.getHeaders(null),
     });
 
     if (!response.ok) {
@@ -173,7 +247,9 @@ class ApiService {
 
   // 파일 목록 조회
   async getFiles(): Promise<{ success: boolean; data: FileInfo[] }> {
-    const response = await fetch(`${this.baseUrl}/files`);
+    const response = await fetch(`${this.baseUrl}/api/files/`, {
+      headers: this.getHeaders(null),
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -186,7 +262,12 @@ class ApiService {
   async getFileContent(
     fileId: string
   ): Promise<{ success: boolean; data: { content: string } }> {
-    const response = await fetch(`${this.baseUrl}/files/${fileId}/content`);
+    const response = await fetch(
+      `${this.baseUrl}/api/files/${fileId}/content`,
+      {
+        headers: this.getHeaders(null),
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -200,7 +281,9 @@ class ApiService {
     success: boolean;
     data: { status: { rag_system_loaded: boolean; neo4j_connected: boolean } };
   }> {
-    const response = await fetch(`${this.baseUrl}/status`);
+    const response = await fetch(`${this.baseUrl}/api/status/`, {
+      headers: this.getHeaders(null),
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -214,7 +297,9 @@ class ApiService {
     success: boolean;
     data: { results: RiskAnalysisResult[] };
   }> {
-    const response = await fetch(`${this.baseUrl}/risk-analysis/saved`);
+    const response = await fetch(`${this.baseUrl}/risk-analysis/saved`, {
+      headers: this.getHeaders(null),
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -228,7 +313,9 @@ class ApiService {
     success: boolean;
     data: { results: RiskAnalysisResult[] };
   }> {
-    const response = await fetch(`${this.baseUrl}/risk-analysis/gpt-results`);
+    const response = await fetch(`${this.baseUrl}/risk-analysis/gpt-results`, {
+      headers: this.getHeaders(null),
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -245,9 +332,7 @@ class ApiService {
       `${this.baseUrl}/risk-analysis/analyze-gpt-only`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: this.getHeaders(),
         body: JSON.stringify({
           file_id: fileId,
         }),
@@ -267,9 +352,13 @@ class ApiService {
     status: string;
     progress: number;
     message: string;
+    data?: any;
   }> {
     const response = await fetch(
-      `${this.baseUrl}/pipeline/status/${pipelineId}`
+      `${this.baseUrl}/api/pipeline/status/${pipelineId}`,
+      {
+        headers: this.getHeaders(null),
+      }
     );
 
     if (!response.ok) {
@@ -283,7 +372,12 @@ class ApiService {
   async getRiskAnalysisResult(
     pipelineId: string
   ): Promise<{ success: boolean; data: RiskAnalysisResult }> {
-    const response = await fetch(`${this.baseUrl}/risk-analysis/${pipelineId}`);
+    const response = await fetch(
+      `${this.baseUrl}/risk-analysis/${pipelineId}`,
+      {
+        headers: this.getHeaders(null),
+      }
+    );
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
@@ -306,9 +400,7 @@ class ApiService {
   }> {
     const response = await fetch(`${this.baseUrl}/api/neo4j/stats`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: this.getHeaders(),
       body: JSON.stringify(connectionInfo),
     });
 
@@ -343,9 +435,7 @@ class ApiService {
   }> {
     const response = await fetch(`${this.baseUrl}/api/neo4j/graph-data`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: this.getHeaders(),
       body: JSON.stringify(connectionInfo),
     });
 
@@ -366,8 +456,9 @@ class ApiService {
     const formData = new FormData();
     formData.append("file", file);
 
-    const response = await fetch(`${this.baseUrl}/upload/contract`, {
+    const response = await fetch(`${this.baseUrl}/api/files/upload/contract`, {
       method: "POST",
+      headers: this.getHeaders(null), // FormData는 Content-Type을 자동으로 설정
       body: formData,
     });
 
@@ -381,22 +472,28 @@ class ApiService {
   // 파일 업로드와 파이프라인 실행을 한 번에 처리
   async uploadAndRunPipeline(
     file: File,
-    startStep: number = 1
+    startStep: number = 1,
+    neo4jDatabase?: string
   ): Promise<{
     success: boolean;
     message: string;
     data?: {
       pipeline_id: string;
       keyword: string;
+      neo4j_database?: string;
       file_info: any;
     };
   }> {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("start_step", startStep.toString());
+    if (neo4jDatabase) {
+      formData.append("neo4j_database", neo4jDatabase);
+    }
 
-    const response = await fetch(`${this.baseUrl}/upload-and-run`, {
+    const response = await fetch(`${this.baseUrl}/api/files/upload-and-run`, {
       method: "POST",
+      headers: this.getHeaders(null), // FormData는 Content-Type을 자동으로 설정
       body: formData,
     });
 
@@ -424,8 +521,9 @@ class ApiService {
     formData.append("file_id", fileId);
     formData.append("start_step", startStep.toString());
 
-    const response = await fetch(`${this.baseUrl}/pipeline/run-with-file`, {
+    const response = await fetch(`${this.baseUrl}/api/pipeline/run-with-file`, {
       method: "POST",
+      headers: this.getHeaders(null), // FormData는 Content-Type을 자동으로 설정
       body: formData,
     });
 
@@ -441,8 +539,9 @@ class ApiService {
     success: boolean;
     message: string;
   }> {
-    const response = await fetch(`${this.baseUrl}/files/${fileId}`, {
+    const response = await fetch(`${this.baseUrl}/api/files/${fileId}`, {
       method: "DELETE",
+      headers: this.getHeaders(null),
     });
 
     if (!response.ok) {
@@ -468,9 +567,7 @@ class ApiService {
       `${this.baseUrl}/risk-analysis/analyze-uploaded-file`,
       {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: this.getHeaders(),
         body: JSON.stringify({
           file_id: fileId,
           selected_parts: selectedParts,
@@ -513,7 +610,43 @@ class ApiService {
     }>;
     total_count?: number;
   }> {
-    const response = await fetch(`${this.baseUrl}/risk-analysis/rag-contracts`);
+    const response = await fetch(
+      `${this.baseUrl}/risk-analysis/rag-contracts`,
+      {
+        headers: this.getHeaders(null),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  }
+
+  // Neo4j 데이터베이스 목록 조회
+  async getNeo4jDatabases(): Promise<{
+    success: boolean;
+    databases: Array<{
+      name: string;
+      status: string;
+      default: boolean;
+    }>;
+  }> {
+    const neo4jUri = import.meta.env.VITE_NEO4J_URI || "bolt://localhost:7687";
+    const neo4jUser = import.meta.env.VITE_NEO4J_USER || "neo4j";
+    const neo4jPassword = import.meta.env.VITE_NEO4J_PASSWORD || "";
+
+    const response = await fetch(`${this.baseUrl}/api/neo4j/databases`, {
+      method: "POST",
+      headers: this.getHeaders(),
+      body: JSON.stringify({
+        serverUrl: neo4jUri,
+        username: neo4jUser,
+        password: neo4jPassword,
+        database: "system",
+      }),
+    });
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);

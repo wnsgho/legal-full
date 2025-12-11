@@ -3,6 +3,7 @@ from logging import Logger
 import faiss
 from neo4j import GraphDatabase
 import time
+import os
 import nltk
 from nltk.corpus import stopwords
 try:
@@ -27,9 +28,9 @@ class LargeKGRetriever(BaseLargeKGRetriever):
         # istantiate one kg resources
         self.keyword = keyword
         self.neo4j_driver = neo4j_driver
-        # 데이터베이스 매개변수를 kwargs에서 가져오거나 기본값 사용
-        database = kwargs.get('database', 'neo4j')
-        self.gds_driver = GraphDataScience(self.neo4j_driver, database=database)
+        # 데이터베이스 매개변수를 kwargs에서 가져오거나 환경변수 또는 기본값 사용
+        self.database = kwargs.get('database', os.getenv('NEO4J_DATABASE', 'neo4j'))
+        self.gds_driver = GraphDataScience(self.neo4j_driver, database=self.database)
         self.topN = topN
         self.number_of_source_nodes_per_ner = number_of_source_nodes_per_ner
         self.sampling_area = sampling_area
@@ -91,7 +92,8 @@ class LargeKGRetriever(BaseLargeKGRetriever):
     def pagerank(self, personalization_dict, topN=5, sampling_area=200):
         graph = self.gds_driver.graph.get('largekgrag_graph')
         node_count = graph.node_count()
-        sampling_ratio = sampling_area / node_count
+        # sampling_ratio는 0과 1 사이여야 함
+        sampling_ratio = min(sampling_area / node_count, 1.0)
         aggregation_node_dict = []
         ppr_weight_threshold = self.ppr_weight_threshold
         start_time = time.time()
@@ -179,7 +181,7 @@ class LargeKGRetriever(BaseLargeKGRetriever):
         if self.verbose:
             self.logger.info(f"Time taken to sample and calculate PageRank: {time.time() - start_time:.2f} seconds")
         start_time = time.time()
-        with self.neo4j_driver.session() as session:
+        with self.neo4j_driver.session(database=self.database) as session:
             intermediate_time = time.time()
             # Step 1: Distribute entity scores to connected text nodes and find the top 5
             query_scores = """
@@ -319,7 +321,7 @@ class LargeKGRetriever(BaseLargeKGRetriever):
                 MATCH (n1:Node {numeric_id: node})-[r:Source]-(n2:Text)
                 RETURN n1.numeric_id as numeric_id, COUNT(DISTINCT n2.text_id) AS fileCount
             """
-            with self.neo4j_driver.session() as session:
+            with self.neo4j_driver.session(database=self.database) as session:
                 result = session.run(query, nodes=topk_nodes)
                 for record in result:
                     freq_dict_for_nodes[record["numeric_id"]] = record["fileCount"]
@@ -340,7 +342,7 @@ class LargeKGRetriever(BaseLargeKGRetriever):
                     numeric_id_int = numeric_id
                 
                 # GDS ID를 직접 Neo4j 쿼리로 찾기
-                with self.neo4j_driver.session() as session:
+                with self.neo4j_driver.session(database=self.database) as session:
                     # 먼저 해당 numeric_id가 존재하는지 확인
                     check_result = session.run(
                         "MATCH (n:Node {numeric_id: $numeric_id}) RETURN n.numeric_id as numeric_id, n.name as name",

@@ -491,15 +491,28 @@ class LLMGenerator():
             'allow_empty': allow_empty
         }
         try:
+            print(f"🤖 Stage {stage} - Calling LLM for {len(messages)} messages")
             result = self.generate_response(messages, max_new_tokens=max_tokens, validate_function=validate_output, return_text_only = not record, **validate_kwargs)
+            
+            # 결과 확인
+            if record:
+                result_count = len(result) if isinstance(result, list) else 0
+                print(f"🤖 Stage {stage} - LLM returned {result_count} results (with usage)")
+            else:
+                result_count = len(result) if isinstance(result, list) else 0
+                empty_count = sum(1 for r in result if not r or r.strip() == "[]") if isinstance(result, list) else 0
+                print(f"🤖 Stage {stage} - LLM returned {result_count} results ({empty_count} empty)")
+            
             return result
         except Exception as e:
-            print(f"Triple extraction failed: {e}")
+            import traceback
+            print(f"❌ Triple extraction failed (stage {stage}): {e}")
+            print(f"❌ Traceback:\n{traceback.format_exc()}")
             # Return empty result if validation fails and allow_empty is True
             if allow_empty:
                 if record:
-                    return [], {'completion_tokens': 0, 'time': 0}
+                    return [([], {'completion_tokens': 0, 'time': 0}) for _ in messages]
                 else:
-                    return []
+                    return ["[]" for _ in messages]
             else:
                 raise e
