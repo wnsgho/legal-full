@@ -49,8 +49,32 @@ def load_rag_system() -> Tuple[Optional[Dict[str, Any]], Optional[Driver]]:
     try:
         from experiment.run_questions_v3_with_concept import load_enhanced_rag_system
 
+        # KEYWORD 환경변수 확인
+        keyword = os.getenv('KEYWORD') or settings.KEYWORD
+        logger.info(f"🔑 RAG 시스템 로드 시도 - KEYWORD: {keyword}")
+        logger.info(f"📁 IMPORT_DIRECTORY: {settings.IMPORT_DIRECTORY}")
+        
+        if not keyword:
+            logger.warning("⚠️ KEYWORD가 설정되지 않았습니다. 기존 데이터를 찾아서 설정합니다.")
+            existing_keyword = find_existing_keyword()
+            if existing_keyword:
+                os.environ['KEYWORD'] = existing_keyword
+                settings.KEYWORD = existing_keyword
+                keyword = existing_keyword
+                logger.info(f"✅ KEYWORD 설정: {keyword}")
+            else:
+                logger.error("❌ KEYWORD를 찾을 수 없습니다. RAG 시스템을 로드할 수 없습니다.")
+                return None, None
+
         # This function from the original script is expected to use env vars for configuration
         enhanced_lkg_retriever, hippo_retriever, llm_generator, neo4j_driver = load_enhanced_rag_system()
+
+        if enhanced_lkg_retriever is None or hippo_retriever is None or llm_generator is None:
+            logger.error("❌ RAG 시스템 컴포넌트 중 일부가 None입니다.")
+            logger.error(f"   - enhanced_lkg_retriever: {enhanced_lkg_retriever is not None}")
+            logger.error(f"   - hippo_retriever: {hippo_retriever is not None}")
+            logger.error(f"   - llm_generator: {llm_generator is not None}")
+            return None, None
 
         rag_system = {
             "enhanced_lkg_retriever": enhanced_lkg_retriever,

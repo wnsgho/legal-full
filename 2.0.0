@@ -1,0 +1,24 @@
+Collecting pydantic-settings
+  Using cached pydantic_settings-2.11.0-py3-none-any.whl.metadata (3.4 kB)
+Collecting pydantic>=2.7.0 (from pydantic-settings)
+  Using cached pydantic-2.12.0-py3-none-any.whl.metadata (83 kB)
+Collecting python-dotenv>=0.21.0 (from pydantic-settings)
+  Using cached python_dotenv-1.1.1-py3-none-any.whl.metadata (24 kB)
+Collecting typing-inspection>=0.4.0 (from pydantic-settings)
+  Using cached typing_inspection-0.4.2-py3-none-any.whl.metadata (2.6 kB)
+Collecting annotated-types>=0.6.0 (from pydantic>=2.7.0->pydantic-settings)
+  Using cached annotated_types-0.7.0-py3-none-any.whl.metadata (15 kB)
+Collecting pydantic-core==2.41.1 (from pydantic>=2.7.0->pydantic-settings)
+  Using cached pydantic_core-2.41.1-cp312-cp312-win_amd64.whl.metadata (7.4 kB)
+Collecting typing-extensions>=4.14.1 (from pydantic>=2.7.0->pydantic-settings)
+  Using cached typing_extensions-4.15.0-py3-none-any.whl.metadata (3.3 kB)
+Using cached pydantic_settings-2.11.0-py3-none-any.whl (48 kB)
+Using cached pydantic-2.12.0-py3-none-any.whl (459 kB)
+Using cached pydantic_core-2.41.1-cp312-cp312-win_amd64.whl (2.0 MB)
+Using cached annotated_types-0.7.0-py3-none-any.whl (13 kB)
+Using cached python_dotenv-1.1.1-py3-none-any.whl (20 kB)
+Using cached typing_extensions-4.15.0-py3-none-any.whl (44 kB)
+Using cached typing_inspection-0.4.2-py3-none-any.whl (14 kB)
+Installing collected packages: typing-extensions, python-dotenv, annotated-types, typing-inspection, pydantic-core, pydantic, pydantic-settings
+
+Successfully installed annotated-types-0.7.0 pydantic-2.12.0 pydantic-core-2.41.1 pydantic-settings-2.11.0 python-dotenv-1.1.1 typing-extensions-4.15.0 typing-inspection-0.4.2

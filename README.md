@@ -22,6 +22,8 @@ AutoSchemaKG-1/
 
 ## 🚀 빠른 시작
 
+파이썬은 3.12 버전을 사용했습니다. conda 환경으로 사용했으며, conda 사용시 `conda install -c conda-forge faiss-gpu=1.8.0` 로 faiss-gpu를 먼저 설치하세요.
+
 ### 1) 백엔드 실행
 
 ```bash
@@ -55,6 +57,7 @@ npm run dev
 ```
 
 - 기본 개발 서버: http://localhost:5173 (Vite 기본 포트)
+- Docker 프론트엔드: http://localhost:3000 (Docker Compose 사용 시)
 
 ## ⚙️ 환경변수
 
@@ -67,22 +70,46 @@ npm run dev
 
 - 파일 업로드 및 파이프라인 실행 (ATLAS 기반 지식그래프 구축/임베딩)
 - 하이브리드 RAG 검색과 질의응답
-- 계약서 위험 조항 분석 (파트별 체크리스트/직렬 처리/결과 통합)
+- 계약서 위험 조항 분석
+  - 하이브리드 리트리버 기반 위험 분석 (Neo4j + Concept + HiPPO-RAG2)
+  - GPT 전용 위험 분석
+  - 파트별 체크리스트 분석 (10개 파트)
+  - 직렬 처리 및 점진적 결과 제공
+  - 분석 결과 저장 및 조회
 - 실시간 상태 모니터링 및 로그
 
 ## 📚 핵심 API (요약)
 
+### 파일 및 파이프라인
+
 - `POST /upload-and-run`: 파일 업로드 후 파이프라인 실행
 - `POST /pipeline/run`: 파이프라인 실행
 - `GET /pipeline/status/{pipeline_id}`: 파이프라인 상태
+
+### 챗봇 및 분석
+
 - `POST /chat`: RAG 기반 Q&A
 - `POST /analyze-risks`: 계약서 위험분석
-- 더 보기: http://localhost:8000/docs
+
+### 위험 분석 (하이브리드 리트리버 기반)
+
+- `POST /api/risk-analysis/start`: 위험 분석 시작
+- `POST /api/risk-analysis/analyze-uploaded-file`: 업로드된 파일 분석
+- `POST /api/risk-analysis/analyze-gpt-only`: GPT 전용 분석
+- `GET /api/risk-analysis/{analysis_id}/status`: 분석 상태 조회
+- `GET /api/risk-analysis/{analysis_id}/part/{part_number}`: 파트별 결과 조회
+- `GET /api/risk-analysis/{analysis_id}/report`: 전체 리포트 조회
+- `GET /api/risk-analysis/saved`: 저장된 분석 결과 목록
+- `GET /api/risk-analysis/rag-contracts`: RAG 구축된 계약서 목록
+
+더 보기: http://localhost:8000/docs
 
 ## 🔗 세부 문서
 
 - 백엔드 전용 가이드: `BE/README_SERVER.md`
 - 위험분석 시스템: `BE/riskAnalysis/README.md`
+- 하이브리드 위험분석: `BE/riskAnalysis/README_hybrid.md`
+- Docker 가이드: `DOCKER_README.md`
 - 프런트엔드 가이드: `FE/workspace/shadcn-ui/README.md`
 
 ## 🛠️ 트러블슈팅 (요약)
@@ -100,5 +127,29 @@ npm run dev
 [BE] FastAPI ── RAG/위험분석 서비스 계층
    ├─ ATLAS 파이프라인
    ├─ Neo4j (지식그래프)
+   ├─ 하이브리드 리트리버 (Concept + HiPPO-RAG2)
    └─ OpenAI (LLM)
 
+위험 분석 시스템:
+- HybridRiskAnalyzer: 하이브리드 리트리버 기반 분석
+- SimpleGPTRiskAnalyzer: GPT 전용 분석
+- 10개 파트별 체크리스트 분석
+```
+
+## 🐳 Docker 사용
+
+Docker Compose를 사용하여 전체 시스템을 실행할 수 있습니다:
+
+```bash
+# 환경변수 설정
+cp env.docker.example .env
+# .env 파일 수정 (OPENAI_API_KEY, NEO4J_PASSWORD 등)
+
+# 서비스 실행
+docker-compose up --build
+
+# 백그라운드 실행
+docker-compose up --build -d
+```
+
+자세한 내용은 `DOCKER_README.md`를 참조하세요.

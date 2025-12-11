@@ -69,12 +69,24 @@ const RiskAnalysisResults: React.FC<RiskAnalysisResultsProps> = ({
           : await api.getSavedRiskAnalysis();
 
         if (response.success && response.data) {
-          let filteredResults: RiskAnalysisResult[] =
-            (response.data as { results?: RiskAnalysisResult[] }).results ||
-            (response.data as RiskAnalysisResult[]);
+          let filteredResults: RiskAnalysisResult[];
+          
+          // 응답 데이터 구조에 따라 처리
+          const data = response.data as { results?: RiskAnalysisResult[] } | RiskAnalysisResult | RiskAnalysisResult[];
+          
+          if ('results' in data && Array.isArray(data.results)) {
+            // { results: [...] } 형태의 응답
+            filteredResults = data.results;
+          } else if (Array.isArray(data)) {
+            // 배열 형태의 응답
+            filteredResults = data;
+          } else {
+            // 단일 객체 형태의 응답 (getSavedRiskAnalysisByFile의 경우)
+            filteredResults = [data as RiskAnalysisResult];
+          }
 
           // 특정 파일 ID가 지정된 경우 해당 파일의 결과만 필터링
-          if (fileId) {
+          if (fileId && filteredResults.length > 0) {
             filteredResults = filteredResults.filter(
               (result: RiskAnalysisResult) => result.file_id === fileId
             );

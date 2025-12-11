@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 from app.api.api import api_router
 from app.core.config import settings
 from app.core.lifespan import lifespan
+from riskAnalysis.risk_analysis_api import router as risk_analysis_router
 
 # .env 파일 로드
 load_dotenv()
@@ -34,6 +35,9 @@ if settings.BACKEND_CORS_ORIGINS:
     )
 
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
+# 프론트엔드 호환: /risk-analysis/* 경로 직접 등록
+app.include_router(risk_analysis_router, prefix="/risk-analysis", tags=["Risk Analysis"])
 
 @app.get("/")
 def read_root():

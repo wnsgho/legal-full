@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import {
   Shield,
   Database,
@@ -9,8 +10,9 @@ import {
   FileText,
   AlertTriangle,
   CheckCircle,
+  Loader2,
 } from "lucide-react";
-import { api } from "@/services/api";
+import { api, API_BASE_URL } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
 
 interface RagContract {
@@ -19,6 +21,18 @@ interface RagContract {
   uploaded_at: string;
   file_size: number;
   file_type: string;
+}
+
+interface AnalysisStatus {
+  analysis_id: string;
+  status: "STARTING" | "RUNNING" | "COMPLETED" | "FAILED";
+  progress: {
+    current_part: number;
+    total_parts: number;
+    percentage: number;
+  };
+  elapsed_time: number;
+  current_part_title: string;
 }
 
 interface RagRiskAnalysisProps {
@@ -34,6 +48,13 @@ const RagRiskAnalysis: React.FC<RagRiskAnalysisProps> = ({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<any>(null);
   const [isLoadingContracts, setIsLoadingContracts] = useState(false);
+  const [currentAnalysisId, setCurrentAnalysisId] = useState<string | null>(
+    null
+  );
+  const [analysisStatus, setAnalysisStatus] = useState<AnalysisStatus | null>(
+    null
+  );
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
 
   const partOptions = [
@@ -80,7 +101,84 @@ const RagRiskAnalysis: React.FC<RagRiskAnalysisProps> = ({
 
   useEffect(() => {
     fetchRagContracts();
+
+    // 컴포넌트 언마운트 시 폴링 정리
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+      }
+    };
   }, []);
+
+  // 분석 상태 폴링
+  const pollAnalysisStatus = async (analysisId: string) => {
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/risk-analysis/${analysisId}/status`,
+        {
+          headers: {
+            "ngrok-skip-browser-warning": "69420",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      setAnalysisStatus(data);
+
+      // 완료 또는 실패 시 폴링 중지
+      if (data.status === "COMPLETED") {
+        if (pollingIntervalRef.current) {
+          clearInterval(pollingIntervalRef.current);
+          pollingIntervalRef.current = null;
+        }
+
+        // 완료 시 전체 결과 가져오기
+        const reportResponse = await fetch(
+          `${API_BASE_URL}/risk-analysis/${analysisId}/report`,
+          {
+            headers: {
+              "ngrok-skip-browser-warning": "69420",
+            },
+          }
+        );
+
+        if (reportResponse.ok) {
+          const reportData = await reportResponse.json();
+          setAnalysisResult(reportData);
+          onAnalysisComplete?.(reportData);
+          toast({
+            title: "RAG 위험 분석 완료",
+            description: "하이브리드 검색을 통한 위험 분석이 완료되었습니다.",
+          });
+        }
+
+        setIsAnalyzing(false);
+        setCurrentAnalysisId(null);
+        setAnalysisStatus(null);
+      } else if (data.status === "FAILED") {
+        if (pollingIntervalRef.current) {
+          clearInterval(pollingIntervalRef.current);
+          pollingIntervalRef.current = null;
+        }
+
+        toast({
+          title: "분석 실패",
+          description: "위험 분석 중 오류가 발생했습니다.",
+          variant: "destructive",
+        });
+
+        setIsAnalyzing(false);
+        setCurrentAnalysisId(null);
+        setAnalysisStatus(null);
+      }
+    } catch (error) {
+      console.error("분석 상태 조회 실패:", error);
+    }
+  };
 
   const handleAnalyze = async () => {
     if (!selectedContract) {
@@ -93,19 +191,49 @@ const RagRiskAnalysis: React.FC<RagRiskAnalysisProps> = ({
     }
 
     setIsAnalyzing(true);
+    setAnalysisResult(null);
+    setAnalysisStatus(null);
+
     try {
       const response = await api.analyzeUploadedFileRisk(
         selectedContract,
         selectedParts
       );
 
-      if (response.success) {
+      if (response.success && response.data?.analysis_id) {
+        const analysisId = response.data.analysis_id;
+        setCurrentAnalysisId(analysisId);
+
+        // 초기 상태 설정
+        setAnalysisStatus({
+          analysis_id: analysisId,
+          status: "STARTING",
+          progress: { current_part: 0, total_parts: 10, percentage: 0 },
+          elapsed_time: 0,
+          current_part_title: "분석 준비 중...",
+        });
+
+        toast({
+          title: "위험 분석 시작",
+          description: "하이브리드 검색을 통한 위험 분석이 시작되었습니다.",
+        });
+
+        // 분석 상태 폴링 시작 (2초마다)
+        pollingIntervalRef.current = setInterval(() => {
+          pollAnalysisStatus(analysisId);
+        }, 2000);
+
+        // 첫 번째 폴링 즉시 실행
+        setTimeout(() => pollAnalysisStatus(analysisId), 500);
+      } else if (response.success && response.data?.analysis_result) {
+        // 동기식 응답 (바로 결과가 오는 경우)
         setAnalysisResult(response.data.analysis_result);
         onAnalysisComplete?.(response.data);
         toast({
           title: "RAG 위험 분석 완료",
           description: "하이브리드 검색을 통한 위험 분석이 완료되었습니다.",
         });
+        setIsAnalyzing(false);
       } else {
         throw new Error(response.message || "분석 실패");
       }
@@ -119,8 +247,9 @@ const RagRiskAnalysis: React.FC<RagRiskAnalysisProps> = ({
             : "RAG 위험 분석 중 오류가 발생했습니다.",
         variant: "destructive",
       });
-    } finally {
       setIsAnalyzing(false);
+      setCurrentAnalysisId(null);
+      setAnalysisStatus(null);
     }
   };
 
@@ -253,7 +382,7 @@ const RagRiskAnalysis: React.FC<RagRiskAnalysisProps> = ({
           </Button>
 
           {/* RAG 시스템 정보 */}
-          {ragContracts.length > 0 && (
+          {ragContracts.length > 0 && !isAnalyzing && (
             <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
               <div className="flex items-center space-x-2 text-green-700">
                 <CheckCircle className="h-4 w-4" />
@@ -264,6 +393,110 @@ const RagRiskAnalysis: React.FC<RagRiskAnalysisProps> = ({
               <p className="text-xs text-green-600 mt-1">
                 • Concept extraction • Neo4j 검색 • HiPPO-RAG2 • Re-ranking
               </p>
+            </div>
+          )}
+
+          {/* 분석 진행 상태 */}
+          {isAnalyzing && analysisStatus && (
+            <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-3">
+              <div className="flex items-center space-x-2 text-blue-700">
+                <Loader2 className="h-5 w-5 animate-spin" />
+                <span className="font-medium">위험 분석 진행 중...</span>
+              </div>
+
+              {/* 진행률 바 */}
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <span className="text-blue-600">
+                    {analysisStatus.current_part_title || "분석 준비 중..."}
+                  </span>
+                  <span className="text-blue-700 font-medium">
+                    {analysisStatus.progress?.current_part || 0} /{" "}
+                    {analysisStatus.progress?.total_parts || 10} 파트
+                  </span>
+                </div>
+                <Progress
+                  value={analysisStatus.progress?.percentage || 0}
+                  className="h-2"
+                />
+                <div className="flex justify-between text-xs text-blue-500">
+                  <span>
+                    경과 시간: {Math.floor(analysisStatus.elapsed_time || 0)}초
+                  </span>
+                  <span>
+                    {(analysisStatus.progress?.percentage || 0).toFixed(0)}%
+                    완료
+                  </span>
+                </div>
+              </div>
+
+              {/* 분석 단계 표시 */}
+              <div className="mt-3 space-y-1">
+                <div className="text-xs text-blue-600">
+                  <span className="font-medium">분석 단계:</span>
+                </div>
+                <div className="grid grid-cols-2 gap-1 text-xs">
+                  <div
+                    className={`flex items-center space-x-1 ${
+                      analysisStatus.status !== "STARTING"
+                        ? "text-green-600"
+                        : "text-blue-400"
+                    }`}
+                  >
+                    {analysisStatus.status !== "STARTING" ? (
+                      <CheckCircle className="h-3 w-3" />
+                    ) : (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    )}
+                    <span>RAG 시스템 로드</span>
+                  </div>
+                  <div
+                    className={`flex items-center space-x-1 ${
+                      analysisStatus.status === "RUNNING" ||
+                      analysisStatus.status === "COMPLETED"
+                        ? "text-green-600"
+                        : "text-gray-400"
+                    }`}
+                  >
+                    {analysisStatus.status === "RUNNING" ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : analysisStatus.status === "COMPLETED" ? (
+                      <CheckCircle className="h-3 w-3" />
+                    ) : (
+                      <div className="h-3 w-3 rounded-full border border-gray-300" />
+                    )}
+                    <span>하이브리드 검색</span>
+                  </div>
+                  <div
+                    className={`flex items-center space-x-1 ${
+                      (analysisStatus.progress?.percentage || 0) > 50
+                        ? "text-green-600"
+                        : "text-gray-400"
+                    }`}
+                  >
+                    {(analysisStatus.progress?.percentage || 0) > 50 ? (
+                      <CheckCircle className="h-3 w-3" />
+                    ) : (
+                      <div className="h-3 w-3 rounded-full border border-gray-300" />
+                    )}
+                    <span>체크리스트 평가</span>
+                  </div>
+                  <div
+                    className={`flex items-center space-x-1 ${
+                      analysisStatus.status === "COMPLETED"
+                        ? "text-green-600"
+                        : "text-gray-400"
+                    }`}
+                  >
+                    {analysisStatus.status === "COMPLETED" ? (
+                      <CheckCircle className="h-3 w-3" />
+                    ) : (
+                      <div className="h-3 w-3 rounded-full border border-gray-300" />
+                    )}
+                    <span>결과 생성</span>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </CardContent>

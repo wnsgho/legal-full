@@ -9,18 +9,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 class Settings(BaseSettings):
     PROJECT_NAME: str = "AutoSchemaKG Backend API"
-    API_V1_STR: str = "/api/v1"
+    API_V1_STR: str = "/api"
 
     # Base directory of the BE application
     BASE_DIR: Path = BASE_DIR
 
     # CORS
+    # 기본값은 모든 origin 허용, 환경변수로 ngrok 도메인 등 추가 가능
+    # 예: BACKEND_CORS_ORIGINS=["*","https://your-ngrok-url.ngrok-free.dev"]
     BACKEND_CORS_ORIGINS: List[str] = ["*"]
 
     # OpenAI
     OPENAI_API_KEY: str
     OPENAI_BASE_URL: str = "https://api.openai.com/v1"
-    DEFAULT_MODEL: str = "gpt-4.1-mini"
+    DEFAULT_MODEL: str = "gpt-4.1-2025-04-14"
 
     # Neo4j
     NEO4J_URI: str

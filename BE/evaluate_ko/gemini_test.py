@@ -295,7 +295,7 @@ def main():
     parser.add_argument("--document", required=True, help="문서 파일 경로")
     parser.add_argument("--output", default="openai_only_results.json", help="출력 파일 경로(미지정 시 문서 번호로 자동 명명)")
     parser.add_argument("--max-questions", type=int, help="최대 질문 수")
-    parser.add_argument("--model", default="gpt-4.1", help="OpenAI 모델 (gpt-4.1, gpt-4, gpt-3.5-turbo)")
+    parser.add_argument("--model", default="gpt-4.1-2025-04-14", help="OpenAI 모델 (gpt-4.1-2025-04-14, gpt-4, gpt-3.5-turbo)")
     parser.add_argument("--detailed", action="store_true", help="상세 결과 출력")
     
     args = parser.parse_args()

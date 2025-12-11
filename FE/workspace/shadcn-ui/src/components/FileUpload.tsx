@@ -1,13 +1,35 @@
 import React, { useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
-import { Upload, File, X, CheckCircle, AlertCircle } from "lucide-react";
+import {
+  Upload,
+  File,
+  X,
+  CheckCircle,
+  AlertCircle,
+  Database,
+  RefreshCw,
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Contract, ContractStatus } from "@/types";
 import { api } from "@/services/api";
 import { useToast } from "@/hooks/use-toast";
+
+interface Neo4jDatabase {
+  name: string;
+  status: string;
+  default: boolean;
+}
 
 interface FileUploadProps {
   onFileUpload: (files: File[]) => void;
@@ -33,7 +55,48 @@ const FileUpload: React.FC<FileUploadProps> = ({
   const [activePipelines, setActivePipelines] = useState<Map<string, string>>(
     new Map()
   ); // pipelineId -> contractId
+  const [neo4jDatabase, setNeo4jDatabase] = useState<string>(
+    import.meta.env.VITE_NEO4J_DATABASE || "neo4j"
+  );
+  const [neo4jDatabases, setNeo4jDatabases] = useState<Neo4jDatabase[]>([]);
+  const [isLoadingDatabases, setIsLoadingDatabases] = useState(false);
   const { toast } = useToast();
+
+  // Neo4j 데이터베이스 목록 로드
+  const fetchNeo4jDatabases = useCallback(async () => {
+    setIsLoadingDatabases(true);
+    try {
+      const response = await api.getNeo4jDatabases();
+      if (response.success && response.databases) {
+        setNeo4jDatabases(response.databases);
+        // 기본 데이터베이스가 있고 현재 선택이 없으면 선택
+        setNeo4jDatabase((currentDb) => {
+          if (!currentDb || currentDb === "neo4j") {
+            const defaultDb = response.databases.find((db) => db.default);
+            return defaultDb?.name || currentDb;
+          }
+          return currentDb;
+        });
+      }
+    } catch (error) {
+      console.error("Neo4j 데이터베이스 목록 조회 실패:", error);
+      // 실패 시 환경변수 값 사용
+      setNeo4jDatabases([
+        {
+          name: import.meta.env.VITE_NEO4J_DATABASE || "neo4j",
+          status: "online",
+          default: true,
+        },
+      ]);
+    } finally {
+      setIsLoadingDatabases(false);
+    }
+  }, []);
+
+  // 컴포넌트 마운트 시 데이터베이스 목록 로드
+  useEffect(() => {
+    fetchNeo4jDatabases();
+  }, [fetchNeo4jDatabases]);
 
   const onDrop = useCallback(
     async (acceptedFiles: File[]) => {
@@ -42,13 +105,13 @@ const FileUpload: React.FC<FileUploadProps> = ({
         const file = acceptedFiles[0];
         if (!file) return;
 
-        // 파일 업로드 및 파이프라인 실행
-        const response = await api.uploadAndRunPipeline(file, 1);
+        // 파일 업로드 및 파이프라인 실행 (데이터베이스 이름 전달)
+        const response = await api.uploadAndRunPipeline(file, 1, neo4jDatabase);
 
         if (response.success && response.data) {
           toast({
             title: "파일 업로드 성공",
-            description: "파이프라인이 시작되었습니다.",
+            description: `파이프라인이 시작되었습니다. (DB: ${neo4jDatabase})`,
           });
 
           // 파이프라인 시작 콜백 호출
@@ -80,7 +143,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
         });
       }
     },
-    [onFileUpload, onPipelineStart, toast]
+    [onFileUpload, onPipelineStart, toast, neo4jDatabase]
   );
 
   // 활성 파이프라인 상태 모니터링
@@ -216,6 +279,64 @@ const FileUpload: React.FC<FileUploadProps> = ({
 
   return (
     <div className="space-y-6">
+      {/* Neo4j Database Selection */}
+      <Card>
+        <CardContent className="p-4">
+          <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 text-gray-700">
+              <Database className="h-5 w-5" />
+              <Label htmlFor="neo4j-database" className="font-medium">
+                Neo4j 데이터베이스
+              </Label>
+            </div>
+            <div className="flex-1 max-w-xs">
+              <Select
+                value={neo4jDatabase}
+                onValueChange={setNeo4jDatabase}
+                disabled={isLoadingDatabases}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="데이터베이스 선택" />
+                </SelectTrigger>
+                <SelectContent>
+                  {neo4jDatabases.map((db) => (
+                    <SelectItem key={db.name} value={db.name}>
+                      <div className="flex items-center space-x-2">
+                        <span>{db.name}</span>
+                        {db.status === "online" && (
+                          <span className="text-xs text-green-500">●</span>
+                        )}
+                        {db.default && (
+                          <Badge variant="outline" className="text-xs ml-1">
+                            기본
+                          </Badge>
+                        )}
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={fetchNeo4jDatabases}
+              disabled={isLoadingDatabases}
+              title="데이터베이스 목록 새로고침"
+            >
+              <RefreshCw
+                className={`h-4 w-4 ${
+                  isLoadingDatabases ? "animate-spin" : ""
+                }`}
+              />
+            </Button>
+            <p className="text-xs text-gray-500">
+              파이프라인 실행 시 사용할 데이터베이스
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Upload Zone */}
       <Card
         className={`transition-all duration-200 ${
@@ -247,6 +368,9 @@ const FileUpload: React.FC<FileUploadProps> = ({
             </p>
             <p className="text-xs text-gray-400">
               지원 형식: JSON, TXT, MD (최대 10MB)
+            </p>
+            <p className="text-xs text-blue-600 mt-2">
+              데이터베이스: <span className="font-medium">{neo4jDatabase}</span>
             </p>
           </div>
         </CardContent>
@@ -293,9 +417,7 @@ const FileUpload: React.FC<FileUploadProps> = ({
                   <div className="flex items-center space-x-2">
                     {getStatusBadge(contract.status)}
                     {contract.status === ContractStatus.COMPLETED && (
-                      <Button variant="outline" size="sm">
-                        분석 보기
-                      </Button>
+                      <Button variant="outline" size="sm"></Button>
                     )}
                   </div>
                 </div>

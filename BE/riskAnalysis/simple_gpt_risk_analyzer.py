@@ -15,14 +15,21 @@ logger = logging.getLogger(__name__)
 class SimpleGPTRiskAnalyzer:
     """간단한 GPT 위험분석기"""
     
-    def __init__(self, api_key: Optional[str] = None, model: str = "gpt-4.1-mini"):
+    def __init__(
+        self,
+        api_key: Optional[str] = None,
+        model: Optional[str] = None
+    ):
         """
         초기화
         
         Args:
             api_key: OpenAI API 키 (없으면 환경변수에서 로드)
-            model: 사용할 GPT 모델
+            model: 사용할 GPT 모델 (없으면 환경변수 OPENAI_GPT_MODEL 또는 기본값 gpt-4.1-2025-04-14 사용)
         """
+        if model is None:
+            model = os.getenv("OPENAI_GPT_MODEL", "gpt-4.1-2025-04-14")
+        
         self.api_key = api_key or os.getenv("OPENAI_API_KEY")
         if not self.api_key:
             raise ValueError("OpenAI API 키가 필요합니다. 환경변수 OPENAI_API_KEY를 설정하거나 직접 전달하세요.")

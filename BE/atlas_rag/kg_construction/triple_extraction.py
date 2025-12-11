@@ -260,12 +260,26 @@ class KnowledgeGraphExtractor:
     
     def process_stage(self, instructions: Dict[str, str], stage = 1) -> Tuple[List[str], List[List[Dict[str, Any]]]]:
         """Process first stage: entity-relation extraction."""
+        print(f"🔍 Stage {stage} - Processing {len(instructions)} instructions")
         outputs = self.model.triple_extraction(messages=instructions, max_tokens=self.config.max_new_tokens, stage=stage, record=self.config.record)
+        
         if self.config.record:
             text_outputs = [output[0] for output in outputs]
         else:
             text_outputs = outputs
+        
+        # 디버깅: LLM 응답 확인
+        print(f"🔍 Stage {stage} - Received {len(text_outputs)} outputs")
+        for i, output in enumerate(text_outputs[:3]):  # 처음 3개만 출력
+            output_preview = str(output)[:200] if output else "None"
+            print(f"🔍 Stage {stage} - Output {i+1} preview: {output_preview}...")
+        
         structured_data = self.parser.extract_structured_data(text_outputs)
+        
+        # 디버깅: 파싱된 데이터 확인
+        total_triples = sum(len(triples) for triples in structured_data)
+        print(f"🔍 Stage {stage} - Parsed {total_triples} total triples from {len(structured_data)} outputs")
+        
         return outputs, structured_data
     
     def create_output_filename(self) -> str:
@@ -431,7 +445,6 @@ class KnowledgeGraphExtractor:
             input_file=f"{self.config.output_directory}/triples_csv/missing_concepts_{self.config.filename_pattern}_from_json.csv",
             output_folder=f"{self.config.output_directory}/concepts",
             output_file="concept.json",
-            logging_file=f"{self.config.output_directory}/concepts/logging.txt",
             config=self.config,
             batch_size=batch_size if batch_size else self.config.batch_size_concept,
             shard=self.config.current_shard_concept,

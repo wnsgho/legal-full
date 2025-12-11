@@ -82,7 +82,28 @@
 
 ## 🚀 사용법
 
-### 1. 분석 시작
+### 1. 업로드된 파일 분석 (권장)
+
+```python
+# API 호출
+POST /api/risk-analysis/analyze-uploaded-file
+{
+    "file_id": "file_id_here",
+    "selected_parts": "all"  # 또는 "1,2,3" 형태로 특정 파트 선택
+}
+```
+
+### 2. GPT 전용 분석
+
+```python
+# GPT만 사용한 빠른 분석
+POST /api/risk-analysis/analyze-gpt-only
+{
+    "file_id": "file_id_here"
+}
+```
+
+### 3. 분석 시작 (텍스트 직접 전달)
 
 ```python
 # API 호출
@@ -95,25 +116,41 @@ POST /api/risk-analysis/start
 }
 ```
 
-### 2. 분석 상태 확인
+### 4. 분석 상태 확인
 
 ```python
 # 진행 상황 조회
 GET /api/risk-analysis/{analysis_id}/status
 ```
 
-### 3. 파트별 결과 조회
+### 5. 파트별 결과 조회
 
 ```python
 # 특정 파트 결과
 GET /api/risk-analysis/{analysis_id}/part/{part_number}
 ```
 
-### 4. 전체 리포트 조회
+### 6. 전체 리포트 조회
 
 ```python
 # 완료된 분석 리포트
 GET /api/risk-analysis/{analysis_id}/report
+```
+
+### 7. 저장된 분석 결과 조회
+
+```python
+# 저장된 분석 결과 목록
+GET /api/risk-analysis/saved
+
+# 특정 파일의 분석 결과
+GET /api/risk-analysis/saved/{file_id}
+
+# GPT 분석 결과 목록
+GET /api/risk-analysis/gpt-results
+
+# RAG 구축된 계약서 목록
+GET /api/risk-analysis/rag-contracts
 ```
 
 ## ⚙️ 설정

@@ -32,14 +32,25 @@ class PipelineService:
         file_id: str,
         start_step: int,
         background_tasks: BackgroundTasks,
+        neo4j_database: Optional[str] = None,
     ) -> Dict[str, Any]:
-        """Prepares a file and runs the pipeline in the background."""
+        """Prepares a file and runs the pipeline in the background.
+        
+        Args:
+            file_id: 파일 ID
+            start_step: 파이프라인 시작 단계
+            background_tasks: 백그라운드 태스크
+            neo4j_database: 사용할 Neo4j 데이터베이스 (None이면 환경변수 사용)
+        """
         file_info = self.file_service.get_file_info(file_id)
         if not file_info:
             raise HTTPException(status_code=404, detail="File not found.")
 
         file_path = Path(file_info["file_path"])
         keyword = f"contract_{file_id}"
+        
+        # 데이터베이스 이름 결정 (파라미터 > 환경변수)
+        database = neo4j_database or os.getenv('NEO4J_DATABASE', 'neo4j')
 
         # Prepare file for the pipeline
         self._prepare_pipeline_file(file_path, keyword)
@@ -50,12 +61,13 @@ class PipelineService:
         actual_start_step = 0 if start_step == 1 else start_step
 
         background_tasks.add_task(
-            self._execute_pipeline_process, actual_start_step, keyword, pipeline_id
+            self._execute_pipeline_process, actual_start_step, keyword, pipeline_id, database
         )
 
         return {
             "pipeline_id": pipeline_id,
             "keyword": keyword,
+            "neo4j_database": database,
             "file_info": file_info,
         }
 
@@ -77,15 +89,16 @@ class PipelineService:
             raise HTTPException(status_code=400, detail="Unsupported file format.")
 
     def _execute_pipeline_process(
-        self, start_step: int, keyword: str, pipeline_id: str
+        self, start_step: int, keyword: str, pipeline_id: str, neo4j_database: str = "neo4j"
     ):
         """Executes the main_pipeline.py script as a subprocess."""
-        logger.info(f"🚀 Starting pipeline process for keyword: {keyword}, start_step: {start_step}")
+        print(f"🚀 Starting pipeline process for keyword: {keyword}, start_step: {start_step}, database: {neo4j_database}", flush=True)
         self.pipeline_status[pipeline_id] = {
             "status": "running",
             "progress": 0,
             "message": "🚀 Pipeline execution started.",
             "start_time": datetime.now().isoformat(),
+            "neo4j_database": neo4j_database,
         }
 
         try:
@@ -95,10 +108,15 @@ class PipelineService:
             env = os.environ.copy()
             env['PYTHONIOENCODING'] = 'utf-8'
             env['KEYWORD'] = keyword
+            env['NEO4J_DATABASE'] = neo4j_database  # 데이터베이스 이름을 환경변수로 전달
 
             self.pipeline_status[pipeline_id]["progress"] = 25
-            self.pipeline_status[pipeline_id]["message"] = "📋 Starting pipeline process..."
+            self.pipeline_status[pipeline_id]["message"] = f"📋 Starting pipeline process... (DB: {neo4j_database})"
 
+            print(f"📋 Executing command: {' '.join(cmd)}", flush=True)
+            print(f"📋 Working directory: {be_dir}", flush=True)
+            print(f"📋 Neo4j Database: {neo4j_database}", flush=True)
+            
             result = subprocess.run(
                 cmd,
                 cwd=be_dir,
@@ -110,8 +128,15 @@ class PipelineService:
                 timeout=3600,  # 1-hour timeout
             )
 
+            # 로그 출력 (디버깅용)
+            print(f"📤 Pipeline return code: {result.returncode}", flush=True)
+            if result.stdout:
+                print(f"📤 Pipeline stdout:\n{result.stdout[-3000:]}", flush=True)
+            if result.stderr:
+                print(f"📤 Pipeline stderr:\n{result.stderr[-3000:]}", flush=True)
+
             if result.returncode == 0:
-                logger.info(f"✅ Pipeline completed successfully for {keyword}.")
+                print(f"✅ Pipeline completed successfully for {keyword}.", flush=True)
                 from app.services.rag_service import check_and_load_existing_data
                 check_and_load_existing_data() # Reload RAG system with new data
 
@@ -122,7 +147,8 @@ class PipelineService:
                     "end_time": datetime.now().isoformat(),
                 })
             else:
-                logger.error(f"❌ Pipeline failed for {keyword}. Stderr: {result.stderr}")
+                print(f"❌ Pipeline failed for {keyword}. Return code: {result.returncode}", flush=True)
+                print(f"❌ Stderr: {result.stderr}", flush=True)
                 self.pipeline_status[pipeline_id].update({
                     "status": "failed",
                     "message": f"❌ Pipeline failed. Details: {result.stderr[:500]}",

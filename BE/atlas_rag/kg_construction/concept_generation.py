@@ -1,6 +1,5 @@
 from tqdm import tqdm
 import random
-import logging
 import csv
 import os
 import hashlib
@@ -39,7 +38,7 @@ def convert_attribute(value):
 def clean_text(text):
     # remove NUL as well
     
-    new_text = text.replace("\n", " ").replace("\r", " ").replace("\t", " ").replace("\v", " ").replace("\f", " ").replace("\b", " ").replace("\a", " ").replace("\e", " ").replace(";", ",")
+    new_text = text.replace("\n", " ").replace("\r", " ").replace("\t", " ").replace("\v", " ").replace("\f", " ").replace("\b", " ").replace("\a", " ").replace(";", ",")
     new_text = new_text.replace("\x00", "")
     new_text = re.sub(r'\s+', ' ', new_text).strip()
 
@@ -117,33 +116,48 @@ def generate_concept(model: LLMGenerator,
             input_file = 'processed_data/triples_csv', 
             output_folder = 'processed_data/triples_conceptualized', 
             output_file = 'output.json', 
-            logging_file = 'processed_data/logging.txt', 
             config:ProcessingConfig=None, 
             batch_size=32, 
             shard=0, 
             num_shards=1,
             **kwargs):
-    log_dir = os.path.dirname(logging_file)
-    if log_dir and not os.path.exists(log_dir):
-        os.makedirs(log_dir)
-
-    # Create the log file if it doesn't exist
-    if not os.path.exists(logging_file):
-        open(logging_file, 'w', encoding='utf-8').close()
-
     language = kwargs.get('language', 'en')
     record = kwargs.get('record', False)
 
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-    file_handler = logging.FileHandler(logging_file)
-    file_handler.setLevel(logging.INFO)
-    file_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-    logging.getLogger().addHandler(file_handler)
+    # Use print instead of logging to avoid file handler issues
+    print(f"Starting concept generation for keyword: {config.filename_pattern if config else 'unknown'}")
     
-    with open(f"{config.output_directory}/kg_graphml/{config.filename_pattern}_without_concept.pkl", "rb") as f: 
+    # config 객체가 있으면 사용하고, 없으면 기본값 사용
+    if config and hasattr(config, 'output_directory') and hasattr(config, 'filename_pattern'):
+        output_directory = config.output_directory
+        filename_pattern = config.filename_pattern
+    else:
+        # config가 없거나 필요한 속성이 없으면 기본값 사용
+        output_directory = os.getenv('IMPORT_DIRECTORY', 'import')
+        filename_pattern = os.getenv('KEYWORD', 'contract3t')
+        output_directory = f"{output_directory}/{filename_pattern}"
+        print(f"Using default paths - output_directory: {output_directory}, filename_pattern: {filename_pattern}")
+    
+    pickle_file_path = f"{output_directory}/kg_graphml/{filename_pattern}_without_concept.pkl"
+    print(f"Looking for pickle file: {pickle_file_path}")
+    
+    if not os.path.exists(pickle_file_path):
+        print(f"ERROR: Required pickle file not found: {pickle_file_path}")
+        raise FileNotFoundError(f"Required pickle file not found: {pickle_file_path}")
+    
+    with open(pickle_file_path, "rb") as f: 
         temp_kg = pickle.load(f)
 
-    # read data
+    # read data - output_folder 생성
+    # output_folder가 이미 output_directory를 포함하는지 확인
+    if output_directory and output_folder.startswith(output_directory):
+        # 이미 전체 경로가 전달됨
+        pass
+    elif not os.path.isabs(output_folder) and output_directory:
+        # 상대 경로인 경우에만 output_directory 추가
+        output_folder = os.path.join(output_directory, output_folder)
+        print(f"Using absolute output_folder: {output_folder}")
+    
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
     all_missing_nodes = load_data_with_shard(
@@ -225,7 +239,7 @@ def generate_concept(model: LLMGenerator,
                     usages = None
                 # print("answers", answers)
             except Exception as e:
-                logging.error(f"Error processing {batch_type} batch: {e}")
+                print(f"ERROR: Error processing {batch_type} batch: {e}")
                 raise e
             # try:
             #     answers = batched_inference(llm, sampling_params, inputs)
@@ -236,9 +250,10 @@ def generate_concept(model: LLMGenerator,
             for i,(node, answer) in enumerate(zip(batch, answers)):
                 # print(node, answer, node_type)
                 if usages is not None:
-                    logging.info(f"Usage log: Node {node}, completion_usage: {usages[i]}")
+                    print(f"Usage log: Node {node}, completion_usage: {usages[i]}")
                 csv_writer.writerow([node, ", ".join(answer), node_type])
                 file.flush()
+    
     # count unique conceptualized nodes
     conceptualized_nodes = []
 

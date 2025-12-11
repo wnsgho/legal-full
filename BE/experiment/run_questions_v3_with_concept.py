@@ -116,12 +116,10 @@ def load_enhanced_rag_system():
         neo4j_user = os.getenv('NEO4J_USER', 'neo4j')
         neo4j_password = os.getenv('NEO4J_PASSWORD')
         neo4j_database = os.getenv('NEO4J_DATABASE', 'neo4j')
-        keyword = os.getenv('KEYWORD', 'contract_v5')
         
         print(f"🔧 환경변수 확인:")
         print(f"   - NEO4J_URI: {neo4j_uri}")
         print(f"   - NEO4J_DATABASE: {neo4j_database}")
-        print(f"   - KEYWORD: {keyword}")
         
         try:
             neo4j_driver = GraphDatabase.driver(neo4j_uri, auth=(neo4j_user, neo4j_password))
@@ -135,12 +133,14 @@ def load_enhanced_rag_system():
         project_root = os.path.dirname(script_dir)
         import_dir = os.getenv('IMPORT_DIRECTORY', 'import')
         precompute_dir = os.getenv('PRECOMPUTE_DIRECTORY', 'precompute')
+        keyword = os.getenv('KEYWORD', 'contract3t')  # RAG 데이터 경로 구성용
         
         print(f"📁 경로 정보:")
         print(f"   - script_dir: {script_dir}")
         print(f"   - project_root: {project_root}")
         print(f"   - import_dir: {import_dir}")
         print(f"   - precompute_dir: {precompute_dir}")
+        print(f"   - keyword: {keyword}")
         
         data_path = os.path.join(project_root, import_dir, keyword, precompute_dir, f"{keyword}_eventTrue_conceptTrue_all-MiniLM-L6-v2_node_faiss.index")
         print(f"   - data_path: {data_path}")
